@@ -3,14 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PropMatchRD — Compra tu propiedad con acompañamiento real</title>
+<title>PropMatchRD — Encuentra tu hogar, con un agente verificado a tu lado</title>
 <link rel="stylesheet" href="styles.css">
 <style>
-  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0 8px; }
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0 6px; }
   .hero-btns .btn { flex: 1 1 auto; min-width: 200px; text-align: center; font-size: 15px; }
+  .sub-cta { font-size: 12px; color: var(--text-muted); text-align: center; margin: -2px 0 20px; }
+
+  .trust-bar { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0 8px; }
+  .trust-item {
+    flex: 1 1 auto; min-width: 150px; display: flex; align-items: center; gap: 8px;
+    background: var(--white); border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; font-size: 13px; font-weight: 600;
+  }
+  .trust-item span.ico { font-size: 18px; }
+
+  .pasos { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 14px; margin: 18px 0; }
+  .paso { text-align: center; }
+  .paso .n {
+    width: 34px; height: 34px; border-radius: 50%; background: var(--teal); color: white;
+    display: flex; align-items: center; justify-content: center; font-family: var(--font-mono);
+    font-weight: 600; margin: 0 auto 8px;
+  }
+  .paso p { font-size: 13px; margin: 0; }
+
   .entry-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
   .entry-card:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(16,35,28,0.12); }
   .ruta-paso { transition: opacity 0.4s ease; }
+
+  .faq-item { border-bottom: 1px solid var(--line); padding: 14px 0; cursor: pointer; }
+  .faq-item:last-child { border-bottom: none; }
+  .faq-q { display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 15px; color: var(--ink); }
+  .faq-a { font-size: 14px; color: var(--text-muted); max-height: 0; overflow: hidden; transition: max-height 0.25s ease; }
+  .faq-item.abierto .faq-a { max-height: 200px; margin-top: 8px; }
+  .faq-item.abierto .faq-flecha { transform: rotate(180deg); }
+  .faq-flecha { transition: transform 0.2s ease; color: var(--teal-deep); }
 
   .whatsapp-float {
     position: fixed; bottom: 20px; right: 20px; z-index: 100;
@@ -30,14 +57,29 @@
 <div class="wrap">
 
   <span class="eyebrow">PropMatchRD</span>
-  <h1>No vendemos leads.<br>Acompañamos una compra.</h1>
-  <p>Conectamos compradores verificados con agentes inmobiliarios reales en República Dominicana —
-  y seguimos con ustedes en cada paso, desde la primera evaluación hasta la llave en mano.</p>
+  <h1>Encuentra tu hogar,<br>sin dar palos a ciegas.</h1>
+  <p>Te conectamos con un agente inmobiliario <b>verificado</b> según tu presupuesto real y la zona
+  que buscas — y seguimos contigo en cada paso, desde la evaluación hasta que tengas las llaves en la mano.</p>
+
+  <div class="trust-bar">
+    <div class="trust-item"><span class="ico">🆓</span> 100% gratis para ti</div>
+    <div class="trust-item"><span class="ico">✅</span> Agentes verificados a mano</div>
+    <div class="trust-item"><span class="ico">🔒</span> Tus datos, protegidos</div>
+  </div>
 
   <div class="hero-btns">
     <a class="btn btn-coral" id="linkRegistroComprador" href="#">🏠 Quiero comprar</a>
     <a class="btn btn-primary" id="linkRegistroAgente" href="#">💼 Soy agente inmobiliario</a>
     <button class="btn btn-outline" onclick="document.getElementById('consultar').scrollIntoView({behavior:'smooth'})">🔍 Consultar mi solicitud</button>
+  </div>
+  <p class="sub-cta">Sin compromiso · Solo toma 3 minutos</p>
+
+  <h2 style="margin-top:32px">Así de simple funciona</h2>
+  <div class="pasos">
+    <div class="paso"><div class="n">1</div><p><b>Cuéntanos qué buscas.</b><br>Presupuesto, zona y tipo de propiedad.</p></div>
+    <div class="paso"><div class="n">2</div><p><b>Te asignamos un agente verificado</b><br>compatible con tu perfil.</p></div>
+    <div class="paso"><div class="n">3</div><p><b>Visitas propiedades</b><br>y ajustamos la búsqueda si algo no encaja.</p></div>
+    <div class="paso"><div class="n">4</div><p><b>Cierras tu compra</b><br>con acompañamiento hasta el final.</p></div>
   </div>
 
   <div class="card" id="consultar" style="margin-top:24px">
@@ -49,6 +91,14 @@
       <button class="btn btn-primary btn-sm" onclick="consultarSolicitud('codigoConsulta','mensajeConsulta')">Consultar</button>
     </div>
     <p id="mensajeConsulta" style="font-size:13px;margin-top:8px"></p>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <span class="eyebrow">Para agentes inmobiliarios</span>
+    <h3>Deja de perder tiempo con leads fríos</h3>
+    <p>Cada comprador que recibes ya tiene presupuesto, inicial y preaprobación bancaria evaluados —
+    tú te enfocas en cerrar, no en calificar. Sin cuota de entrada.</p>
+    <a class="btn btn-outline" id="linkRegistroAgente2" href="#">Registrarme como agente →</a>
   </div>
 
   <div class="card" style="margin-top:16px">
@@ -66,21 +116,42 @@
     <p style="margin:0;font-size:13px">Un rechazo en una visita nunca es un callejón sin salida — ajustamos la búsqueda y seguimos.</p>
   </div>
 
-  <p class="footer-note">PropMatchRD — Marketplace de compradores verificados en República Dominicana.</p>
+  <h2 style="margin-top:32px">Preguntas frecuentes</h2>
+  <div class="card">
+    <div class="faq-item" onclick="this.classList.toggle('abierto')">
+      <div class="faq-q">¿De verdad es gratis? <span class="faq-flecha">▾</span></div>
+      <div class="faq-a">Sí. Como comprador, nunca pagas nada por usar la plataforma ni por que te conectemos con un agente.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('abierto')">
+      <div class="faq-q">¿Qué pasa con mis datos personales? <span class="faq-flecha">▾</span></div>
+      <div class="faq-a">Solo se comparten con el agente que te asignamos, para que pueda contactarte. Tu portal de seguimiento usa un código privado que nadie más puede adivinar ni acceder.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('abierto')">
+      <div class="faq-q">¿Cómo verifican a los agentes? <span class="faq-flecha">▾</span></div>
+      <div class="faq-a">Cada agente pasa por una revisión manual antes de poder recibir compradores — no es un registro automático.</div>
+    </div>
+    <div class="faq-item" onclick="this.classList.toggle('abierto')">
+      <div class="faq-q">¿Qué hago si una propiedad no me convence? <span class="faq-flecha">▾</span></div>
+      <div class="faq-a">Nos lo dices, y ajustamos tu búsqueda automáticamente — zona, presupuesto o características. No empiezas de cero.</div>
+    </div>
+  </div>
+
+  <p class="footer-note">© PropMatchRD — Marketplace de compradores verificados en República Dominicana.<br>
+  El valor de esta plataforma está en su red de compradores verificados y el historial de desempeño de sus agentes —
+  no solo en el concepto. Todo el contenido, metodología y base de datos son propiedad de PropMatchRD.</p>
 </div>
 
 <a class="whatsapp-float" id="linkWhatsappSoporte" href="#" target="_blank" title="Escríbenos por WhatsApp">💬</a>
 
 <script src="app.js"></script>
 <script>
-  // Conectar los botones a los links reales
   document.getElementById('linkRegistroComprador').href = FORM_COMPRADOR_URL;
   document.getElementById('linkRegistroAgente').href = FORM_AGENTE_URL;
+  document.getElementById('linkRegistroAgente2').href = FORM_AGENTE_URL;
   document.getElementById('linkRegistroEmbajador').href = FORM_EMBAJADOR_URL;
   document.getElementById('linkWhatsappSoporte').href =
     'https://wa.me/' + WHATSAPP_SOPORTE_NUMERO + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre PropMatchRD.');
 
-  // Animación de la Ruta de Compra de ejemplo — aparece paso por paso
   (function () {
     const pasos = ['Evaluación', 'Comprador Verificado', 'Agente Asignado', 'Visita 1', 'Nueva búsqueda', 'Visita 2+', 'Reserva', 'Compra'];
     const cont = document.getElementById('rutaEjemplo');

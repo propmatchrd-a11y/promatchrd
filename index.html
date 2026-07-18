@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PropMatchRD — Compra tu propiedad con acompañamiento real</title>
+<link rel="stylesheet" href="styles.css">
+<style>
+  .hero-btns { display: flex; gap: 12px; flex-wrap: wrap; margin: 22px 0 8px; }
+  .hero-btns .btn { flex: 1 1 auto; min-width: 200px; text-align: center; font-size: 15px; }
+  .entry-card { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+  .entry-card:hover { transform: translateY(-2px); box-shadow: 0 12px 34px rgba(16,35,28,0.12); }
+  .ruta-paso { transition: opacity 0.4s ease; }
+
+  .whatsapp-float {
+    position: fixed; bottom: 20px; right: 20px; z-index: 100;
+    background: #25D366; color: white; width: 58px; height: 58px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 28px; text-decoration: none; box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+    transition: transform 0.15s ease;
+  }
+  .whatsapp-float:hover { transform: scale(1.08); }
+
+  @media (max-width: 480px) {
+    .hero-btns .btn { min-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <span class="eyebrow">PropMatchRD</span>
+  <h1>No vendemos leads.<br>Acompañamos una compra.</h1>
+  <p>Conectamos compradores verificados con agentes inmobiliarios reales en República Dominicana —
+  y seguimos con ustedes en cada paso, desde la primera evaluación hasta la llave en mano.</p>
+
+  <div class="hero-btns">
+    <a class="btn btn-coral" id="linkRegistroComprador" href="#">🏠 Quiero comprar</a>
+    <a class="btn btn-primary" id="linkRegistroAgente" href="#">💼 Soy agente inmobiliario</a>
+    <button class="btn btn-outline" onclick="document.getElementById('consultar').scrollIntoView({behavior:'smooth'})">🔍 Consultar mi solicitud</button>
+  </div>
+
+  <div class="card" id="consultar" style="margin-top:24px">
+    <h3>🔍 Consultar mi solicitud / Portal de seguimiento</h3>
+    <p style="font-size:13px">Pega el código privado que recibiste por correo — detectamos automáticamente si eres
+    comprador o agente, no necesitas saberlo de antemano.</p>
+    <div class="code-input">
+      <input type="text" id="codigoConsulta" placeholder="Tu código privado">
+      <button class="btn btn-primary btn-sm" onclick="consultarSolicitud('codigoConsulta','mensajeConsulta')">Consultar</button>
+    </div>
+    <p id="mensajeConsulta" style="font-size:13px;margin-top:8px"></p>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <span class="eyebrow">Red de Embajadores</span>
+    <h3>Comparte, gana comisión</h3>
+    <p>¿Conoces a alguien buscando comprar? Únete y obtén tu propio enlace de referido — ganas
+    cuando esa persona cierre una compra, sin límite de referidos.</p>
+    <a class="btn btn-outline" id="linkRegistroEmbajador" href="#">Únete a la Red de Embajadores →</a>
+  </div>
+
+  <div class="card entry-card" style="margin-top:24px">
+    <h3>Tu recorrido, siempre visible</h3>
+    <p style="font-size:13px;margin-top:-4px">Así se ve el progreso real de un comprador dentro de su portal:</p>
+    <div class="ruta" id="rutaEjemplo"></div>
+    <p style="margin:0;font-size:13px">Un rechazo en una visita nunca es un callejón sin salida — ajustamos la búsqueda y seguimos.</p>
+  </div>
+
+  <p class="footer-note">PropMatchRD — Marketplace de compradores verificados en República Dominicana.</p>
+</div>
+
+<a class="whatsapp-float" id="linkWhatsappSoporte" href="#" target="_blank" title="Escríbenos por WhatsApp">💬</a>
+
+<script src="app.js"></script>
+<script>
+  // Conectar los botones a los links reales
+  document.getElementById('linkRegistroComprador').href = FORM_COMPRADOR_URL;
+  document.getElementById('linkRegistroAgente').href = FORM_AGENTE_URL;
+  document.getElementById('linkRegistroEmbajador').href = FORM_EMBAJADOR_URL;
+  document.getElementById('linkWhatsappSoporte').href =
+    'https://wa.me/' + WHATSAPP_SOPORTE_NUMERO + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre PropMatchRD.');
+
+  // Animación de la Ruta de Compra de ejemplo — aparece paso por paso
+  (function () {
+    const pasos = ['Evaluación', 'Comprador Verificado', 'Agente Asignado', 'Visita 1', 'Nueva búsqueda', 'Visita 2+', 'Reserva', 'Compra'];
+    const cont = document.getElementById('rutaEjemplo');
+    pasos.forEach((p, i) => {
+      const clase = i < 2 ? 'hecho' : i === 2 ? 'actual' : '';
+      const icono = i < 2 ? '✓' : i === 2 ? '●' : '○';
+      const div = document.createElement('div');
+      div.className = 'ruta-paso ' + clase;
+      div.style.opacity = '0';
+      div.innerHTML = '<div class="ruta-nodo">' + icono + '</div><div class="ruta-texto">' + p + '</div>';
+      cont.appendChild(div);
+      setTimeout(() => { div.style.opacity = '1'; }, i * 120);
+    });
+  })();
+</script>
+</body>
+</html>

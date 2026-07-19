@@ -10,9 +10,9 @@ const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/W2qLDtgjEopHpF6Q6';
-const FORM_AGENTE_URL = 'https://forms.gle/d6C866rynvJRXP2HA';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/hmw8EruUmRW7CynC8';
+const FORM_COMPRADOR_URL = 'https://forms.gle/7zQZCJHrJRCn1Y2n9';
+const FORM_AGENTE_URL = 'https://forms.gle/eNjoX8D2ZpyM7dJE8';
+const FORM_EMBAJADOR_URL = 'https://forms.gle/VkJN3KnGZjXetcmw9';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
 const WHATSAPP_SOPORTE_NUMERO = '18098012075';

@@ -123,6 +123,8 @@ a { color: var(--teal-deep); }
 .btn-primary:hover { background: var(--teal-deep); }
 .btn-coral { background: var(--coral); color: var(--white); }
 .btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn-gold { background: #b8860b; color: white; }
+.btn-gold:hover { background: #96690a; }
 .btn-sm { font-size: 13px; padding: 8px 16px; }
 
 .stat-grid {

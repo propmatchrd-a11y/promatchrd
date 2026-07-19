@@ -39,6 +39,13 @@
       '<div class="stat"><span class="num">' + formatoRD(datos.kpis.comisionAcumulada) + '</span><span class="label">Comisión acumulada</span></div>' +
       '</div>' +
 
+      '<div class="card"><h3>Tu embudo de referidos</h3>' +
+      construirGraficoBarras([
+        { etiqueta: 'Referidos totales', valor: datos.kpis.totalReferidos, color: '#0f7a6b' },
+        { etiqueta: 'Validados', valor: datos.kpis.validados, color: '#1a73e8' },
+        { etiqueta: 'Cerrados (ganaste comisión)', valor: datos.kpis.cerrados, color: '#e4572e' }
+      ]) + '</div>' +
+
       '<div class="card"><h3>Tu progreso</h3><div class="ruta">' + pasosHtml + '</div></div>' +
 
       '<p class="footer-note">Comparte tu link personalizado para seguir generando referidos.</p>';

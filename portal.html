@@ -22,7 +22,8 @@
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
     guardarCodigoRecordado('comprador', codigo); // automatización: la próxima vez, index.html ya lo recuerda
 
-    const g = datos.gastos;
+    const g = datos.gastos || {};
+    const documentos = datos.documentos || {};
     document.getElementById('contenido').innerHTML =
       '<div style="text-align:center">' + construirBadgeClasificacion(datos.clasificacion) + '</div>' +
       '<h1>Hola ' + datos.nombre + '</h1>' +
@@ -31,10 +32,11 @@
 
       '<div class="card"><p style="font-size:16px;color:var(--ink);margin:0">' + datos.analisisPersonalizado + '</p></div>' +
 
-      '<div class="stat-grid">' +
-      '<div class="stat"><span class="num">' + datos.indicePreparacionPct + '%</span><span class="label">Índice de Preparación</span></div>' +
-      '<div class="stat"><span class="num">' + datos.probabilidadFinanciamientoPct + '%</span><span class="label">Probabilidad de Financiamiento</span></div>' +
-      '</div>' +
+      '<div class="card" style="text-align:center">' +
+      '<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">' +
+      '<div>' + construirGraficoGauge(datos.indicePreparacionPct, '#0f7a6b', 110) + '<div style="font-size:12px;color:var(--text-muted);margin-top:6px">Índice de Preparación<br>' + datos.indicePreparacionPct + '/100</div></div>' +
+      '<div>' + construirGraficoGauge(datos.probabilidadFinanciamientoPct, '#e4572e', 110) + '<div style="font-size:12px;color:var(--text-muted);margin-top:6px">Probabilidad de Financiamiento<br>' + datos.probabilidadFinanciamientoPct + '/100</div></div>' +
+      '</div></div>' +
 
       '<div class="card"><h3>Tu Ruta de Compra</h3><div class="ruta">' +
       construirRutaHtml(datos.etapaRutaCompra, datos.etapasRutaCompra) + '</div></div>' +
@@ -59,9 +61,9 @@
 
       '<div class="card"><h3>📄 Centro de Documentos</h3>' +
       '<p style="font-size:13px">Marca lo que ya tienes listo — tu agente lo verá automáticamente.</p>' +
-      construirFilaDocumento('cedula', 'Doc_Cedula', 'Cédula', datos.documentos.cedula) +
-      construirFilaDocumento('cartaTrabajo', 'Doc_Carta_Trabajo', 'Carta de trabajo', datos.documentos.cartaTrabajo) +
-      construirFilaDocumento('estadosCuenta', 'Doc_Estados_Cuenta', 'Estados de cuenta', datos.documentos.estadosCuenta) +
+      construirFilaDocumento('cedula', 'Doc_Cedula', 'Cédula', documentos.cedula) +
+      construirFilaDocumento('cartaTrabajo', 'Doc_Carta_Trabajo', 'Carta de trabajo', documentos.cartaTrabajo) +
+      construirFilaDocumento('estadosCuenta', 'Doc_Estados_Cuenta', 'Estados de cuenta', documentos.estadosCuenta) +
       '</div>' +
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisita() : '') +

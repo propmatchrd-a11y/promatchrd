@@ -220,12 +220,45 @@ td.num { font-family: var(--font-mono); text-align: right; }
   font-size: 14px;
 }
 
-.loading, .footer-note {
+.loading {
+  text-align: center;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 500;
+  padding: 60px 20px;
+}
+.loading .spinner {
+  width: 44px; height: 44px; margin: 0 auto 20px;
+  border: 4px solid var(--sand-deep);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+@keyframes girar { to { transform: rotate(360deg); } }
+.footer-note {
   text-align: center;
   color: var(--text-muted);
   font-size: 13px;
   padding: 24px 0;
 }
+
+.badge-clasificacion {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 100px;
+  margin-bottom: 8px;
+}
+.badge-clasificacion .icono { font-size: 32px; }
+.badge-clasificacion.diamante { background: #d0e8ff; color: #0b5394; }
+.badge-clasificacion.oro { background: #fff2cc; color: #7f6000; }
+.badge-clasificacion.plata { background: #f3f3f3; color: #434343; }
+.badge-clasificacion.bronce { background: #fce5cd; color: #783f04; }
 
 .entry-grid {
   display: grid;

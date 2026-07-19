@@ -8,7 +8,7 @@
 </head>
 <body>
 <div class="wrap" id="contenido">
-  <div class="loading">Cargando tu análisis…</div>
+  <div class="loading"><div class="spinner"></div>Espera un momento, estamos cargando tu análisis…</div>
 </div>
 
 <script src="app.js"></script>
@@ -24,7 +24,7 @@
 
     const g = datos.gastos;
     document.getElementById('contenido').innerHTML =
-      '<span class="eyebrow">' + datos.clasificacion + '</span>' +
+      '<div style="text-align:center">' + construirBadgeClasificacion(datos.clasificacion) + '</div>' +
       '<h1>Hola ' + datos.nombre + '</h1>' +
 
       '<div class="alert info"><b>Estado:</b> ' + datos.estadoExplicado + '</div>' +

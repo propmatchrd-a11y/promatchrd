@@ -3,19 +3,19 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/cqt1BFsnMi7N7nyE9';
-const FORM_AGENTE_URL = 'https://forms.gle/enYprUgbR9kpiMfz7';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/Y4F39P3eTpqKd3Km9';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -91,4 +91,11 @@ async function consultarSolicitud(inputId, mensajeId) {
   } catch (e) {
     msj.textContent = '⚠️ Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.';
   }
+}
+
+function construirBadgeClasificacion(clasificacion) {
+  const iconos = { Diamante: '💎', Oro: '🥇', Plata: '🥈', Bronce: '🥉' };
+  const clase = String(clasificacion || '').toLowerCase();
+  const icono = iconos[clasificacion] || '⭐';
+  return '<div class="badge-clasificacion ' + clase + '"><span class="icono">' + icono + '</span> ' + clasificacion + '</div>';
 }

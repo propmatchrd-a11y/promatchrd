@@ -30,6 +30,7 @@
     ).join('');
 
     const disponible = datos.disponibilidad !== 'No';
+    const atiendeAlquileres = datos.atiendeAlquileres === 'Sí';
 
     document.getElementById('contenido').innerHTML =
       (datos.mensajeContacto ? datos.mensajeContacto : '') +
@@ -88,6 +89,12 @@
       '<button class="btn ' + (!disponible ? 'btn-coral' : 'btn-outline') + '" onclick="cambiarDisponibilidad(\'No\')">⏸️ No disponible</button>' +
       '</div>' +
 
+      '<div class="card"><h3>🔑 Atención de alquileres</h3>' +
+      '<p style="font-size:13px">Si la activas, también recibirás solicitudes de personas buscando alquilar, no solo comprar. Se detectó automáticamente de tu especialidad, pero puedes ajustarlo aquí cuando quieras.</p>' +
+      '<button class="btn ' + (atiendeAlquileres ? 'btn-primary' : 'btn-outline') + '" onclick="cambiarAtiendeAlquileres(\'Sí\')">✅ Sí, atiendo alquileres</button> ' +
+      '<button class="btn ' + (!atiendeAlquileres ? 'btn-coral' : 'btn-outline') + '" onclick="cambiarAtiendeAlquileres(\'No\')">No por ahora</button>' +
+      '</div>' +
+
       '<div class="card"><h3>⚙️ Mi información</h3>' +
       '<label style="font-size:13px">Teléfono</label>' +
       '<div class="code-input"><input type="text" id="inputTelefonoAgente" value="' + datos.telefono + '">' +
@@ -100,6 +107,11 @@
 
   async function cambiarDisponibilidad(valor) {
     await ejecutarAccion({ panel: CODIGO_PANEL, accion: 'toggleDisponibilidad', valor: valor });
+    cargarPanel();
+  }
+
+  async function cambiarAtiendeAlquileres(valor) {
+    await ejecutarAccion({ panel: CODIGO_PANEL, accion: 'toggleAtiendeAlquileres', valor: valor });
     cargarPanel();
   }
 

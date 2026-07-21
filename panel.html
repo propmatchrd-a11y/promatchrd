@@ -65,6 +65,23 @@
         : '<p>No tienes compradores activos en este momento.</p>') +
       '</div>' +
 
+      (datos.alquileresCompitiendo && datos.alquileresCompitiendo.length
+        ? '<div class="card"><h3>⚡ Alquileres en competencia</h3>' +
+          '<p style="font-size:13px">Estas solicitudes fueron distribuidas a varios agentes al mismo tiempo, incluido tú. ' +
+          'El primero en reportar el cierre se queda con la comisión.</p>' +
+          '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td></tr>' +
+          datos.alquileresCompitiendo.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.clasificacion + '</td></tr>').join('') +
+          '</table></div>'
+        : '') +
+
+      '<div class="card"><h3>🔑 Tus alquileres asignados</h3>' +
+      (datos.alquileresActivos && datos.alquileresActivos.length
+        ? '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Zona</td><td>Presupuesto</td><td>Nivel</td></tr>' +
+          datos.alquileresActivos.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.zona + '</td><td>' + a.presupuesto + '</td><td>' + a.clasificacion + '</td></tr>').join('') +
+          '</table>'
+        : '<p>No tienes alquileres asignados en este momento.</p>') +
+      '</div>' +
+
       '<div class="card"><h3>⚙️ Mi disponibilidad</h3>' +
       '<p style="font-size:13px">Desactívala si no puedes recibir compradores nuevos ahora (vacaciones, sobrecarga, etc.) — se reactiva cuando quieras, sin depender del admin.</p>' +
       '<button class="btn ' + (disponible ? 'btn-primary' : 'btn-outline') + '" onclick="cambiarDisponibilidad(\'Sí\')">✅ Disponible</button> ' +

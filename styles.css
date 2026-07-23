@@ -209,7 +209,7 @@ td.num { font-family: var(--font-mono); text-align: right; }
    convierte en una tarjeta apilada en vez de columnas apretadas que se
    cortan — mucho más fácil de leer y de tocar los botones. */
 @media (max-width: 640px) {
-  table.responsive, table.responsive thead { display: none; }
+  table.responsive thead { display: none; }
   table.responsive tr {
     display: block;
     border: 1px solid var(--line);

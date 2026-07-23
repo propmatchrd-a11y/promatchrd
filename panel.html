@@ -26,7 +26,9 @@
       '<tr><td>' + c.id + '</td><td>' + c.nombre + '</td><td><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + '</td><td>' + c.etapaRutaCompra + '</td><td>' + c.ipcEtiqueta + '</td>' +
       '<td>' + (c.contactoPendiente
         ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">Marcar contacto</button>'
-        : '✅') + '</td></tr>'
+        : '✅') + '</td>' +
+      '<td><button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button> ' +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button></td></tr>'
     ).join('');
 
     const disponible = datos.disponibilidad !== 'No';
@@ -62,9 +64,11 @@
 
       '<div class="card"><h3>Tus compradores activos</h3>' +
       (datos.compradores.length
-        ? '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>IICD</td><td>Ruta</td><td>IPC</td><td>Contacto</td></tr>' + filas + '</table>'
+        ? '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>IICD</td><td>Ruta</td><td>IPC</td><td>Contacto</td><td>Acciones</td></tr>' + filas + '</table>'
         : '<p>No tienes compradores activos en este momento.</p>') +
       '</div>' +
+
+      '<div class="card" id="cardAccionRapida" style="display:none;border:2px solid #1a73e8"></div>' +
 
       (datos.alquileresCompitiendo && datos.alquileresCompitiendo.length
         ? '<div class="card"><h3>⚡ Alquileres en competencia</h3>' +
@@ -77,8 +81,9 @@
 
       '<div class="card"><h3>🔑 Tus alquileres asignados</h3>' +
       (datos.alquileresActivos && datos.alquileresActivos.length
-        ? '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Zona</td><td>Presupuesto</td><td>Nivel</td></tr>' +
-          datos.alquileresActivos.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.zona + '</td><td>' + a.presupuesto + '</td><td>' + a.clasificacion + '</td></tr>').join('') +
+        ? '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Zona</td><td>Presupuesto</td><td>Nivel</td><td>Acciones</td></tr>' +
+          datos.alquileresActivos.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.zona + '</td><td>' + a.presupuesto + '</td><td>' + a.clasificacion + '</td>' +
+            '<td><button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button></td></tr>').join('') +
           '</table>'
         : '<p>No tienes alquileres asignados en este momento.</p>') +
       '</div>' +
@@ -113,6 +118,104 @@
   async function cambiarAtiendeAlquileres(valor) {
     await ejecutarAccion({ panel: CODIGO_PANEL, accion: 'toggleAtiendeAlquileres', valor: valor });
     cargarPanel();
+  }
+
+  // ============================================================
+  //  ACCIONES RÁPIDAS: registrar visita o cierre sin salir del Panel,
+  //  sin escribir ningún ID a mano — ya lo trae el botón que se apretó.
+  // ============================================================
+  function abrirAccionRapida(tipo, id, nombre) {
+    const cont = document.getElementById('cardAccionRapida');
+    cont.style.display = 'block';
+
+    if (tipo === 'visita') {
+      cont.innerHTML =
+        '<h3>📝 Registrar visita — ' + nombre + '</h3>' +
+        '<label style="font-size:13px">¿Qué pasó en la visita?</label>' +
+        '<select id="raQuePaso" class="btn btn-outline" style="width:100%;margin-bottom:8px">' +
+        '<option value="Le gustó - quiere reservar">Le gustó - quiere reservar</option>' +
+        '<option value="No le gustó - seguir buscando">No le gustó - seguir buscando</option>' +
+        '<option value="Reservó en el momento">Reservó en el momento</option>' +
+        '<option value="Comprador no asistió">Comprador no asistió</option>' +
+        '<option value="Tuve que cancelar/reprogramar">Tuve que cancelar/reprogramar</option>' +
+        '</select>' +
+        '<label style="font-size:13px">Si no le gustó, ¿por qué? (opcional)</label>' +
+        '<input type="text" id="raMotivo" style="width:100%;margin-bottom:8px">' +
+        '<label style="font-size:13px">¿Qué tan compatible fue (1-5)?</label>' +
+        '<input type="number" id="raCompatibilidad" min="1" max="5" style="width:100%;margin-bottom:8px">' +
+        '<label style="font-size:13px">¿Próximo paso?</label>' +
+        '<select id="raProximoPaso" class="btn btn-outline" style="width:100%;margin-bottom:10px">' +
+        '<option value="Agendar otra visita">Agendar otra visita</option>' +
+        '<option value="Esperar respuesta">Esperar respuesta</option>' +
+        '<option value="Comprador perdido - no seguir">Comprador perdido - no seguir</option>' +
+        '</select>' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visita\',\'' + id + '\')">Registrar visita</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
+    } else if (tipo === 'cierreVenta' || tipo === 'cierreAlquiler') {
+      const esAlquiler = tipo === 'cierreAlquiler';
+      cont.innerHTML =
+        '<h3>✅ Registrar cierre de ' + (esAlquiler ? 'alquiler' : 'venta') + ' — ' + nombre + '</h3>' +
+        '<label style="font-size:13px">Monto ' + (esAlquiler ? 'de alquiler mensual' : 'final de venta') + ' (RD$)</label>' +
+        '<input type="number" id="raMonto" style="width:100%;margin-bottom:8px">' +
+        (esAlquiler
+          ? '<label style="font-size:13px">Duración del contrato (meses)</label><input type="number" id="raMeses" value="12" style="width:100%;margin-bottom:8px">'
+          : '') +
+        '<label style="font-size:13px">Enlace a evidencia (contrato/factura) — obligatorio</label>' +
+        '<input type="text" id="raEvidencia" style="width:100%;margin-bottom:8px">' +
+        '<label style="font-size:13px">¿El monto final fue distinto al esperado? (opcional)</label>' +
+        '<input type="text" id="raNota" style="width:100%;margin-bottom:10px">' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'' + tipo + '\',\'' + id + '\')">Registrar cierre</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
+    }
+    cont.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function cerrarAccionRapida() {
+    document.getElementById('cardAccionRapida').style.display = 'none';
+  }
+
+  async function enviarAccionRapida(tipo, id) {
+    const msj = document.getElementById('raMensaje');
+    msj.textContent = 'Enviando…';
+    let params = { panel: CODIGO_PANEL };
+
+    if (tipo === 'visita') {
+      params.accion = 'registrarVisitaAgente';
+      params.idComprador = id;
+      params.quePaso = document.getElementById('raQuePaso').value;
+      params.motivoRechazo = document.getElementById('raMotivo').value;
+      params.compatibilidad = document.getElementById('raCompatibilidad').value;
+      params.proximoPaso = document.getElementById('raProximoPaso').value;
+    } else if (tipo === 'cierreVenta') {
+      params.accion = 'registrarCierreVentaAgente';
+      params.idComprador = id;
+      params.montoVenta = document.getElementById('raMonto').value;
+      params.evidenciaUrl = document.getElementById('raEvidencia').value;
+      params.nota = document.getElementById('raNota').value;
+    } else if (tipo === 'cierreAlquiler') {
+      params.accion = 'registrarCierreAlquilerAgente';
+      params.idSolicitud = id;
+      params.montoMensual = document.getElementById('raMonto').value;
+      params.mesesContrato = document.getElementById('raMeses').value;
+      params.evidenciaUrl = document.getElementById('raEvidencia').value;
+      params.nota = document.getElementById('raNota').value;
+    }
+
+    if ((tipo === 'cierreVenta' || tipo === 'cierreAlquiler') && !params.evidenciaUrl) {
+      msj.textContent = '⚠️ La evidencia es obligatoria.';
+      return;
+    }
+
+    try {
+      const resultado = await ejecutarAccion(params);
+      if (resultado.error) { msj.textContent = '⚠️ ' + resultado.mensaje; return; }
+      msj.textContent = '✅ ' + (resultado.mensaje || 'Registrado correctamente.');
+      setTimeout(() => cargarPanel(), 1200);
+    } catch (e) {
+      msj.textContent = '⚠️ Ocurrió un problema de conexión. Intenta de nuevo.';
+    }
   }
 
   async function guardarCampoAgente(accion, inputId) {

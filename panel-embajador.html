@@ -95,6 +95,12 @@ function pintarPanel(datos) {
         '<p id="copiadoOk" style="font-size:13px;margin-top:6px"></p></div>'
       : '') +
 
+    '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +
+    '<p style="font-size:13px">El pago se coordina directamente contigo — esto solo nos dice a dónde transferir cuando se apruebe una comisión.</p>' +
+    '<input type="text" id="inputCuentaBancaria" value="' + (datos.cuentaBancaria || '') + '" placeholder="Banco - Tipo de cuenta - Número - Titular" style="width:100%;margin-bottom:8px">' +
+    '<button class="btn btn-primary btn-sm" onclick="guardarCuentaBancaria()">Guardar</button>' +
+    '<p id="mensajeCuenta" style="font-size:13px;margin-top:6px"></p></div>' +
+
     '<div class="card"><h3>Tu progreso</h3><div class="ruta">' + pasosHtml + '</div></div>' +
 
     '<p class="footer-note">Comparte tu enlace personal para seguir generando referidos.</p>';
@@ -143,6 +149,20 @@ async function regenerarMensaje() {
     document.getElementById('copiadoOk').textContent = 'No se pudo generar un mensaje nuevo. Intenta de nuevo.';
     boton.disabled = false;
     boton.textContent = 'Generar otro';
+  }
+}
+
+async function guardarCuentaBancaria() {
+  const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
+  const valor = document.getElementById('inputCuentaBancaria').value.trim();
+  const msj = document.getElementById('mensajeCuenta');
+  if (!valor) { msj.textContent = '⚠️ Escribe tu cuenta antes de guardar.'; return; }
+  msj.textContent = 'Guardando…';
+  try {
+    const datos = await ejecutarAccion({ embajador: codigo, accion: 'actualizarCuentaBancaria', valor: valor });
+    msj.textContent = datos.error ? '⚠️ ' + datos.mensaje : '✅ Guardado.';
+  } catch (e) {
+    msj.textContent = '⚠️ Ocurrió un problema de conexión.';
   }
 }
 </script>

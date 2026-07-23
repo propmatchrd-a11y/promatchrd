@@ -205,6 +205,44 @@ table { width: 100%; border-collapse: collapse; font-size: 14px; }
 td { padding: 8px; border-bottom: 1px solid var(--line); }
 td.num { font-family: var(--font-mono); text-align: right; }
 
+/* Tablas responsivas: en pantallas angostas (celular), cada fila se
+   convierte en una tarjeta apilada en vez de columnas apretadas que se
+   cortan — mucho más fácil de leer y de tocar los botones. */
+@media (max-width: 640px) {
+  table.responsive, table.responsive thead { display: none; }
+  table.responsive tr {
+    display: block;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    padding: 8px 4px;
+    background: var(--white);
+  }
+  table.responsive td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    border-bottom: none;
+    padding: 6px 8px;
+    text-align: right;
+  }
+  table.responsive td[data-label]::before {
+    content: attr(data-label);
+    font-weight: 700;
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 12px;
+  }
+  table.responsive td.fila-titulo { font-weight: 700; }
+  table.responsive td.fila-acciones {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  table.responsive td.fila-acciones::before { content: none; }
+}
+
 .alert {
   background: #fff3cd;
   border-radius: 10px;

@@ -63,12 +63,17 @@ function pintarPanel(datos) {
     (datos.referidos && datos.referidos.length
       ? '<div class="card"><h3>Tus referidos</h3>' +
         '<p style="font-size:12px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
-        '<table><tr style="font-weight:700"><td>Nombre</td><td>Tipo</td><td>Estado</td><td>Comisión</td><td>Fecha</td></tr>' +
+        '<table class="responsive"><thead><tr style="font-weight:700"><td>Nombre</td><td>Tipo</td><td>Estado</td><td>Comisión</td><td>Fecha</td></tr></thead>' +
         datos.referidos.map(r => {
-          let comisionTexto = '—';
-          if (r.comisionPagada) comisionTexto = '✅ Pagada';
-          else if (r.comisionMin !== null) comisionTexto = formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax);
-          return '<tr><td>' + r.nombre + '</td><td>' + r.tipo + '</td><td>' + r.estado + '</td><td>' + comisionTexto + '</td><td>' + new Date(r.fecha).toLocaleDateString('es-DO') + '</td></tr>';
+          let comisionTexto = '<span style="color:#999">Aún sin estimar</span>';
+          let claseFila = '';
+          if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ Pagada</b>'; }
+          else if (r.comisionMin !== null) {
+            comisionTexto = '<b style="color:#b8860b">' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + '</b>';
+          }
+          return '<tr><td data-label="Nombre" class="fila-titulo">' + r.nombre + '</td><td data-label="Tipo">' + r.tipo + '</td>' +
+            '<td data-label="Estado">' + r.estado + '</td><td data-label="Comisión">' + comisionTexto + '</td>' +
+            '<td data-label="Fecha">' + new Date(r.fecha).toLocaleDateString('es-DO') + '</td></tr>';
         }).join('') +
         '</table></div>'
       : '') +

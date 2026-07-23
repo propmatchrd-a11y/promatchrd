@@ -52,12 +52,13 @@
       '<div class="stat"><span class="num">' + datos.kpis.compradoresActivos + '</span><span class="label">Compradores activos</span></div>' +
       '<div class="stat"><span class="num">' + (datos.kpis.alquileresActivos || 0) + '</span><span class="label">🔑 Buscan alquiler</span></div>' +
       '<div class="stat"><span class="num">' + datos.kpis.cierresConfirmados + '</span><span class="label">Cierres confirmados</span></div>' +
-      '<div class="stat"><span class="num">' + datos.kpis.tasaConversionPct + '/100</span><span class="label">Tasa conversión</span></div>' +
+      '<div class="stat" title="% de tus compradores asignados en toda tu historia que terminaste cerrando en una venta real"><span class="num">' + datos.kpis.tasaConversionPct + '/100</span><span class="label">Tasa conversión</span></div>' +
       '<div class="stat"><span class="num">' + (datos.kpis.tiempoRespuestaHoras || '—') + '</span><span class="label">Horas resp.</span></div>' +
       '</div>' +
 
       '<div class="card" style="text-align:center"><h3>Tu tasa de conversión</h3>' +
-      construirGraficoGauge(datos.kpis.tasaConversionPct, '#0f7a6b', 110) + '</div>' +
+      construirGraficoGauge(datos.kpis.tasaConversionPct, '#0f7a6b', 110) +
+      '<p style="font-size:12px;color:var(--text-muted);margin-top:6px">De todos los compradores que te han asignado en tu historia, qué % terminaste cerrando en una venta real. Entre más alta, más prioridad tienes para recibir compradores nuevos.</p></div>' +
 
       (datos.comisionesPendientes
         ? '<div class="alert">⚠️ Tienes ' + datos.comisionesPendientes + ' comisión(es) pendiente(s) de pago. Revisa tu correo.</div>'

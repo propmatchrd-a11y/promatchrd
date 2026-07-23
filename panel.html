@@ -57,8 +57,9 @@
         ? '<div class="card"><h3>⚡ En competencia</h3>' +
           '<p style="font-size:13px">Estos compradores fueron distribuidos a varios agentes al mismo tiempo, incluido tú. ' +
           'El primero en registrar una visita real se queda con la exclusividad.</p>' +
-          '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td></tr>' +
-          datos.compradoresCompitiendo.map(c => '<tr><td>' + c.id + '</td><td>' + c.nombre + '</td><td>' + c.clasificacion + '</td></tr>').join('') +
+          '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td><td>Acciones</td></tr>' +
+          datos.compradoresCompitiendo.map(c => '<tr><td>' + c.id + '</td><td>' + c.nombre + '</td><td>' + c.clasificacion + '</td>' +
+            '<td><button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Registrar visita (ganar competencia)</button></td></tr>').join('') +
           '</table></div>'
         : '') +
 
@@ -74,8 +75,9 @@
         ? '<div class="card"><h3>⚡ Alquileres en competencia</h3>' +
           '<p style="font-size:13px">Estas solicitudes fueron distribuidas a varios agentes al mismo tiempo, incluido tú. ' +
           'El primero en reportar el cierre se queda con la comisión.</p>' +
-          '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td></tr>' +
-          datos.alquileresCompitiendo.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.clasificacion + '</td></tr>').join('') +
+          '<table><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td><td>Acciones</td></tr>' +
+          datos.alquileresCompitiendo.map(a => '<tr><td>' + a.id + '</td><td>' + a.nombre + '</td><td>' + a.clasificacion + '</td>' +
+            '<td><button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Registrar cierre (ganar comisión)</button></td></tr>').join('') +
           '</table></div>'
         : '') +
 

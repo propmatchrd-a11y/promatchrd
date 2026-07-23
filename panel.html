@@ -23,12 +23,19 @@
     guardarCodigoRecordado('agente', CODIGO_PANEL); // automatización: la próxima vez, index.html ya lo recuerda
 
     const filas = datos.compradores.map(c =>
-      '<tr><td data-label="ID" class="fila-titulo">' + c.id + '</td><td data-label="Nombre">' + c.nombre + '</td><td data-label="IICD"><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + '</td><td data-label="Ruta">' + c.etapaRutaCompra + '</td><td data-label="IPC">' + c.ipcEtiqueta + '</td>' +
-      '<td data-label="Contacto">' + (c.contactoPendiente
+      '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<b style="font-size:15px">' + c.nombre + '</b>' +
+      '<span style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
+      '</div>' +
+      '<div style="font-size:13px;margin-bottom:6px"><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + ' · ' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
+      (c.contactoPendiente
         ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">Marcar contacto</button>'
-        : '✅') + '</td>' +
-      '<td class="fila-acciones"><button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button> ' +
-      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button></td></tr>'
+        : '<span style="font-size:13px">✅ Contactado</span>') +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button>' +
+      '</div></div>'
     ).join('');
 
     const disponible = datos.disponibilidad !== 'No';
@@ -57,16 +64,20 @@
         ? '<div class="card"><h3>⚡ En competencia</h3>' +
           '<p style="font-size:13px">Estos compradores fueron distribuidos a varios agentes al mismo tiempo, incluido tú. ' +
           'El primero en registrar una visita real se queda con la exclusividad.</p>' +
-          '<table class="responsive"><thead><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td><td>Acciones</td></tr></thead>' +
-          datos.compradoresCompitiendo.map(c => '<tr><td data-label="ID" class="fila-titulo">' + c.id + '</td><td data-label="Nombre">' + c.nombre + '</td><td data-label="Clasificación">' + c.clasificacion + '</td>' +
-            '<td class="fila-acciones"><button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Ganar con visita</button></td></tr>').join('') +
-          '</table></div>'
+          datos.compradoresCompitiendo.map(c =>
+            '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+            '<b style="font-size:15px">' + c.nombre + '</b>' +
+            '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + c.clasificacion + '</span>' +
+            '</div>' +
+            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Ganar con visita</button>' +
+            '</div>'
+          ).join('') +
+          '</div>'
         : '') +
 
       '<div class="card"><h3>Tus compradores activos</h3>' +
-      (datos.compradores.length
-        ? '<table class="responsive"><thead><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>IICD</td><td>Ruta</td><td>IPC</td><td>Contacto</td><td>Acciones</td></tr></thead>' + filas + '</table>'
-        : '<p>No tienes compradores activos en este momento.</p>') +
+      (datos.compradores.length ? filas : '<p>No tienes compradores activos en este momento.</p>') +
       '</div>' +
 
       '<div class="card" id="cardAccionRapida" style="display:none;border:2px solid #1a73e8"></div>' +
@@ -75,18 +86,30 @@
         ? '<div class="card"><h3>⚡ Alquileres en competencia</h3>' +
           '<p style="font-size:13px">Estas solicitudes fueron distribuidas a varios agentes al mismo tiempo, incluido tú. ' +
           'El primero en reportar el cierre se queda con la comisión.</p>' +
-          '<table class="responsive"><thead><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Clasificación</td><td>Acciones</td></tr></thead>' +
-          datos.alquileresCompitiendo.map(a => '<tr><td data-label="ID" class="fila-titulo">' + a.id + '</td><td data-label="Nombre">' + a.nombre + '</td><td data-label="Clasificación">' + a.clasificacion + '</td>' +
-            '<td class="fila-acciones"><button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Ganar con cierre</button></td></tr>').join('') +
-          '</table></div>'
+          datos.alquileresCompitiendo.map(a =>
+            '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
+            '<b style="font-size:15px">' + a.nombre + '</b>' +
+            '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + a.clasificacion + '</span>' +
+            '</div>' +
+            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Ganar con cierre</button>' +
+            '</div>'
+          ).join('') +
+          '</div>'
         : '') +
 
       '<div class="card"><h3>🔑 Tus alquileres asignados</h3>' +
       (datos.alquileresActivos && datos.alquileresActivos.length
-        ? '<table class="responsive"><thead><tr style="font-weight:700"><td>ID</td><td>Nombre</td><td>Zona</td><td>Presupuesto</td><td>Nivel</td><td>Acciones</td></tr></thead>' +
-          datos.alquileresActivos.map(a => '<tr><td data-label="ID" class="fila-titulo">' + a.id + '</td><td data-label="Nombre">' + a.nombre + '</td><td data-label="Zona">' + a.zona + '</td><td data-label="Presupuesto">' + a.presupuesto + '</td><td data-label="Nivel">' + a.clasificacion + '</td>' +
-            '<td class="fila-acciones"><button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button></td></tr>').join('') +
-          '</table>'
+        ? datos.alquileresActivos.map(a =>
+            '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+            '<b style="font-size:15px">' + a.nombre + '</b>' +
+            '<span style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono)">' + a.id + '</span>' +
+            '</div>' +
+            '<div style="font-size:13px;margin-bottom:8px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button>' +
+            '</div>'
+          ).join('')
         : '<p>No tienes alquileres asignados en este momento.</p>') +
       '</div>' +
 

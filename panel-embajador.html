@@ -104,6 +104,25 @@ function pintarPanel(datos) {
         '<p id="copiadoOk" style="font-size:13px;margin-top:6px"></p></div>'
       : '') +
 
+    (datos.premium.activo
+      ? '<div class="card" style="border:2px solid #b8860b;text-align:center">' +
+        '<h3>⭐ Eres Premium</h3>' +
+        '<p style="font-size:13px">Activo hasta <b>' + new Date(datos.premium.fechaVencimiento).toLocaleDateString('es-DO') + '</b></p>' +
+        '<p style="font-size:13px">Ganas <b>' + datos.premium.pctPoolPremium + '%</b> del fondo de referidos (en vez de ' + datos.premium.pctPoolNormal + '%), garantizado.</p>' +
+        '</div>'
+      : '<div class="card" style="border:2px solid #b8860b">' +
+        '<h3>⭐ Hazte Premium por solo RD$' + datos.premium.cuota + '/mes</h3>' +
+        '<ul style="font-size:13px;padding-left:18px">' +
+        '<li>Ganas <b>' + datos.premium.pctPoolPremium + '%</b> del fondo de referidos garantizado (en vez de ' + datos.premium.pctPoolNormal + '%) — sin importar tu nivel.</li>' +
+        '<li>Bono de alto desempeño con nivel de solo ' + datos.premium.scoreMinimoBonoPremium + ' o más (en vez de un nivel más alto).</li>' +
+        '<li>Insignia Premium visible.</li>' +
+        '</ul>' +
+        (datos.premium.pagoReportado
+          ? '<p style="font-size:13px;color:#1a73e8">📨 Ya reportaste tu pago — te avisamos apenas se confirme.</p>'
+          : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:12px;color:var(--text-muted)">Transfiere a: <b>' + datos.cuentaBancariaPlataforma + '</b></p>' : '') +
+             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Ya pagué mi membresía</button><span id="premiumMsjEmb" style="font-size:12px;margin-left:8px"></span>')) +
+        '</div>') +
+
     '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +
     '<p style="font-size:13px">El pago se coordina directamente contigo — esto solo nos dice a dónde transferir cuando se apruebe una comisión.</p>' +
     '<input type="text" id="inputCuentaBancaria" value="' + (datos.cuentaBancaria || '') + '" placeholder="Banco - Tipo de cuenta - Número - Titular" style="width:100%;margin-bottom:8px">' +
@@ -170,6 +189,19 @@ async function guardarCuentaBancaria() {
   try {
     const datos = await ejecutarAccion({ embajador: codigo, accion: 'actualizarCuentaBancaria', valor: valor });
     msj.textContent = datos.error ? '⚠️ ' + datos.mensaje : '✅ Guardado.';
+  } catch (e) {
+    msj.textContent = '⚠️ Ocurrió un problema de conexión.';
+  }
+}
+
+async function reportarPagoPremiumEmbajador() {
+  const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
+  const msj = document.getElementById('premiumMsjEmb');
+  msj.textContent = 'Enviando…';
+  try {
+    const datos = await ejecutarAccion({ embajador: codigo, accion: 'reportarPagoPremium' });
+    if (datos.error) { msj.textContent = '⚠️ ' + datos.mensaje; return; }
+    pintarPanel(datos);
   } catch (e) {
     msj.textContent = '⚠️ Ocurrió un problema de conexión.';
   }

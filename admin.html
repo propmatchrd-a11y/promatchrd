@@ -42,6 +42,16 @@ function pintarPanel(datos) {
     '<div class="stat"><span class="num">' + datos.kpis.agentesActivos + '</span><span class="label">Agentes activos</span></div>' +
     '</div>' +
 
+    '<div class="card"><h3>🎖️ Embajadores</h3>' +
+    '<p style="font-size:14px">Total registrados: <b>' + datos.embajadores.total + '</b> · Activos: <b>' + datos.embajadores.activos + '</b></p>' +
+    '<p style="font-size:14px">Comisión acumulada (histórico): <b>' + formatoRD(datos.embajadores.comisionAcumuladaTotal) + '</b></p>' +
+    '</div>' +
+
+    '<div class="card"><h3>🔑 Alquiler</h3>' +
+    '<p style="font-size:14px">Solicitudes hoy: <b>' + datos.alquiler.solicitudesHoy + '</b> · Activas: <b>' + datos.alquiler.activas + '</b></p>' +
+    '<p style="font-size:14px">Cierres: <b>' + datos.alquiler.cierres + '</b> · Comisión generada: <b>' + formatoRD(datos.alquiler.comisionGenerada) + '</b></p>' +
+    '</div>' +
+
     '<div class="card"><h3>⏳ Pendientes</h3>' +
     '<p style="font-size:14px">📄 Acuerdos de Comisión sin enviar: <b>' + datos.pendientes.acuerdosComision + '</b></p>' +
     '<p style="font-size:14px">📊 Links de Panel sin enviar: <b>' + datos.pendientes.linksPanel + '</b></p>' +
@@ -58,6 +68,22 @@ function pintarPanel(datos) {
     '<div id="resultadoAccion"></div>' +
 
     '<p class="footer-note">Para acciones más avanzadas, usa el menú "🏠 PropMatchRD" desde el Google Sheet.</p>';
+}
+
+async function abrirYMarcarEnviado(idx) {
+  const item = window.LINKS_PENDIENTES_ACTUALES[idx];
+  if (!item) return;
+  window.open(item.link, '_blank');
+
+  const elemento = document.getElementById('itemPendiente_' + idx);
+  if (elemento) elemento.style.opacity = '0.4';
+
+  try {
+    await ejecutarAccion({ panelAdmin: CODIGO_ADMIN, accion: 'marcarEnviado', tipo: item.tipo, sheetKey: item.sheetKey, id: item.id });
+    if (elemento) elemento.remove();
+  } catch (e) {
+    if (elemento) elemento.style.opacity = '1';
+  }
 }
 
 async function ejecutarAccionAdmin(accion) {
@@ -81,13 +107,14 @@ async function ejecutarAccionAdmin(accion) {
 
     // enviarAcuerdosPendientes / enviarPanelesPendientes
     const r = datos.resultado;
+    window.LINKS_PENDIENTES_ACTUALES = r.links || [];
     if (r.total === 0) {
       contenedor.innerHTML = '<div class="alert success">✅ No había ningún pendiente.</div>';
     } else if (r.enviados > 0) {
       contenedor.innerHTML = '<div class="alert success">✅ ' + r.enviados + ' de ' + r.total + ' enviados automáticamente (API activa).</div>';
     } else {
       contenedor.innerHTML = '<div class="card"><h3>' + r.total + ' pendiente(s) — toca cada uno para enviar</h3>' +
-        r.links.map(l => '<p><a href="' + l.link + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none;display:inline-block;margin-bottom:6px">💬 ' + l.nombre + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</a></p>').join('') +
+        r.links.map((l, idx) => '<p id="itemPendiente_' + idx + '"><button class="btn btn-sm" style="background:#25D366;color:white;border:none" onclick="abrirYMarcarEnviado(' + idx + ')">💬 ' + l.nombre + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</button></p>').join('') +
         '</div>';
     }
     await cargarPanel();

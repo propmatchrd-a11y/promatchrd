@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel de Administrador — PropMatchRD</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="wrap" id="contenido">
+  <div class="loading"><div class="spinner"></div>Verificando acceso…</div>
+</div>
+
+<script src="app.js"></script>
+<script>
+let CODIGO_ADMIN = '';
+
+(async function () {
+  CODIGO_ADMIN = obtenerParametro('codigo') || obtenerParametro('panelAdmin');
+  if (!CODIGO_ADMIN) { mostrarError('contenido', 'Falta el código de acceso en el enlace.'); return; }
+  await cargarPanel();
+})();
+
+async function cargarPanel() {
+  try {
+    const datos = await llamarApi({ panelAdmin: CODIGO_ADMIN });
+    if (datos.error) { mostrarError('contenido', 'Acceso denegado.'); return; }
+    pintarPanel(datos);
+  } catch (err) {
+    mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
+  }
+}
+
+function pintarPanel(datos) {
+  document.getElementById('contenido').innerHTML =
+    '<h1 style="text-align:center">🔐 Panel de Administrador</h1>' +
+    '<p style="text-align:center;color:var(--text-muted);font-size:13px">Solo tú deberías tener este link — no lo compartas.</p>' +
+
+    '<div class="stat-grid">' +
+    '<div class="stat"><span class="num">' + datos.kpis.compradoresHoy + '</span><span class="label">Compradores hoy</span></div>' +
+    '<div class="stat"><span class="num">' + datos.kpis.cierresTotales + '</span><span class="label">Cierres totales</span></div>' +
+    '<div class="stat"><span class="num">' + datos.kpis.agentesActivos + '</span><span class="label">Agentes activos</span></div>' +
+    '</div>' +
+
+    '<div class="card"><h3>⏳ Pendientes</h3>' +
+    '<p style="font-size:14px">📄 Acuerdos de Comisión sin enviar: <b>' + datos.pendientes.acuerdosComision + '</b></p>' +
+    '<p style="font-size:14px">📊 Links de Panel sin enviar: <b>' + datos.pendientes.linksPanel + '</b></p>' +
+    '<p style="font-size:14px">💰 Comisiones por pagar (venta + alquiler): <b>' + datos.pendientes.comisionesPorPagar + '</b></p>' +
+    '</div>' +
+
+    '<div class="card"><h3>Acciones rápidas</h3>' +
+    '<button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="ejecutarAccionAdmin(\'enviarAcuerdosPendientes\')">📄 Enviar Acuerdos de Comisión pendientes</button>' +
+    '<button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="ejecutarAccionAdmin(\'enviarPanelesPendientes\')">📊 Enviar links de Panel pendientes</button>' +
+    '<button class="btn btn-outline" style="width:100%;margin-bottom:8px" onclick="ejecutarAccionAdmin(\'verificarIntegridad\')">🛡️ Verificar integridad de datos</button>' +
+    '<button class="btn btn-outline" style="width:100%" onclick="ejecutarAccionAdmin(\'actualizarDashboard\')">📈 Actualizar Dashboard</button>' +
+    '</div>' +
+
+    '<div id="resultadoAccion"></div>' +
+
+    '<p class="footer-note">Para acciones más avanzadas, usa el menú "🏠 PropMatchRD" desde el Google Sheet.</p>';
+}
+
+async function ejecutarAccionAdmin(accion) {
+  const contenedor = document.getElementById('resultadoAccion');
+  contenedor.innerHTML = '<div class="card"><p>Procesando…</p></div>';
+  try {
+    const datos = await ejecutarAccion({ panelAdmin: CODIGO_ADMIN, accion: accion });
+    if (datos.error) { contenedor.innerHTML = '<div class="alert">⚠️ ' + datos.mensaje + '</div>'; return; }
+
+    if (accion === 'verificarIntegridad') {
+      contenedor.innerHTML = datos.problemas.length
+        ? '<div class="alert">⚠️ ' + datos.problemas.length + ' problema(s):<br>' + datos.problemas.slice(0, 10).join('<br>') + '</div>'
+        : '<div class="alert success">✅ Todo en orden — sin problemas de integridad.</div>';
+      return;
+    }
+
+    if (accion === 'actualizarDashboard') {
+      contenedor.innerHTML = '<div class="alert success">✅ ' + datos.mensaje + '</div>';
+      return;
+    }
+
+    // enviarAcuerdosPendientes / enviarPanelesPendientes
+    const r = datos.resultado;
+    if (r.total === 0) {
+      contenedor.innerHTML = '<div class="alert success">✅ No había ningún pendiente.</div>';
+    } else if (r.enviados > 0) {
+      contenedor.innerHTML = '<div class="alert success">✅ ' + r.enviados + ' de ' + r.total + ' enviados automáticamente (API activa).</div>';
+    } else {
+      contenedor.innerHTML = '<div class="card"><h3>' + r.total + ' pendiente(s) — toca cada uno para enviar</h3>' +
+        r.links.map(l => '<p><a href="' + l.link + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none;display:inline-block;margin-bottom:6px">💬 ' + l.nombre + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</a></p>').join('') +
+        '</div>';
+    }
+    await cargarPanel();
+  } catch (e) {
+    contenedor.innerHTML = '<div class="alert">⚠️ Ocurrió un problema de conexión.</div>';
+  }
+}
+</script>
+</body>
+</html>

@@ -262,6 +262,22 @@
   //  ACCIONES RÁPIDAS: registrar visita o cierre sin salir del Panel,
   //  sin escribir ningún ID a mano — ya lo trae el botón que se apretó.
   // ============================================================
+  function actualizarProximoPaso() {
+    const quePaso = document.getElementById('raQuePaso').value;
+    const select = document.getElementById('raProximoPaso');
+    let opciones;
+    if (quePaso === 'Le gustó - quiere reservar' || quePaso === 'Reservó en el momento') {
+      // "Agendar otra visita" no tiene sentido si ya le gustó o reservó
+      opciones = [['Esperar respuesta', 'Esperar respuesta / coordinar reserva'], ['Comprador perdido - no seguir', 'Comprador perdido - no seguir']];
+    } else if (quePaso === 'Comprador no asistió' || quePaso === 'Tuve que cancelar/reprogramar') {
+      opciones = [['Agendar otra visita', 'Reprogramar visita'], ['Comprador perdido - no seguir', 'Comprador perdido - no seguir']];
+    } else {
+      // "No le gustó - seguir buscando"
+      opciones = [['Agendar otra visita', 'Agendar otra visita'], ['Esperar respuesta', 'Esperar respuesta'], ['Comprador perdido - no seguir', 'Comprador perdido - no seguir']];
+    }
+    select.innerHTML = opciones.map(([valor, texto]) => '<option value="' + valor + '">' + texto + '</option>').join('');
+  }
+
   function abrirAccionRapida(tipo, id, nombre) {
     const cont = document.getElementById('cardAccionRapida');
     cont.style.display = 'block';
@@ -270,7 +286,7 @@
       cont.innerHTML =
         '<h3>📝 Registrar visita — ' + nombre + '</h3>' +
         '<label style="font-size:13px">¿Qué pasó en la visita?</label>' +
-        '<select id="raQuePaso" class="btn btn-outline" style="width:100%;margin-bottom:8px">' +
+        '<select id="raQuePaso" class="btn btn-outline" style="width:100%;margin-bottom:8px" onchange="actualizarProximoPaso()">' +
         '<option value="Le gustó - quiere reservar">Le gustó - quiere reservar</option>' +
         '<option value="No le gustó - seguir buscando">No le gustó - seguir buscando</option>' +
         '<option value="Reservó en el momento">Reservó en el momento</option>' +
@@ -282,14 +298,11 @@
         '<label style="font-size:13px">¿Qué tan compatible fue (1-5)?</label>' +
         '<input type="number" id="raCompatibilidad" min="1" max="5" style="width:100%;margin-bottom:8px">' +
         '<label style="font-size:13px">¿Próximo paso?</label>' +
-        '<select id="raProximoPaso" class="btn btn-outline" style="width:100%;margin-bottom:10px">' +
-        '<option value="Agendar otra visita">Agendar otra visita</option>' +
-        '<option value="Esperar respuesta">Esperar respuesta</option>' +
-        '<option value="Comprador perdido - no seguir">Comprador perdido - no seguir</option>' +
-        '</select>' +
+        '<select id="raProximoPaso" class="btn btn-outline" style="width:100%;margin-bottom:10px"></select>' +
         '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visita\',\'' + id + '\')">Registrar visita</button> ' +
         '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
         '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
+      actualizarProximoPaso();
     } else if (tipo === 'cierreVenta' || tipo === 'cierreAlquiler') {
       const esAlquiler = tipo === 'cierreAlquiler';
       cont.innerHTML =

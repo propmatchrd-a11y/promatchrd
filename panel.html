@@ -138,13 +138,13 @@
               '<span id="cuentaCopiadaMsj" style="font-size:12px;margin-left:8px"></span>' +
               '</div>'
             : '') +
-          '<p style="font-size:12px;color:var(--text-muted)">Cierres ya confirmados — el pago se coordina por transferencia bancaria, fuera del sistema.</p>' +
+          '<p style="font-size:12px;color:var(--text-muted)">Cierres ya confirmados. 1) Transfiere el monto a la cuenta indicada. 2) Envía tu solicitud de pago — la aprobamos apenas confirmemos que llegó.</p>' +
           datos.misComisiones.map(m => {
             let colorEstado = '#999', textoEstado = m.estado;
             let mostrarBotonYaPague = false;
             if (m.estado === 'Pagado') { colorEstado = '#0f7a6b'; textoEstado = '✅ Pagada'; }
             else if (m.estado === 'En revisión') { colorEstado = '#e4572e'; textoEstado = '⚠️ En revisión'; }
-            else if (m.estado === 'Pago reportado por agente') { colorEstado = '#1a73e8'; textoEstado = '📨 Reportaste el pago — esperando confirmación'; }
+            else if (m.estado === 'Pago reportado por agente') { colorEstado = '#1a73e8'; textoEstado = '📨 Solicitud de pago en revisión'; }
             else { textoEstado = '⏳ Pendiente de pago'; colorEstado = '#b8860b'; mostrarBotonYaPague = true; }
             return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
               '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
@@ -154,7 +154,7 @@
               '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">' + new Date(m.fecha).toLocaleDateString('es-DO') + '</div>' +
               '<div style="font-size:16px;margin-bottom:6px"><b style="color:' + colorEstado + '">' + formatoRD(m.monto) + '</b> · ' + textoEstado + '</div>' +
               (mostrarBotonYaPague
-                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">✅ Ya pagué</button><span id="pagoMsj_' + m.id + '" style="font-size:12px;margin-left:8px"></span>'
+                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">Enviar solicitud de pago</button><span id="pagoMsj_' + m.id + '" style="font-size:12px;margin-left:8px"></span>'
                 : '') +
               '</div>';
           }).join('') +
@@ -163,23 +163,24 @@
 
       (datos.premium.activo
         ? '<div class="card" style="border:2px solid #b8860b;text-align:center">' +
-          '<h3>⭐ Eres Premium</h3>' +
-          '<p style="font-size:13px">Activo hasta <b>' + new Date(datos.premium.fechaVencimiento).toLocaleDateString('es-DO') + '</b></p>' +
-          '<p style="font-size:13px">Pagas solo <b>' + datos.premium.pctPlataformaPremium + '%</b> a la plataforma (en vez de ' + datos.premium.pctPlataformaNormal + '%) y tienes prioridad en la asignación de compradores.</p>' +
+          '<h3>⭐ Membresía Premium activa</h3>' +
+          '<p style="font-size:13px">Vigente hasta <b>' + new Date(datos.premium.fechaVencimiento).toLocaleDateString('es-DO') + '</b></p>' +
+          '<p style="font-size:13px">Pagas <b>' + datos.premium.pctPlataformaPremium + '%</b> a la plataforma por cada venta (en vez de ' + datos.premium.pctPlataformaNormal + '%) y tienes prioridad en la asignación de nuevos compradores e inquilinos.</p>' +
           '</div>'
         : '<div class="card" style="border:2px solid #b8860b">' +
-          '<h3>⭐ Hazte Premium por solo RD$' + datos.premium.cuota + '/mes</h3>' +
+          '<h3>⭐ Membresía Premium — RD$' + datos.premium.cuota + '/mes</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Una inversión mensual pequeña que se paga sola con tu primer cierre del mes. Diseñada para agentes que quieren crecer más rápido en la plataforma.</p>' +
           '<ul style="font-size:13px;padding-left:18px">' +
-          '<li>Pagas solo <b>' + datos.premium.pctPlataformaPremium + '%</b> a la plataforma por cada venta (en vez de ' + datos.premium.pctPlataformaNormal + '%) — más dinero en cada cierre.</li>' +
+          '<li>Pagas solo <b>' + datos.premium.pctPlataformaPremium + '%</b> a la plataforma por cada venta (en vez de ' + datos.premium.pctPlataformaNormal + '%) — más ganancia neta en cada cierre.</li>' +
           '<li>Prioridad real en la asignación de compradores e inquilinos nuevos.</li>' +
           '<li>Insignia Premium visible en tu perfil.</li>' +
           '</ul>' +
           (datos.premium.pagoReportado
-            ? '<p style="font-size:13px;color:#1a73e8">📨 Ya reportaste tu pago — te avisamos apenas se confirme.</p>'
+            ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
             : (datos.cuentaBancariaPlataforma
-                ? '<p style="font-size:12px;color:var(--text-muted)">Transfiere a: <b>' + datos.cuentaBancariaPlataforma + '</b></p>' +
-                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Ya pagué mi membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>'
-                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Ya pagué mi membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>')) +
+                ? '<p style="font-size:12px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' +
+                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>'
+                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>')) +
           '</div>') +
 
       '<div class="card"><h3>⚙️ Mi disponibilidad</h3>' +

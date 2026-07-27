@@ -106,21 +106,22 @@ function pintarPanel(datos) {
 
     (datos.premium.activo
       ? '<div class="card" style="border:2px solid #b8860b;text-align:center">' +
-        '<h3>⭐ Eres Premium</h3>' +
-        '<p style="font-size:13px">Activo hasta <b>' + new Date(datos.premium.fechaVencimiento).toLocaleDateString('es-DO') + '</b></p>' +
-        '<p style="font-size:13px">Ganas <b>' + datos.premium.pctPoolPremium + '%</b> del fondo de referidos (en vez de ' + datos.premium.pctPoolNormal + '%), garantizado.</p>' +
+        '<h3>⭐ Membresía Premium activa</h3>' +
+        '<p style="font-size:13px">Vigente hasta <b>' + new Date(datos.premium.fechaVencimiento).toLocaleDateString('es-DO') + '</b></p>' +
+        '<p style="font-size:13px">Ganas <b>' + datos.premium.pctPoolPremium + '%</b> del fondo de referidos garantizado (en vez de ' + datos.premium.pctPoolNormal + '%).</p>' +
         '</div>'
       : '<div class="card" style="border:2px solid #b8860b">' +
-        '<h3>⭐ Hazte Premium por solo RD$' + datos.premium.cuota + '/mes</h3>' +
+        '<h3>⭐ Membresía Premium — RD$' + datos.premium.cuota + '/mes</h3>' +
+        '<p style="font-size:13px;color:var(--text-muted);margin-bottom:8px">Una inversión mensual pequeña que se recupera fácilmente con solo un referido exitoso al mes.</p>' +
         '<ul style="font-size:13px;padding-left:18px">' +
         '<li>Ganas <b>' + datos.premium.pctPoolPremium + '%</b> del fondo de referidos garantizado (en vez de ' + datos.premium.pctPoolNormal + '%) — sin importar tu nivel.</li>' +
-        '<li>Bono de alto desempeño con nivel de solo ' + datos.premium.scoreMinimoBonoPremium + ' o más (en vez de un nivel más alto).</li>' +
+        '<li>Bono de alto desempeño desde un nivel de solo ' + datos.premium.scoreMinimoBonoPremium + ' (en vez de un nivel más alto).</li>' +
         '<li>Insignia Premium visible.</li>' +
         '</ul>' +
         (datos.premium.pagoReportado
-          ? '<p style="font-size:13px;color:#1a73e8">📨 Ya reportaste tu pago — te avisamos apenas se confirme.</p>'
-          : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:12px;color:var(--text-muted)">Transfiere a: <b>' + datos.cuentaBancariaPlataforma + '</b></p>' : '') +
-             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Ya pagué mi membresía</button><span id="premiumMsjEmb" style="font-size:12px;margin-left:8px"></span>')) +
+          ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
+          : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:12px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' : '') +
+             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Enviar solicitud de membresía</button><span id="premiumMsjEmb" style="font-size:12px;margin-left:8px"></span>')) +
         '</div>') +
 
     '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +

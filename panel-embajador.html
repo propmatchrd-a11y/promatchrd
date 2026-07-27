@@ -126,7 +126,17 @@ function pintarPanel(datos) {
 
     '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +
     '<p style="font-size:13px">El pago se coordina directamente contigo — esto solo nos dice a dónde transferir cuando se apruebe una comisión.</p>' +
-    '<input type="text" id="inputCuentaBancaria" value="' + (datos.cuentaBancaria || '') + '" placeholder="Banco - Tipo de cuenta - Número - Titular" style="width:100%;margin-bottom:8px">' +
+    '<label style="font-size:12px;color:var(--text-muted)">Banco</label>' +
+    '<input type="text" id="inputCuentaBanco" value="' + (datos.cuentaBanco || '') + '" placeholder="Ej. Banco Popular Dominicano" style="width:100%;margin-bottom:8px">' +
+    '<label style="font-size:12px;color:var(--text-muted)">Tipo de cuenta</label>' +
+    '<select id="inputCuentaTipo" style="width:100%;margin-bottom:8px">' +
+    '<option value="Ahorros"' + (datos.cuentaTipo === 'Ahorros' ? ' selected' : '') + '>Ahorros</option>' +
+    '<option value="Corriente"' + (datos.cuentaTipo === 'Corriente' ? ' selected' : '') + '>Corriente</option>' +
+    '</select>' +
+    '<label style="font-size:12px;color:var(--text-muted)">Número de cuenta</label>' +
+    '<input type="text" id="inputCuentaNumero" value="' + (datos.cuentaNumero || '') + '" style="width:100%;margin-bottom:8px">' +
+    '<label style="font-size:12px;color:var(--text-muted)">Nombre del titular</label>' +
+    '<input type="text" id="inputCuentaTitular" value="' + (datos.cuentaTitular || '') + '" style="width:100%;margin-bottom:8px">' +
     '<button class="btn btn-primary btn-sm" onclick="guardarCuentaBancaria()">Guardar</button>' +
     '<p id="mensajeCuenta" style="font-size:13px;margin-top:6px"></p></div>' +
 
@@ -183,12 +193,15 @@ async function regenerarMensaje() {
 
 async function guardarCuentaBancaria() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
-  const valor = document.getElementById('inputCuentaBancaria').value.trim();
+  const banco = document.getElementById('inputCuentaBanco').value.trim();
+  const tipo = document.getElementById('inputCuentaTipo').value;
+  const numero = document.getElementById('inputCuentaNumero').value.trim();
+  const titular = document.getElementById('inputCuentaTitular').value.trim();
   const msj = document.getElementById('mensajeCuenta');
-  if (!valor) { msj.textContent = '⚠️ Escribe tu cuenta antes de guardar.'; return; }
+  if (!banco || !numero) { msj.textContent = '⚠️ El banco y el número de cuenta son obligatorios.'; return; }
   msj.textContent = 'Guardando…';
   try {
-    const datos = await ejecutarAccion({ embajador: codigo, accion: 'actualizarCuentaBancaria', valor: valor });
+    const datos = await ejecutarAccion({ embajador: codigo, accion: 'actualizarCuentaBancaria', banco: banco, tipo: tipo, numero: numero, titular: titular });
     msj.textContent = datos.error ? '⚠️ ' + datos.mensaje : '✅ Guardado.';
   } catch (e) {
     msj.textContent = '⚠️ Ocurrió un problema de conexión.';

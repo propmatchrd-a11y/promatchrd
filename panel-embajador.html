@@ -66,9 +66,11 @@ function pintarPanel(datos) {
         '<p style="font-size:12px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
         datos.referidos.map(r => {
           let comisionTexto = '<span style="color:#999">Aún sin estimar</span>';
-          if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ Pagada</b>'; }
-          else if (r.comisionMin !== null) {
-            comisionTexto = '<b style="color:#b8860b">' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + '</b>';
+          if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ ' + formatoRD(r.comisionExacta) + ' — Pagada</b>'; }
+          else if (r.comisionExacta !== null) {
+            comisionTexto = '<b style="color:#1a73e8">' + formatoRD(r.comisionExacta) + ' — Aprobada, pendiente de pago</b>';
+          } else if (r.comisionMin !== null) {
+            comisionTexto = '<b style="color:#b8860b">' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + ' (estimado)</b>';
           }
           return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +

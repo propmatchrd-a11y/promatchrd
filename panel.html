@@ -121,8 +121,9 @@
             '</div>' +
             '<div style="font-size:13px;margin-bottom:4px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
-            '<div style="display:flex;gap:6px">' +
+            '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
             (a.linkWhatsApp ? '<a href="' + a.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
             '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button>' +
             '</div></div>'
           ).join('')

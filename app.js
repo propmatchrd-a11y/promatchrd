@@ -3,20 +3,20 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/u3JfsW1mZydZRCgJ6';
-const FORM_AGENTE_URL = 'https://forms.gle/RgP7xBWZ3pVfcr3h6';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/bzukdoFN2JqSsuKB7';
-const FORM_ALQUILER_URL = 'https://forms.gle/C8zax2YM5aMEG9FNA';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -33,6 +33,67 @@ async function llamarApi(params) {
 async function ejecutarAccion(params) {
   const url = API_BASE + '?api=1&' + new URLSearchParams(params).toString();
   const resp = await fetch(url);
+  return resp.json();
+}
+
+/**
+ * Convierte un archivo (input type="file") a base64 y lo envía junto con
+ * el resto de la acción, vía POST — gratis, sin ningún servicio de pago,
+ * sin exigir que la persona inicie sesión en nada.
+ */
+/**
+ * Comprime una foto antes de subirla — una foto directa de cámara de
+ * celular puede pesar 3-8 MB, lo cual puede hacer fallar la subida (timeout
+ * o límite de tamaño de la solicitud). Se reduce a un tamaño razonable
+ * (1600px de lado más largo, calidad 80%) sin que el agente note ninguna
+ * diferencia visual relevante para un contrato/evidencia. Los PDF no se
+ * tocan, ya que no se pueden recomprimir de esta forma.
+ */
+function comprimirImagenSiAplica_(archivo) {
+  if (!archivo.type.startsWith('image/')) return Promise.resolve(archivo);
+  return new Promise((resolve) => {
+    const img = new Image();
+    const url = URL.createObjectURL(archivo);
+    img.onload = () => {
+      const MAX_LADO = 1600;
+      let { width, height } = img;
+      if (width > MAX_LADO || height > MAX_LADO) {
+        const ratio = Math.min(MAX_LADO / width, MAX_LADO / height);
+        width = Math.round(width * ratio);
+        height = Math.round(height * ratio);
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(img, 0, 0, width, height);
+      canvas.toBlob((blob) => {
+        URL.revokeObjectURL(url);
+        resolve(blob ? new File([blob], archivo.name, { type: 'image/jpeg' }) : archivo);
+      }, 'image/jpeg', 0.8);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); resolve(archivo); }; // si falla, se sube el original sin comprimir
+    img.src = url;
+  });
+}
+
+async function ejecutarAccionConArchivo(params, archivoInputElement) {
+  let archivo = archivoInputElement && archivoInputElement.files && archivoInputElement.files[0];
+  const payload = Object.assign({ api: '1' }, params);
+
+  if (archivo) {
+    archivo = await comprimirImagenSiAplica_(archivo);
+    const base64 = await new Promise((resolve, reject) => {
+      const lector = new FileReader();
+      lector.onload = () => resolve(lector.result.split(',')[1]); // quita el prefijo "data:image/...;base64,"
+      lector.onerror = reject;
+      lector.readAsDataURL(archivo);
+    });
+    payload.archivoBase64 = base64;
+    payload.archivoMime = archivo.type;
+    payload.archivoNombre = archivo.name;
+  }
+
+  const resp = await fetch(API_BASE, { method: 'POST', body: JSON.stringify(payload) });
   return resp.json();
 }
 

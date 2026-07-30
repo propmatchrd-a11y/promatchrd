@@ -104,7 +104,8 @@
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
             '<div style="display:flex;gap:6px">' +
             (a.linkWhatsApp ? '<a href="' + a.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Ganar con cierre</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">📝 Ganar con visita</button> ' +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Ganar con cierre</button>' +
             '</div></div>'
           ).join('') +
           '</div>'
@@ -302,7 +303,14 @@
     const cont = document.getElementById('cardAccionRapida');
     cont.style.display = 'block';
 
-    if (tipo === 'visita') {
+    if (tipo === 'visitaAlquiler') {
+      cont.innerHTML =
+        '<h3>📝 Registrar visita — ' + nombre + '</h3>' +
+        '<p style="font-size:13px">Confirma que ya visitaste la propiedad con el inquilino — esto te da la exclusividad de esta solicitud.</p>' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visitaAlquiler\',\'' + id + '\')">Confirmar visita realizada</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
+    } else if (tipo === 'visita') {
       cont.innerHTML =
         '<h3>📝 Registrar visita — ' + nombre + '</h3>' +
         '<label style="font-size:13px">¿Qué pasó en la visita?</label>' +
@@ -354,7 +362,10 @@
     msj.textContent = 'Enviando…';
     let params = { panel: CODIGO_PANEL };
 
-    if (tipo === 'visita') {
+    if (tipo === 'visitaAlquiler') {
+      params.accion = 'registrarVisitaAlquilerAgente';
+      params.idSolicitud = id;
+    } else if (tipo === 'visita') {
       params.accion = 'registrarVisitaAgente';
       params.idComprador = id;
       params.quePaso = document.getElementById('raQuePaso').value;

@@ -40,21 +40,80 @@ body {
   color: var(--ink);
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  position: relative;
+  isolation: isolate;
 
   /* Fondo moderno generado por código — degradado de marca + textura de
      puntos, en vez de una foto de stock (evita el look genérico de "casa
      con familia sonriendo" Y cualquier riesgo de derechos de autor, ya que
-     no se descarga ninguna imagen de terceros). */
+     no se descarga ninguna imagen de terceros). La textura de puntos se
+     anima con un desplazamiento lento y sutil — sensación de movimiento
+     constante ("futurista") sin distraer de la lectura. */
   background-color: var(--sand);
-  background-image:
-    radial-gradient(circle at 10% 5%, rgba(15, 122, 107, 0.28) 0%, transparent 42%),
-    radial-gradient(circle at 90% 20%, rgba(228, 87, 46, 0.22) 0%, transparent 48%),
-    radial-gradient(circle at 20% 95%, rgba(228, 87, 46, 0.16) 0%, transparent 45%),
-    radial-gradient(circle at 80% 90%, rgba(15, 122, 107, 0.20) 0%, transparent 50%),
-    radial-gradient(circle, rgba(16, 35, 28, 0.14) 1.5px, transparent 2px);
-  background-size: auto, auto, auto, auto, 24px 24px;
-  background-attachment: fixed, fixed, fixed, fixed, fixed;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, repeat;
+  background-image: radial-gradient(circle, rgba(16, 35, 28, 0.14) 1.5px, transparent 2px);
+  background-size: 24px 24px;
+  background-repeat: repeat;
+  animation: derivaPuntos 60s linear infinite;
+}
+
+/* 2 "orbes" de marca (teal y coral) flotando muy lentamente detrás del
+   contenido — usan transform (no top/left), así el navegador los anima
+   con la GPU en vez de recalcular el layout en cada cuadro: fluido incluso
+   en celulares económicos, sin calentar el teléfono ni gastar batería de
+   más. pointer-events:none para que nunca interfieran con ningún clic. */
+body::before, body::after {
+  content: '';
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.32;
+  pointer-events: none;
+  z-index: -1;
+  will-change: transform;
+}
+body::before {
+  width: 420px;
+  height: 420px;
+  background: var(--teal);
+  top: -8%;
+  left: -8%;
+  animation: flotarOrbe1 24s ease-in-out infinite;
+}
+body::after {
+  width: 380px;
+  height: 380px;
+  background: var(--coral);
+  bottom: -10%;
+  right: -8%;
+  animation: flotarOrbe2 28s ease-in-out infinite;
+}
+
+@keyframes flotarOrbe1 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(70px, 90px) scale(1.08); }
+}
+@keyframes flotarOrbe2 {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, -70px) scale(1.1); }
+}
+@keyframes derivaPuntos {
+  from { background-position: 0 0; }
+  to { background-position: 240px 240px; }
+}
+
+/* Accesibilidad: quien tenga "reducir movimiento" activado en su celular
+   (a veces por mareo/incomodidad con animaciones) ve el mismo fondo, pero
+   completamente quieto — nunca se le fuerza el movimiento. */
+@media (prefers-reduced-motion: reduce) {
+  body, body::before, body::after {
+    animation: none !important;
+  }
+}
+
+/* Todo el contenido real vive encima del fondo animado */
+.wrap, header, .card, .top-bar, nav {
+  position: relative;
+  z-index: 1;
 }
 
 .wrap {

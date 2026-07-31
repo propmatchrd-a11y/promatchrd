@@ -16,6 +16,7 @@
 (async function () {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalAlquiler');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
+  window.CODIGO_PORTAL_ALQUILER_ACTUAL = codigo;
 
   try {
     const datos = await llamarApi({ portalAlquiler: codigo });
@@ -35,6 +36,8 @@
         : '<p style="font-size:13px;color:var(--text-muted)">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</p>') +
       '</div>' +
 
+      (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisitaAlquiler() : '') +
+
       (datos.evaluacion
         ? '<div class="card"><h3>Tu evaluación</h3><p>' + datos.evaluacion + '</p></div>'
         : '') +
@@ -52,6 +55,28 @@
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
 })();
+
+function construirMiniEncuestaVisitaAlquiler() {
+  return '<div class="card" id="cardEncuestaVisita"><h3>⭐ ¿Cómo fue tu última visita?</h3>' +
+    '<div id="preguntasVisita">' +
+    construirPreguntaVisitaAlquiler('Inquilino_Le_Gusto', '¿Te gustó la propiedad?') +
+    construirPreguntaVisitaAlquiler('Agente_Puntual', '¿Tu agente llegó puntual?') +
+    construirPreguntaVisitaAlquiler('Agente_Explico_Bien', '¿Explicó bien las opciones?') +
+    construirPreguntaVisitaAlquiler('Recomendaria_Agente', '¿Lo recomendarías?') +
+    '</div></div>';
+}
+
+function construirPreguntaVisitaAlquiler(campo, pregunta) {
+  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">' +
+    '<span style="font-size:14px">' + pregunta + '</span>' +
+    '<span><button class="btn btn-primary btn-sm" onclick="calificarVisitaAlquiler(\'' + campo + '\',\'Sí\',this)">Sí</button> ' +
+    '<button class="btn btn-outline btn-sm" onclick="calificarVisitaAlquiler(\'' + campo + '\',\'No\',this)">No</button></span></div>';
+}
+
+async function calificarVisitaAlquiler(campo, valor, boton) {
+  await ejecutarAccion({ portalAlquiler: window.CODIGO_PORTAL_ALQUILER_ACTUAL, accion: 'calificarVisitaAlquiler', campo: campo, valor: valor });
+  boton.closest('div').innerHTML = '<span style="font-size:14px">✅ ¡Gracias!</span>';
+}
 </script>
 </body>
 </html>

@@ -31,6 +31,7 @@
       badgeFormaPago(c.formaPago) +
       '<div style="font-size:13px;margin-bottom:4px"><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + ' · ' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
       '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
+      renderHistorialVisitas(c.historialVisitas) +
       '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
       (c.contactoPendiente
         ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">Marcar contacto</button>'
@@ -121,6 +122,7 @@
             '</div>' +
             '<div style="font-size:13px;margin-bottom:4px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
+            renderHistorialVisitas(a.historialVisitas) +
             '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
             (a.linkWhatsApp ? '<a href="' + a.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
             '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
@@ -248,6 +250,22 @@
     } catch (e) {
       msj.textContent = '⚠️ Ocurrió un problema de conexión.';
     }
+  }
+
+  let contadorHistorial = 0;
+  function renderHistorialVisitas(historial) {
+    if (!historial || !historial.length) return '';
+    const idUnico = 'hist_' + (contadorHistorial++);
+    const filas = historial.map(v =>
+      '<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--line)">' +
+      '<b>Visita ' + v.numero + '</b> — ' + (v.fecha ? new Date(v.fecha).toLocaleDateString('es-DO') : '—') + ' · ' + v.resultado +
+      (v.leGusto ? (v.leGusto === 'Sí' ? ' · <span style="color:#0f7a6b">👍 Le gustó</span>' : ' · <span style="color:#e4572e">👎 No le gustó</span>') : ' · <span style="color:#999">Sin opinión aún</span>') +
+      '</div>'
+    ).join('');
+    return '<div style="margin-bottom:8px">' +
+      '<span style="font-size:12px;color:#1a73e8;cursor:pointer" onclick="document.getElementById(\'' + idUnico + '\').style.display = document.getElementById(\'' + idUnico + '\').style.display === \'none\' ? \'block\' : \'none\'">📋 Ver histórico (' + historial.length + ')</span>' +
+      '<div id="' + idUnico + '" style="display:none;margin-top:4px">' + filas + '</div>' +
+      '</div>';
   }
 
   function badgeFormaPago(formaPago) {

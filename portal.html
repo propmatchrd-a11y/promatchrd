@@ -121,6 +121,7 @@ async function actualizarDocumento(campo, marcado) {
 function construirMiniEncuestaVisita() {
   return '<div class="card" id="cardEncuestaVisita"><h3>⭐ ¿Cómo fue tu última visita?</h3>' +
     '<div id="preguntasVisita">' +
+    construirPreguntaVisita('Comprador_Le_Gusto', '¿Te gustó la propiedad?') +
     construirPreguntaVisita('Agente_Puntual', '¿Tu agente llegó puntual?') +
     construirPreguntaVisita('Agente_Explico_Bien', '¿Explicó bien las opciones?') +
     construirPreguntaVisita('Recomendaria_Agente', '¿Lo recomendarías?') +

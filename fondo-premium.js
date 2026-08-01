@@ -107,7 +107,7 @@
       particles: {
         number: { value: 26, density: { enable: true, area: 900 } },
         color: { value: ['#0f7a6b', '#e4572e', '#10231c'] },
-        opacity: { value: 0.25 },
+        opacity: { value: 0.4 },
         size: { value: { min: 1, max: 3 } },
         move: { enable: true, speed: 0.4, direction: 'none', random: true, outModes: { default: 'out' } },
         links: { enable: true, distance: 140, color: '#0f7a6b', opacity: 0.12, width: 1 }
@@ -124,7 +124,7 @@
       particles: {
         number: { value: 14, density: { enable: true, area: 700 } },
         color: { value: ['#0f7a6b', '#e4572e'] },
-        opacity: { value: 0.28 },
+        opacity: { value: 0.42 },
         size: { value: { min: 1, max: 2.5 } },
         move: { enable: true, speed: 0.35, direction: 'none', random: true, outModes: { default: 'out' } },
         links: { enable: false }

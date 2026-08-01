@@ -25,11 +25,25 @@
   const esPantallaAncha = window.matchMedia('(min-width: 900px)').matches;
   const esTactil = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-  // 1) Mesh gradient — 4 blobs de marca, ya animados por CSS (flotarN)
+  // 1) Mesh gradient — 4 blobs de marca (lienzo de color), ya animados por CSS (flotarN)
   const mesh = document.createElement('div');
   mesh.id = 'fondo-mesh';
   mesh.innerHTML = '<div class="blob"></div><div class="blob"></div><div class="blob"></div><div class="blob"></div>';
   document.body.prepend(mesh);
+
+  // 1.5) Figuras geométricas alusivas al sector inmobiliario — casas
+  //      (pentágono: techo + base), edificios (rectángulo con líneas tipo
+  //      ventanas) y triángulos (acentos), ya animadas por CSS.
+  const geo = document.createElement('div');
+  geo.id = 'fondo-geo';
+  geo.innerHTML =
+    '<div class="figura casa"></div>' +
+    '<div class="figura edificio"></div>' +
+    '<div class="figura triangulo"></div>' +
+    '<div class="figura casa"></div>' +
+    '<div class="figura edificio"></div>' +
+    '<div class="figura triangulo"></div>';
+  document.body.prepend(geo);
 
   // 2) Aurora — capa de degradado cónico girando, ya animada por CSS
   const aurora = document.createElement('div');
@@ -49,6 +63,10 @@
     document.querySelectorAll('#fondo-mesh .blob').forEach(function (blob, i) {
       const intensidad = 12 + i * 5; // cada blob se mueve un poco distinto — sensación de profundidad
       blob.style.transform = 'translate(' + (xRelativo * intensidad) + 'px, ' + (yRelativo * intensidad) + 'px)';
+    });
+    document.querySelectorAll('#fondo-geo .figura').forEach(function (figura, i) {
+      const intensidad = 8 + i * 3; // movimiento más sutil que los blobs — son la parte "nítida" del fondo
+      figura.style.transform = 'translate(' + (xRelativo * intensidad) + 'px, ' + (yRelativo * intensidad) + 'px)';
     });
   }
 
@@ -108,7 +126,8 @@
         number: { value: 26, density: { enable: true, area: 900 } },
         color: { value: ['#0f7a6b', '#e4572e', '#10231c'] },
         opacity: { value: 0.4 },
-        size: { value: { min: 1, max: 3 } },
+        size: { value: { min: 2, max: 5 } },
+        shape: { type: 'triangle' },
         move: { enable: true, speed: 0.4, direction: 'none', random: true, outModes: { default: 'out' } },
         links: { enable: true, distance: 140, color: '#0f7a6b', opacity: 0.12, width: 1 }
       },
@@ -125,7 +144,8 @@
         number: { value: 14, density: { enable: true, area: 700 } },
         color: { value: ['#0f7a6b', '#e4572e'] },
         opacity: { value: 0.42 },
-        size: { value: { min: 1, max: 2.5 } },
+        size: { value: { min: 2, max: 4 } },
+        shape: { type: 'triangle' },
         move: { enable: true, speed: 0.35, direction: 'none', random: true, outModes: { default: 'out' } },
         links: { enable: false }
       },

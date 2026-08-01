@@ -43,6 +43,10 @@ body {
   position: relative;
   isolation: isolate;
   background-color: var(--sand);
+  background-image:
+    linear-gradient(rgba(16, 35, 28, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 35, 28, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
 /* ============================================================================
@@ -91,26 +95,63 @@ body {
   to { transform: scale(14); opacity: 0; }
 }
 
-/* Mesh gradient: varios "blobs" de marca (teal/coral) que se difuminan
-   entre sí y se desplazan muy lento con transform (acelerado por GPU —
-   económico en batería incluso en celulares modestos). El mouse los
-   empuja levemente (parallax), vía fondo-premium.js. */
+/* Mesh de color: un fondo de degradado suave y difuminado (más sutil que
+   antes, ahora es solo el "lienzo" de color detrás de las figuras
+   geométricas). Igual de económico en batería — mismo transform + GPU. */
 #fondo-mesh .blob {
   position: absolute;
   border-radius: 50%;
-  filter: blur(75px);
-  opacity: 0.48;
+  filter: blur(85px);
+  opacity: 0.3;
   will-change: transform;
   transition: transform 0.6s cubic-bezier(0.2, 0.6, 0.3, 1);
 }
 #fondo-mesh .blob:nth-child(1) { width: 420px; height: 420px; background: var(--teal); top: -8%; left: -8%; animation: flotar1 16s ease-in-out infinite; }
 #fondo-mesh .blob:nth-child(2) { width: 380px; height: 380px; background: var(--coral); top: 5%; right: -8%; animation: flotar2 18s ease-in-out infinite; }
 #fondo-mesh .blob:nth-child(3) { width: 340px; height: 340px; background: var(--teal-deep); bottom: -10%; left: 25%; animation: flotar3 20s ease-in-out infinite; }
-#fondo-mesh .blob:nth-child(4) { width: 300px; height: 300px; background: var(--coral); bottom: 10%; right: 15%; opacity: 0.38; animation: flotar1 17s ease-in-out infinite reverse; }
+#fondo-mesh .blob:nth-child(4) { width: 300px; height: 300px; background: var(--coral); bottom: 10%; right: 15%; opacity: 0.22; animation: flotar1 17s ease-in-out infinite reverse; }
 
 @keyframes flotar1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(110px, 130px) scale(1.15); } }
 @keyframes flotar2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-100px, 110px) scale(1.18); } }
 @keyframes flotar3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(90px, -100px) scale(1.12); } }
+
+/* Figuras geométricas alusivas al sector inmobiliario — casas (pentágono
+   clásico: techo a dos aguas + base rectangular, con clip-path, sin
+   ninguna imagen) y edificios/rascacielos (rectángulos con "ventanas" via
+   gradiente repetido), flotando y girando muy lento. Mismo mecanismo de
+   GPU (transform) que el resto del fondo. */
+#fondo-geo {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  overflow: hidden;
+  pointer-events: none;
+}
+#fondo-geo .figura {
+  position: absolute;
+  opacity: 0.16;
+  will-change: transform;
+}
+#fondo-geo .casa {
+  clip-path: polygon(50% 0%, 100% 38%, 100% 100%, 0% 100%, 0% 38%);
+}
+#fondo-geo .edificio {
+  background-image: repeating-linear-gradient(0deg, transparent 0 14px, rgba(255,255,255,0.5) 14px 16px),
+    repeating-linear-gradient(90deg, transparent 0 14px, rgba(255,255,255,0.5) 14px 16px);
+}
+#fondo-geo .triangulo {
+  clip-path: polygon(50% 0%, 100% 100%, 0% 100%);
+}
+
+#fondo-geo .figura:nth-child(1) { /* casa grande */ width: 140px; height: 130px; background: var(--teal); top: 8%; left: 6%; animation: girarSuave1 46s linear infinite, flotar2 22s ease-in-out infinite; }
+#fondo-geo .figura:nth-child(2) { /* edificio alto */ width: 90px; height: 220px; background: var(--coral); top: 55%; right: 8%; animation: girarSuave2 60s linear infinite, flotar3 24s ease-in-out infinite; }
+#fondo-geo .figura:nth-child(3) { /* triángulo, techo suelto */ width: 110px; height: 95px; background: var(--teal-deep); bottom: 6%; left: 18%; animation: girarSuave1 38s linear infinite reverse, flotar1 19s ease-in-out infinite; }
+#fondo-geo .figura:nth-child(4) { /* casa mediana */ width: 100px; height: 92px; background: var(--coral); top: 20%; right: 22%; animation: girarSuave2 50s linear infinite reverse, flotar2 21s ease-in-out infinite; }
+#fondo-geo .figura:nth-child(5) { /* edificio bajo */ width: 130px; height: 150px; background: var(--teal); bottom: 14%; right: 30%; animation: girarSuave1 55s linear infinite, flotar3 26s ease-in-out infinite; }
+#fondo-geo .figura:nth-child(6) { /* triángulo pequeño */ width: 70px; height: 60px; background: var(--coral); top: 40%; left: 42%; opacity: 0.12; animation: girarSuave2 33s linear infinite, flotar1 15s ease-in-out infinite reverse; }
+
+@keyframes girarSuave1 { from { rotate: 0deg; } to { rotate: 8deg; } }
+@keyframes girarSuave2 { from { rotate: 0deg; } to { rotate: -8deg; } }
 
 /* Aurora: un degradado cónico girando por encima del mesh — da el efecto
    de "luz viva" característico de una aurora boreal, en los mismos
@@ -128,7 +169,7 @@ body {
 /* Accesibilidad: "reducir movimiento" activado → todo el fondo se queda
    quieto (aurora, blobs, partículas), nunca se fuerza la animación. */
 @media (prefers-reduced-motion: reduce) {
-  #fondo-mesh .blob, #fondo-aurora { animation: none !important; transition: none !important; }
+  #fondo-mesh .blob, #fondo-aurora, #fondo-geo .figura { animation: none !important; transition: none !important; }
 }
 
 /* Todo el contenido real vive por encima del fondo */

@@ -45,6 +45,11 @@ function pintarPanel(datos) {
     '<div class="stat"><span class="num">' + datos.kpis.agentesActivos + '</span><span class="label">Agentes activos</span></div>' +
     '</div>' +
 
+    '<div class="card"><h3>📊 De las mejoras de hoy</h3>' +
+    '<p style="font-size:13px">Satisfacción (¿les gustó la propiedad?): <b>' + (datos.kpis.satisfaccionPct !== null ? datos.kpis.satisfaccionPct + '%' : 'Aún sin datos') + '</b></p>' +
+    '<p style="font-size:13px">Zona con más compradores activos: <b>' + datos.kpis.zonaMasActiva + '</b></p>' +
+    '</div>' +
+
     '<div class="card"><h3>🎖️ Embajadores</h3>' +
     '<p style="font-size:13px">Total registrados: <b>' + datos.embajadores.total + '</b> · Activos: <b>' + datos.embajadores.activos + '</b></p>' +
     '<p style="font-size:13px">Comisión acumulada (histórico): <b>' + formatoRD(datos.embajadores.comisionAcumuladaTotal) + '</b></p>' +
@@ -61,6 +66,12 @@ function pintarPanel(datos) {
     '<p style="font-size:13px">💰 Comisiones por pagar (venta + alquiler): <b>' + datos.pendientes.comisionesPorPagar + '</b></p>' +
     '<p style="font-size:13px">⏰ Próximas a vencer: <b style="color:#b8860b">' + datos.pendientes.comisionesProximasVencer + '</b> · 🚨 Ya vencidas: <b style="color:#e4572e">' + datos.pendientes.comisionesYaVencidas + '</b></p>' +
     '</div>' +
+
+    '<div class="card"><h3>⚡ Redistribuir compradores por zona</h3>' +
+    '<p style="font-size:12px;color:var(--text-muted)">Pone a todos los compradores sin asignar de una zona a competir contra todos los agentes elegibles de esa misma zona.</p>' +
+    '<input type="text" id="inputZonaRedistribuir" placeholder="Ej. Distrito Nacional" style="width:100%;margin-bottom:8px">' +
+    '<button class="btn btn-primary" style="width:100%" onclick="redistribuirZona()">⚡ Redistribuir esta zona</button>' +
+    '<p id="mensajeZona" style="font-size:13px;margin-top:8px"></p></div>' +
 
     '<div class="card"><h3>Acciones rápidas</h3>' +
     '<button class="btn btn-primary" style="width:100%;margin-bottom:8px" onclick="ejecutarAccionAdmin(\'enviarAcuerdosPendientes\')">📄 Enviar Acuerdos de Comisión pendientes</button>' +
@@ -87,6 +98,21 @@ async function abrirYMarcarEnviado(idx) {
     if (elemento) elemento.remove();
   } catch (e) {
     if (elemento) elemento.style.opacity = '1';
+  }
+}
+
+async function redistribuirZona() {
+  const zona = document.getElementById('inputZonaRedistribuir').value.trim();
+  const msj = document.getElementById('mensajeZona');
+  if (!zona) { msj.textContent = '⚠️ Escribe una zona antes de continuar.'; return; }
+  msj.textContent = 'Procesando…';
+  try {
+    const datos = await ejecutarAccion({ panelAdmin: CODIGO_ADMIN, accion: 'redistribuirZona', zona: zona });
+    if (datos.error) { msj.textContent = '⚠️ ' + datos.mensaje; return; }
+    msj.textContent = '✅ ' + datos.procesados + ' de ' + datos.totalCompradores + ' comprador(es) de "' + zona + '" ahora compiten entre ' + datos.totalAgentes + ' agente(s).';
+    await cargarPanel();
+  } catch (e) {
+    msj.textContent = '⚠️ Ocurrió un problema de conexión.';
   }
 }
 

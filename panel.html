@@ -125,6 +125,7 @@
             '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + a.id + '</span>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:4px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
+            (a.fechaMudanzaDeseada ? '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📅 Mudanza deseada: ' + new Date(a.fechaMudanzaDeseada).toLocaleDateString('es-DO') + '</div>' : '') +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
             renderHistorialVisitas(a.historialVisitas) +
             '<div style="display:flex;gap:6px;flex-wrap:wrap">' +

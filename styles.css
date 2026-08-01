@@ -42,79 +42,75 @@ body {
   -webkit-font-smoothing: antialiased;
   position: relative;
   isolation: isolate;
-
-  /* Fondo moderno generado por código — degradado de marca + textura de
-     puntos, en vez de una foto de stock (evita el look genérico de "casa
-     con familia sonriendo" Y cualquier riesgo de derechos de autor, ya que
-     no se descarga ninguna imagen de terceros). La textura de puntos se
-     anima con un desplazamiento lento y sutil — sensación de movimiento
-     constante ("futurista") sin distraer de la lectura. */
   background-color: var(--sand);
-  background-image: radial-gradient(circle, rgba(16, 35, 28, 0.14) 1.5px, transparent 2px);
-  background-size: 24px 24px;
-  background-repeat: repeat;
-  animation: derivaPuntos 60s linear infinite;
 }
 
-/* 2 "orbes" de marca (teal y coral) flotando muy lentamente detrás del
-   contenido — usan transform (no top/left), así el navegador los anima
-   con la GPU en vez de recalcular el layout en cada cuadro: fluido incluso
-   en celulares económicos, sin calentar el teléfono ni gastar batería de
-   más. pointer-events:none para que nunca interfieran con ningún clic. */
-body::before, body::after {
-  content: '';
+/* ============================================================================
+   FONDO PREMIUM — mesh gradient + aurora + noise + partículas interactivas.
+   Los contenedores (#fondo-mesh, #fondo-aurora, #fondo-noise,
+   #fondo-particulas) los crea fondo-premium.js automáticamente en cada
+   página que incluya ese script — así ningún HTML necesita cambiarse.
+   Todo vive DETRÁS del contenido real (z-index negativo) y con
+   pointer-events:none, para que nunca interfiera con ningún clic.
+   ========================================================================= */
+
+#fondo-mesh, #fondo-aurora, #fondo-particulas, #fondo-noise {
   position: fixed;
-  border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.32;
+  inset: 0;
   pointer-events: none;
-  z-index: -1;
+  overflow: hidden;
+}
+#fondo-mesh { z-index: -3; }
+#fondo-aurora { z-index: -2; mix-blend-mode: multiply; opacity: 0.55; }
+#fondo-particulas { z-index: -1; }
+#fondo-noise {
+  z-index: 3;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Mesh gradient: varios "blobs" de marca (teal/coral) que se difuminan
+   entre sí y se desplazan muy lento con transform (acelerado por GPU —
+   económico en batería incluso en celulares modestos). El mouse los
+   empuja levemente (parallax), vía fondo-premium.js. */
+#fondo-mesh .blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(75px);
+  opacity: 0.32;
   will-change: transform;
+  transition: transform 0.6s cubic-bezier(0.2, 0.6, 0.3, 1);
 }
-body::before {
-  width: 420px;
-  height: 420px;
-  background: var(--teal);
-  top: -8%;
-  left: -8%;
-  animation: flotarOrbe1 24s ease-in-out infinite;
-}
-body::after {
-  width: 380px;
-  height: 380px;
-  background: var(--coral);
-  bottom: -10%;
-  right: -8%;
-  animation: flotarOrbe2 28s ease-in-out infinite;
-}
+#fondo-mesh .blob:nth-child(1) { width: 420px; height: 420px; background: var(--teal); top: -8%; left: -8%; animation: flotar1 24s ease-in-out infinite; }
+#fondo-mesh .blob:nth-child(2) { width: 380px; height: 380px; background: var(--coral); top: 5%; right: -8%; animation: flotar2 28s ease-in-out infinite; }
+#fondo-mesh .blob:nth-child(3) { width: 340px; height: 340px; background: var(--teal-deep); bottom: -10%; left: 25%; animation: flotar3 32s ease-in-out infinite; }
+#fondo-mesh .blob:nth-child(4) { width: 300px; height: 300px; background: var(--coral); bottom: 10%; right: 15%; opacity: 0.22; animation: flotar1 26s ease-in-out infinite reverse; }
 
-@keyframes flotarOrbe1 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(70px, 90px) scale(1.08); }
-}
-@keyframes flotarOrbe2 {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-60px, -70px) scale(1.1); }
-}
-@keyframes derivaPuntos {
-  from { background-position: 0 0; }
-  to { background-position: 240px 240px; }
-}
+@keyframes flotar1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(70px, 90px) scale(1.08); } }
+@keyframes flotar2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-60px, 70px) scale(1.1); } }
+@keyframes flotar3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(50px, -60px) scale(1.05); } }
 
-/* Accesibilidad: quien tenga "reducir movimiento" activado en su celular
-   (a veces por mareo/incomodidad con animaciones) ve el mismo fondo, pero
-   completamente quieto — nunca se le fuerza el movimiento. */
+/* Aurora: un degradado cónico girando muy lento por encima del mesh —
+   da el efecto de "luz viva" característico de una aurora boreal, en
+   los mismos colores de marca (nunca neón genérico). */
+#fondo-aurora {
+  background: conic-gradient(from 0deg at 50% 40%,
+    rgba(15, 122, 107, 0.16), rgba(228, 87, 46, 0.12),
+    rgba(233, 224, 204, 0.10), rgba(228, 87, 46, 0.14),
+    rgba(15, 122, 107, 0.16));
+  animation: girarAurora 50s linear infinite;
+}
+@keyframes girarAurora { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+/* Accesibilidad: "reducir movimiento" activado → todo el fondo se queda
+   quieto (aurora, blobs, partículas), nunca se fuerza la animación. */
 @media (prefers-reduced-motion: reduce) {
-  body, body::before, body::after {
-    animation: none !important;
-  }
+  #fondo-mesh .blob, #fondo-aurora { animation: none !important; transition: none !important; }
 }
 
-/* Todo el contenido real vive encima del fondo animado */
-.wrap, header, .card, .top-bar, nav {
-  position: relative;
-  z-index: 1;
-}
+/* Todo el contenido real vive por encima del fondo */
+.wrap, .card { position: relative; z-index: 1; }
 
 .wrap {
   max-width: 720px;
@@ -151,12 +147,22 @@ a { color: var(--teal-deep); }
 }
 
 .card {
-  background: var(--white);
-  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(255, 255, 255, 0.5);
   border-radius: var(--radius);
   padding: 22px;
   margin-bottom: 16px;
   box-shadow: var(--shadow);
+}
+/* Glassmorphism real solo si el navegador lo soporta bien — si no,
+   se queda con el fondo translúcido de arriba (igual de legible,
+   solo sin el desenfoque). Nunca sacrifica la lectura de cifras
+   importantes (comisiones, montos) por un efecto visual. */
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  .card {
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  }
 }
 
 .badge {

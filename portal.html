@@ -120,25 +120,47 @@ async function actualizarDocumento(campo, marcado) {
 }
 
 function construirMiniEncuestaVisita() {
+  window.RESPUESTAS_ENCUESTA_VISITA = {};
   return '<div class="card" id="cardEncuestaVisita"><h3>⭐ ¿Cómo fue tu última visita?</h3>' +
+    '<p style="font-size:13px;color:var(--text-muted)">Selecciona tus respuestas y presiona enviar — tu agente podrá verlas.</p>' +
     '<div id="preguntasVisita">' +
     construirPreguntaVisita('Comprador_Le_Gusto', '¿Te gustó la propiedad?') +
     construirPreguntaVisita('Agente_Puntual', '¿Tu agente llegó puntual?') +
     construirPreguntaVisita('Agente_Explico_Bien', '¿Explicó bien las opciones?') +
     construirPreguntaVisita('Recomendaria_Agente', '¿Lo recomendarías?') +
-    '</div></div>';
+    '</div>' +
+    '<button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="enviarEncuestaVisita()">📨 Enviar mi opinión</button>' +
+    '<p id="mensajeEncuestaVisita" style="font-size:13px;margin-top:8px"></p></div>';
 }
 
 function construirPreguntaVisita(campo, pregunta) {
-  return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">' +
+  return '<div id="pregunta_' + campo + '" style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">' +
     '<span style="font-size:13px">' + pregunta + '</span>' +
-    '<span><button class="btn btn-primary btn-sm" onclick="calificarVisita(\'' + campo + '\',\'Sí\',this)">👍 Sí</button> ' +
-    '<button class="btn btn-outline btn-sm" onclick="calificarVisita(\'' + campo + '\',\'No\',this)">👎 No</button></span></div>';
+    '<span><button class="btn btn-outline btn-sm" id="btnSi_' + campo + '" onclick="seleccionarRespuestaVisita(\'' + campo + '\',\'Sí\')">👍 Sí</button> ' +
+    '<button class="btn btn-outline btn-sm" id="btnNo_' + campo + '" onclick="seleccionarRespuestaVisita(\'' + campo + '\',\'No\')">👎 No</button></span></div>';
 }
 
-async function calificarVisita(campo, valor, boton) {
-  await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'calificarVisita', campo: campo, valor: valor });
-  boton.closest('div').innerHTML = '<span style="font-size:13px">✅ ¡Gracias!</span>';
+function seleccionarRespuestaVisita(campo, valor) {
+  window.RESPUESTAS_ENCUESTA_VISITA[campo] = valor;
+  document.getElementById('btnSi_' + campo).className = valor === 'Sí' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+  document.getElementById('btnNo_' + campo).className = valor === 'No' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+}
+
+async function enviarEncuestaVisita() {
+  const respuestas = window.RESPUESTAS_ENCUESTA_VISITA || {};
+  const msj = document.getElementById('mensajeEncuestaVisita');
+  const campos = Object.keys(respuestas);
+  if (!campos.length) { msj.textContent = '⚠️ Selecciona al menos una respuesta antes de enviar.'; return; }
+
+  msj.textContent = 'Enviando…';
+  try {
+    for (const campo of campos) {
+      await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'calificarVisita', campo: campo, valor: respuestas[campo] });
+    }
+    document.getElementById('cardEncuestaVisita').innerHTML = '<h3>✅ ¡Gracias por tu opinión!</h3><p style="font-size:13px">Tu agente ya puede verla en su Panel.</p>';
+  } catch (e) {
+    msj.textContent = '⚠️ Ocurrió un problema de conexión. Intenta de nuevo.';
+  }
 }
 
 function construirBotonAyuda(tipo) {

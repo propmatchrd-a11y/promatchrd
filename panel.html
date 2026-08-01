@@ -51,6 +51,9 @@
       (datos.mensajeContacto ? datos.mensajeContacto : '') +
       '<div style="text-align:center"><span class="badge">' + datos.nivel + '</span></div>' +
       '<h1 style="text-align:center">Hola ' + datos.nombre + '</h1>' +
+      (datos.tipoRegistro === 'Empresa'
+        ? '<p style="text-align:center;font-size:13px;color:var(--text-muted)">🏢 Empresa inmobiliaria' + (datos.nombreRepresentante ? ' · Representante: ' + datos.nombreRepresentante : '') + '</p>'
+        : '') +
 
       '<div class="stat-grid">' +
       '<div class="stat"><span class="num">' + datos.kpis.compradoresActivos + '</span><span class="label">Compradores activos</span></div>' +

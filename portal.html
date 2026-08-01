@@ -33,17 +33,17 @@
 
       (datos.agenteLinkWhatsApp
         ? '<div class="card" style="text-align:center">' +
-          '<p style="font-size:14px;margin-bottom:8px">Tu agente: <b>' + datos.agenteNombre + '</b></p>' +
+          '<p style="font-size:13px;margin-bottom:8px">Tu agente: <b>' + datos.agenteNombre + '</b></p>' +
           '<a href="' + datos.agenteLinkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a>' +
           '</div>'
         : '<div class="alert info" style="text-align:center">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</div>') +
 
-      '<div class="card"><p style="font-size:16px;color:var(--ink);margin:0">' + datos.analisisPersonalizado + '</p></div>' +
+      '<div class="card"><p style="font-size:15px;color:var(--ink);margin:0">' + datos.analisisPersonalizado + '</p></div>' +
 
       '<div class="card" style="text-align:center">' +
       '<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap">' +
-      '<div>' + construirGraficoGauge(datos.indicePreparacionPct, '#0f7a6b', 110) + '<div style="font-size:12px;color:var(--text-muted);margin-top:6px">Índice de Preparación<br>' + datos.indicePreparacionPct + '/100</div></div>' +
-      '<div>' + construirGraficoGauge(datos.probabilidadFinanciamientoPct, '#e4572e', 110) + '<div style="font-size:12px;color:var(--text-muted);margin-top:6px">Probabilidad de Financiamiento<br>' + datos.probabilidadFinanciamientoPct + '/100</div></div>' +
+      '<div>' + construirGraficoGauge(datos.indicePreparacionPct, '#0f7a6b', 110) + '<div style="font-size:13px;color:var(--text-muted);margin-top:6px">Índice de Preparación<br>' + datos.indicePreparacionPct + '/100</div></div>' +
+      '<div>' + construirGraficoGauge(datos.probabilidadFinanciamientoPct, '#e4572e', 110) + '<div style="font-size:13px;color:var(--text-muted);margin-top:6px">Probabilidad de Financiamiento<br>' + datos.probabilidadFinanciamientoPct + '/100</div></div>' +
       '</div></div>' +
 
       '<div class="card"><h3>Tu Ruta de Compra</h3><div class="ruta">' +
@@ -57,7 +57,7 @@
       '<tr><td>Gastos de cierre</td><td class="num">' + formatoRD(g.cierreMin) + ' - ' + formatoRD(g.cierreMax) + '</td></tr>' +
       '<tr><td>IPI (anual)</td><td class="num">' + (g.aplicaIPI ? formatoRD(g.ipiAnual) : 'No aplica') + '</td></tr>' +
       '<tr><td style="font-weight:700">Total estimado para iniciar</td><td class="num" style="font-weight:700">' + formatoRD(g.totalMin) + ' - ' + formatoRD(g.totalMax) + '</td></tr>' +
-      '</table><p style="font-size:11px;margin-top:8px">Estimados de referencia — confirma cifras con tu banco y abogado.</p></div>' +
+      '</table><p style="font-size:13px;margin-top:8px">Estimados de referencia — confirma cifras con tu banco y abogado.</p></div>' +
 
       (datos.faltantes.length
         ? '<div class="card"><h3>¿Qué sigue?</h3><ul>' + datos.faltantes.map(f => '<li>' + f + '</li>').join('') + '</ul></div>'
@@ -84,7 +84,7 @@
       '</div><p id="mensajeAyuda" style="font-size:13px;margin-top:8px"></p></div>' +
 
       '<div class="card"><h3>💡 Mientras esperas</h3>' +
-      '<ul style="font-size:14px">' +
+      '<ul style="font-size:13px">' +
       '<li>5 errores comunes al comprar tu primera propiedad: no verificar el título, no calcular todos los gastos de cierre, negociar sin preaprobación, saltarse la tasación, y firmar sin un abogado independiente.</li>' +
       '<li>Documentos que casi siempre te van a pedir: cédula, carta de trabajo o estados de cuenta, y comprobante de la inicial.</li>' +
       '<li>Mejorar tus posibilidades de aprobación: mantén tus estados de cuenta organizados, evita nuevas deudas mientras tramitas, y ten tu inicial disponible y documentada.</li>' +
@@ -112,7 +112,7 @@ function construirFilaDocumento(idSufijo, campo, etiqueta, marcado) {
   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">' +
     '<input type="checkbox" id="doc_' + idSufijo + '" ' + (marcado ? 'checked' : '') +
     ' onchange="actualizarDocumento(\'' + campo + '\', this.checked)" style="width:18px;height:18px">' +
-    '<label for="doc_' + idSufijo + '" style="font-size:14px">' + etiqueta + '</label></div>';
+    '<label for="doc_' + idSufijo + '" style="font-size:13px">' + etiqueta + '</label></div>';
 }
 
 async function actualizarDocumento(campo, marcado) {
@@ -131,14 +131,14 @@ function construirMiniEncuestaVisita() {
 
 function construirPreguntaVisita(campo, pregunta) {
   return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">' +
-    '<span style="font-size:14px">' + pregunta + '</span>' +
+    '<span style="font-size:13px">' + pregunta + '</span>' +
     '<span><button class="btn btn-primary btn-sm" onclick="calificarVisita(\'' + campo + '\',\'Sí\',this)">Sí</button> ' +
     '<button class="btn btn-outline btn-sm" onclick="calificarVisita(\'' + campo + '\',\'No\',this)">No</button></span></div>';
 }
 
 async function calificarVisita(campo, valor, boton) {
   await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'calificarVisita', campo: campo, valor: valor });
-  boton.closest('div').innerHTML = '<span style="font-size:14px">✅ ¡Gracias!</span>';
+  boton.closest('div').innerHTML = '<span style="font-size:13px">✅ ¡Gracias!</span>';
 }
 
 function construirBotonAyuda(tipo) {

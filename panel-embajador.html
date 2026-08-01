@@ -41,7 +41,7 @@ function pintarPanel(datos) {
 
     '<div class="card" style="text-align:center"><h3>Tu nivel de desempeño</h3>' +
     construirGraficoGauge(datos.score, '#b8860b', 110) +
-    '<p style="font-size:12px;color:var(--text-muted);margin-top:6px">Se calcula con tu tasa de conversión, validación y actividad reciente — no es un premio por antigüedad, sino por resultados.</p></div>' +
+    '<p style="font-size:13px;color:var(--text-muted);margin-top:6px">Se calcula con tu tasa de conversión, validación y actividad reciente — no es un premio por antigüedad, sino por resultados.</p></div>' +
 
     '<div class="stat-grid">' +
     '<div class="stat"><span class="num">' + datos.kpis.totalReferidos + '</span><span class="label">Referidos totales</span></div>' +
@@ -64,7 +64,7 @@ function pintarPanel(datos) {
 
     (datos.referidos && datos.referidos.length
       ? '<div class="card"><h3>Tus referidos</h3>' +
-        '<p style="font-size:12px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
+        '<p style="font-size:13px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
         datos.referidos.map(r => {
           let comisionTexto = '<span style="color:#999">Aún sin estimar</span>';
           if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ ' + formatoRD(r.comisionExacta) + ' — Pagada</b>'; }
@@ -76,10 +76,10 @@ function pintarPanel(datos) {
           return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
             '<b style="font-size:15px">' + r.nombre + '</b>' +
-            '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + r.tipo + '</span>' +
+            '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + r.tipo + '</span>' +
             '</div>' +
             '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">' + r.estado + ' · ' + new Date(r.fecha).toLocaleDateString('es-DO') + '</div>' +
-            '<div style="font-size:14px">' + comisionTexto + '</div>' +
+            '<div style="font-size:13px">' + comisionTexto + '</div>' +
             '</div>';
         }).join('') +
         '</div>'
@@ -123,22 +123,22 @@ function pintarPanel(datos) {
         '</ul>' +
         (datos.premium.pagoReportado
           ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
-          : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:12px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' : '') +
-             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Enviar solicitud de membresía</button><span id="premiumMsjEmb" style="font-size:12px;margin-left:8px"></span>')) +
+          : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:13px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' : '') +
+             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Enviar solicitud de membresía</button><span id="premiumMsjEmb" style="font-size:13px;margin-left:8px"></span>')) +
         '</div>') +
 
     '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +
     '<p style="font-size:13px">El pago se coordina directamente contigo — esto solo nos dice a dónde transferir cuando se apruebe una comisión.</p>' +
-    '<label style="font-size:12px;color:var(--text-muted)">Banco</label>' +
+    '<label style="font-size:13px;color:var(--text-muted)">Banco</label>' +
     '<input type="text" id="inputCuentaBanco" value="' + (datos.cuentaBanco || '') + '" placeholder="Ej. Banco Popular Dominicano" style="width:100%;margin-bottom:8px">' +
-    '<label style="font-size:12px;color:var(--text-muted)">Tipo de cuenta</label>' +
+    '<label style="font-size:13px;color:var(--text-muted)">Tipo de cuenta</label>' +
     '<select id="inputCuentaTipo" style="width:100%;margin-bottom:8px">' +
     '<option value="Ahorros"' + (datos.cuentaTipo === 'Ahorros' ? ' selected' : '') + '>Ahorros</option>' +
     '<option value="Corriente"' + (datos.cuentaTipo === 'Corriente' ? ' selected' : '') + '>Corriente</option>' +
     '</select>' +
-    '<label style="font-size:12px;color:var(--text-muted)">Número de cuenta</label>' +
+    '<label style="font-size:13px;color:var(--text-muted)">Número de cuenta</label>' +
     '<input type="text" id="inputCuentaNumero" value="' + (datos.cuentaNumero || '') + '" style="width:100%;margin-bottom:8px">' +
-    '<label style="font-size:12px;color:var(--text-muted)">Nombre del titular</label>' +
+    '<label style="font-size:13px;color:var(--text-muted)">Nombre del titular</label>' +
     '<input type="text" id="inputCuentaTitular" value="' + (datos.cuentaTitular || '') + '" style="width:100%;margin-bottom:8px">' +
     '<button class="btn btn-primary btn-sm" onclick="guardarCuentaBancaria()">Guardar</button>' +
     '<p id="mensajeCuenta" style="font-size:13px;margin-top:6px"></p></div>' +

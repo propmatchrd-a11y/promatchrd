@@ -27,7 +27,7 @@
       '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
       '<b style="font-size:15px">' + c.nombre + '</b>' +
-      '<span style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
+      '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
       '</div>' +
       badgeFormaPago(c.formaPago) +
       '<div style="font-size:13px;margin-bottom:4px"><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + ' · ' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
@@ -61,7 +61,7 @@
 
       '<div class="card" style="text-align:center"><h3>Tu tasa de conversión</h3>' +
       construirGraficoGauge(datos.kpis.tasaConversionPct, '#0f7a6b', 110) +
-      '<p style="font-size:12px;color:var(--text-muted);margin-top:6px">De todos los compradores que te han asignado en tu historia, qué % terminaste cerrando en una venta real. Entre más alta, más prioridad tienes para recibir compradores nuevos.</p></div>' +
+      '<p style="font-size:13px;color:var(--text-muted);margin-top:6px">De todos los compradores que te han asignado en tu historia, qué % terminaste cerrando en una venta real. Entre más alta, más prioridad tienes para recibir compradores nuevos.</p></div>' +
 
       (datos.comisionesPendientes
         ? '<div class="alert">⚠️ Tienes ' + datos.comisionesPendientes + ' comisión(es) pendiente(s) de pago. Revisa tu correo.</div>'
@@ -75,7 +75,7 @@
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
             '<b style="font-size:15px">' + c.nombre + '</b>' +
-            '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + c.clasificacion + '</span>' +
+            '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + c.clasificacion + '</span>' +
             '</div>' +
             badgeFormaPago(c.formaPago) +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
@@ -101,7 +101,7 @@
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
             '<b style="font-size:15px">' + a.nombre + '</b>' +
-            '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + a.clasificacion + '</span>' +
+            '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + a.clasificacion + '</span>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
             '<div style="display:flex;gap:6px">' +
@@ -119,7 +119,7 @@
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
             '<b style="font-size:15px">' + a.nombre + '</b>' +
-            '<span style="font-size:12px;color:var(--text-muted);font-family:var(--font-mono)">' + a.id + '</span>' +
+            '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + a.id + '</span>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:4px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
@@ -137,13 +137,13 @@
         ? '<div class="card"><h3>💰 Tus comisiones</h3>' +
           (datos.cuentaBancariaPlataforma
             ? '<div style="background:#e8f0fe;padding:10px;border-radius:8px;margin-bottom:12px">' +
-              '<p style="font-size:12px;margin-bottom:4px"><b>Cuenta para transferir tu comisión de la plataforma:</b></p>' +
+              '<p style="font-size:13px;margin-bottom:4px"><b>Cuenta para transferir tu comisión de la plataforma:</b></p>' +
               '<p style="font-size:13px;font-family:var(--font-mono)" id="cuentaPlataformaTexto">' + datos.cuentaBancariaPlataforma + '</p>' +
               '<button class="btn btn-outline btn-sm" onclick="copiarCuentaPlataforma()">📋 Copiar cuenta</button>' +
-              '<span id="cuentaCopiadaMsj" style="font-size:12px;margin-left:8px"></span>' +
+              '<span id="cuentaCopiadaMsj" style="font-size:13px;margin-left:8px"></span>' +
               '</div>'
             : '') +
-          '<p style="font-size:12px;color:var(--text-muted)">Cierres ya confirmados. 1) Transfiere el monto a la cuenta indicada. 2) Envía tu solicitud de pago — la aprobamos apenas confirmemos que llegó.</p>' +
+          '<p style="font-size:13px;color:var(--text-muted)">Cierres ya confirmados. 1) Transfiere el monto a la cuenta indicada. 2) Envía tu solicitud de pago — la aprobamos apenas confirmemos que llegó.</p>' +
           datos.misComisiones.map(m => {
             let colorEstado = '#999', textoEstado = m.estado;
             let mostrarBotonYaPague = false;
@@ -154,19 +154,19 @@
             return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
               '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">' +
               '<b style="font-size:15px">' + m.id + '</b>' +
-              '<span style="font-size:12px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + m.tipo + '</span>' +
+              '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + m.tipo + '</span>' +
               '</div>' +
               '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">' + new Date(m.fecha).toLocaleDateString('es-DO') + '</div>' +
               (m.desglose
-                ? '<div style="font-size:12px;color:var(--text-muted);background:var(--sand-deep);padding:8px;border-radius:8px;margin-bottom:6px">' +
+                ? '<div style="font-size:13px;color:var(--text-muted);background:var(--sand-deep);padding:8px;border-radius:8px;margin-bottom:6px">' +
                   (m.tipo === 'Alquiler' ? 'Alquiler mensual: ' : 'Venta: ') + formatoRD(m.desglose.montoVenta) + ' → ' +
                   'Tu comisión (' + m.desglose.pctComisionAgente + '%): ' + formatoRD(m.desglose.comisionAgenteRD) + ' → ' +
                   'A la plataforma (' + m.desglose.pctPlataforma + '% de tu comisión): <b>' + formatoRD(m.monto) + '</b>' +
                   '</div>'
                 : '') +
-              '<div style="font-size:16px;margin-bottom:6px"><b style="color:' + colorEstado + '">' + formatoRD(m.monto) + '</b> · ' + textoEstado + '</div>' +
+              '<div style="font-size:15px;margin-bottom:6px"><b style="color:' + colorEstado + '">' + formatoRD(m.monto) + '</b> · ' + textoEstado + '</div>' +
               (mostrarBotonYaPague
-                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">Enviar solicitud de pago</button><span id="pagoMsj_' + m.id + '" style="font-size:12px;margin-left:8px"></span>'
+                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">Enviar solicitud de pago</button><span id="pagoMsj_' + m.id + '" style="font-size:13px;margin-left:8px"></span>'
                 : '') +
               '</div>';
           }).join('') +
@@ -190,9 +190,9 @@
           (datos.premium.pagoReportado
             ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
             : (datos.cuentaBancariaPlataforma
-                ? '<p style="font-size:12px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' +
-                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>'
-                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:12px;margin-left:8px"></span>')) +
+                ? '<p style="font-size:13px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' +
+                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>'
+                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>')) +
           '</div>') +
 
       '<div class="card"><h3>⚙️ Mi disponibilidad</h3>' +
@@ -258,13 +258,13 @@
     if (!historial || !historial.length) return '';
     const idUnico = 'hist_' + (contadorHistorial++);
     const filas = historial.map(v =>
-      '<div style="font-size:12px;padding:4px 0;border-bottom:1px solid var(--line)">' +
+      '<div style="font-size:13px;padding:4px 0;border-bottom:1px solid var(--line)">' +
       '<b>Visita ' + v.numero + '</b> — ' + (v.fecha ? new Date(v.fecha).toLocaleDateString('es-DO') : '—') + ' · ' + v.resultado +
       (v.leGusto ? (v.leGusto === 'Sí' ? ' · <span style="color:#0f7a6b">👍 Le gustó</span>' : ' · <span style="color:#e4572e">👎 No le gustó</span>') : ' · <span style="color:#999">Sin opinión aún</span>') +
       '</div>'
     ).join('');
     return '<div style="margin-bottom:8px">' +
-      '<span style="font-size:12px;color:#1a73e8;cursor:pointer" onclick="document.getElementById(\'' + idUnico + '\').style.display = document.getElementById(\'' + idUnico + '\').style.display === \'none\' ? \'block\' : \'none\'">📋 Ver histórico (' + historial.length + ')</span>' +
+      '<span style="font-size:13px;color:#1a73e8;cursor:pointer" onclick="document.getElementById(\'' + idUnico + '\').style.display = document.getElementById(\'' + idUnico + '\').style.display === \'none\' ? \'block\' : \'none\'">📋 Ver histórico (' + historial.length + ')</span>' +
       '<div id="' + idUnico + '" style="display:none;margin-top:4px">' + filas + '</div>' +
       '</div>';
   }
@@ -275,7 +275,7 @@
     if (formaPago.includes('contado')) { color = '#0f7a6b'; icono = '💵'; }
     else if (formaPago.includes('Financiado')) { color = '#1a73e8'; icono = '🏦'; }
     else if (formaPago.includes('Combinación')) { color = '#b8860b'; icono = '💵🏦'; }
-    return '<div style="margin-bottom:6px"><span style="font-size:12px;background:' + color + ';color:white;padding:2px 10px;border-radius:100px">' + icono + ' ' + formaPago + '</span></div>';
+    return '<div style="margin-bottom:6px"><span style="font-size:13px;background:' + color + ';color:white;padding:2px 10px;border-radius:100px">' + icono + ' ' + formaPago + '</span></div>';
   }
 
   async function cambiarDisponibilidad(valor) {

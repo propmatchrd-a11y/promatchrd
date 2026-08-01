@@ -35,7 +35,7 @@
       renderHistorialVisitas(c.historialVisitas) +
       '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
       (c.contactoPendiente
-        ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">Marcar contacto</button>'
+        ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">📞 Marcar contacto</button>'
         : '<span style="font-size:13px">✅ Contactado</span>') +
       (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
       '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
@@ -166,7 +166,7 @@
                 : '') +
               '<div style="font-size:15px;margin-bottom:6px"><b style="color:' + colorEstado + '">' + formatoRD(m.monto) + '</b> · ' + textoEstado + '</div>' +
               (mostrarBotonYaPague
-                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">Enviar solicitud de pago</button><span id="pagoMsj_' + m.id + '" style="font-size:13px;margin-left:8px"></span>'
+                ? '<button class="btn btn-primary btn-sm" onclick="reportarPagoRealizado(\'' + m.id + '\',\'' + m.tipo + '\')">📨 Enviar solicitud de pago</button><span id="pagoMsj_' + m.id + '" style="font-size:13px;margin-left:8px"></span>'
                 : '') +
               '</div>';
           }).join('') +
@@ -191,8 +191,8 @@
             ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
             : (datos.cuentaBancariaPlataforma
                 ? '<p style="font-size:13px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' +
-                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>'
-                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>')) +
+                  '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">⭐ Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>'
+                : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">⭐ Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>')) +
           '</div>') +
 
       '<div class="card"><h3>⚙️ Mi disponibilidad</h3>' +
@@ -204,17 +204,17 @@
       '<div class="card"><h3>🔑 Atención de alquileres</h3>' +
       '<p style="font-size:13px">Si la activas, también recibirás solicitudes de personas buscando alquilar, no solo comprar. Se detectó automáticamente de tu especialidad, pero puedes ajustarlo aquí cuando quieras.</p>' +
       '<button class="btn ' + (atiendeAlquileres ? 'btn-primary' : 'btn-outline') + '" onclick="cambiarAtiendeAlquileres(\'Sí\')">✅ Sí, atiendo alquileres</button> ' +
-      '<button class="btn ' + (!atiendeAlquileres ? 'btn-coral' : 'btn-outline') + '" onclick="cambiarAtiendeAlquileres(\'No\')">No por ahora</button>' +
+      '<button class="btn ' + (!atiendeAlquileres ? 'btn-coral' : 'btn-outline') + '" onclick="cambiarAtiendeAlquileres(\'No\')">🚫 No por ahora</button>' +
       '<p id="mensajeAlquileres" style="font-size:13px;margin-top:8px"></p>' +
       '</div>' +
 
       '<div class="card"><h3>⚙️ Mi información</h3>' +
       '<label style="font-size:13px">Teléfono</label>' +
       '<div class="code-input"><input type="text" id="inputTelefonoAgente" value="' + datos.telefono + '">' +
-      '<button class="btn btn-outline btn-sm" onclick="guardarCampoAgente(\'actualizarTelefono\',\'inputTelefonoAgente\')">Guardar</button></div>' +
+      '<button class="btn btn-outline btn-sm" onclick="guardarCampoAgente(\'actualizarTelefono\',\'inputTelefonoAgente\')">💾 Guardar</button></div>' +
       '<label style="font-size:13px;margin-top:10px;display:block">Correo</label>' +
       '<div class="code-input"><input type="text" id="inputEmailAgente" value="' + datos.email + '">' +
-      '<button class="btn btn-outline btn-sm" onclick="guardarCampoAgente(\'actualizarEmail\',\'inputEmailAgente\')">Guardar</button></div>' +
+      '<button class="btn btn-outline btn-sm" onclick="guardarCampoAgente(\'actualizarEmail\',\'inputEmailAgente\')">💾 Guardar</button></div>' +
       '<p id="mensajeGuardadoAgente" style="font-size:13px;margin-top:8px"></p></div>';
   }
 
@@ -327,8 +327,8 @@
       cont.innerHTML =
         '<h3>📝 Registrar visita — ' + nombre + '</h3>' +
         '<p style="font-size:13px">Confirma que ya visitaste la propiedad con el inquilino — esto te da la exclusividad de esta solicitud.</p>' +
-        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visitaAlquiler\',\'' + id + '\')">Confirmar visita realizada</button> ' +
-        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visitaAlquiler\',\'' + id + '\')">✅ Confirmar visita realizada</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">✖️ Cancelar</button>' +
         '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
     } else if (tipo === 'visita') {
       cont.innerHTML =
@@ -347,8 +347,8 @@
         '<input type="number" id="raCompatibilidad" min="1" max="5" style="width:100%;margin-bottom:8px">' +
         '<label style="font-size:13px">¿Próximo paso?</label>' +
         '<select id="raProximoPaso" class="btn btn-outline" style="width:100%;margin-bottom:10px"></select>' +
-        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visita\',\'' + id + '\')">Registrar visita</button> ' +
-        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'visita\',\'' + id + '\')">📝 Registrar visita</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">✖️ Cancelar</button>' +
         '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
       actualizarProximoPaso();
     } else if (tipo === 'cierreVenta' || tipo === 'cierreAlquiler') {
@@ -366,8 +366,8 @@
         '<input type="file" id="raEvidenciaArchivo" accept="image/*,application/pdf" style="width:100%;margin-bottom:8px">' +
         '<label style="font-size:13px">¿El monto final fue distinto al esperado? (opcional)</label>' +
         '<input type="text" id="raNota" style="width:100%;margin-bottom:10px">' +
-        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'' + tipo + '\',\'' + id + '\')">Registrar cierre</button> ' +
-        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">Cancelar</button>' +
+        '<button class="btn btn-primary" onclick="enviarAccionRapida(\'' + tipo + '\',\'' + id + '\')">✅ Registrar cierre</button> ' +
+        '<button class="btn btn-outline" onclick="cerrarAccionRapida()">✖️ Cancelar</button>' +
         '<p id="raMensaje" style="font-size:13px;margin-top:8px"></p>';
     }
     cont.scrollIntoView({ behavior: 'smooth' });

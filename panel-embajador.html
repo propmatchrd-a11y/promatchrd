@@ -95,15 +95,15 @@ function pintarPanel(datos) {
 
     '<h4 style="margin-bottom:6px">Calcula tu comisión estimada</h4>' +
     '<div class="code-input"><input type="text" id="inputMontoVenta" value="5000000" inputmode="numeric">' +
-    '<button class="btn btn-primary btn-sm" onclick="calcularComisionEstimada()">Calcular</button></div>' +
+    '<button class="btn btn-primary btn-sm" onclick="calcularComisionEstimada()">🧮 Calcular</button></div>' +
     '<p id="resultadoCalculadora" style="font-size:15px;margin-top:10px;font-weight:600"></p></div>' +
 
     (datos.mensajePersonalizado
       ? '<div class="card"><h3>Tu mensaje sugerido</h3>' +
         '<p style="font-size:13px">Un mensaje ya redactado para el canal que elegiste — cópialo y compártelo cuando quieras.</p>' +
         '<p id="mensajeIA" style="background:#fff8e6;padding:12px;border-radius:6px;font-style:italic">' + datos.mensajePersonalizado + '</p>' +
-        '<button class="btn btn-outline btn-sm" onclick="copiarMensaje()">Copiar mensaje</button> ' +
-        '<button class="btn btn-outline btn-sm" onclick="regenerarMensaje()" id="btnRegenerar">Generar otro</button>' +
+        '<button class="btn btn-outline btn-sm" onclick="copiarMensaje()">📋 Copiar mensaje</button> ' +
+        '<button class="btn btn-outline btn-sm" onclick="regenerarMensaje()" id="btnRegenerar">🔄 Generar otro</button>' +
         '<p id="copiadoOk" style="font-size:13px;margin-top:6px"></p></div>'
       : '') +
 
@@ -124,7 +124,7 @@ function pintarPanel(datos) {
         (datos.premium.pagoReportado
           ? '<p style="font-size:13px;color:#1a73e8">📨 Tu solicitud está en revisión — te confirmamos apenas se apruebe.</p>'
           : ((datos.cuentaBancariaPlataforma ? '<p style="font-size:13px;color:var(--text-muted)">1) Transfiere RD$' + datos.premium.cuota + ' a: <b>' + datos.cuentaBancariaPlataforma + '</b><br>2) Envía tu solicitud abajo — la aprobamos apenas confirmemos el pago.</p>' : '') +
-             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">Enviar solicitud de membresía</button><span id="premiumMsjEmb" style="font-size:13px;margin-left:8px"></span>')) +
+             '<button class="btn btn-primary" onclick="reportarPagoPremiumEmbajador()">⭐ Enviar solicitud de membresía</button><span id="premiumMsjEmb" style="font-size:13px;margin-left:8px"></span>')) +
         '</div>') +
 
     '<div class="card"><h3>💳 Cuenta para recibir tu comisión</h3>' +
@@ -140,7 +140,7 @@ function pintarPanel(datos) {
     '<input type="text" id="inputCuentaNumero" value="' + (datos.cuentaNumero || '') + '" style="width:100%;margin-bottom:8px">' +
     '<label style="font-size:13px;color:var(--text-muted)">Nombre del titular</label>' +
     '<input type="text" id="inputCuentaTitular" value="' + (datos.cuentaTitular || '') + '" style="width:100%;margin-bottom:8px">' +
-    '<button class="btn btn-primary btn-sm" onclick="guardarCuentaBancaria()">Guardar</button>' +
+    '<button class="btn btn-primary btn-sm" onclick="guardarCuentaBancaria()">💾 Guardar</button>' +
     '<p id="mensajeCuenta" style="font-size:13px;margin-top:6px"></p></div>' +
 
     '<div class="card"><h3>Tu progreso</h3><div class="ruta">' + pasosHtml + '</div></div>' +

@@ -94,10 +94,10 @@
       '<p style="font-size:13px">Actualiza tus datos de contacto si cambiaron.</p>' +
       '<label style="font-size:13px">Teléfono</label>' +
       '<div class="code-input"><input type="text" id="inputTelefono" value="' + datos.telefono + '">' +
-      '<button class="btn btn-outline btn-sm" onclick="guardarCampo(\'actualizarTelefono\',\'inputTelefono\')">Guardar</button></div>' +
+      '<button class="btn btn-outline btn-sm" onclick="guardarCampo(\'actualizarTelefono\',\'inputTelefono\')">💾 Guardar</button></div>' +
       '<label style="font-size:13px;margin-top:10px;display:block">Correo</label>' +
       '<div class="code-input"><input type="text" id="inputEmail" value="' + datos.email + '">' +
-      '<button class="btn btn-outline btn-sm" onclick="guardarCampo(\'actualizarEmail\',\'inputEmail\')">Guardar</button></div>' +
+      '<button class="btn btn-outline btn-sm" onclick="guardarCampo(\'actualizarEmail\',\'inputEmail\')">💾 Guardar</button></div>' +
       '<p id="mensajeGuardado" style="font-size:13px;margin-top:8px"></p></div>' +
 
       '<p class="footer-note">Código: ' + datos.idComprador + '</p>';
@@ -132,8 +132,8 @@ function construirMiniEncuestaVisita() {
 function construirPreguntaVisita(campo, pregunta) {
   return '<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)">' +
     '<span style="font-size:13px">' + pregunta + '</span>' +
-    '<span><button class="btn btn-primary btn-sm" onclick="calificarVisita(\'' + campo + '\',\'Sí\',this)">Sí</button> ' +
-    '<button class="btn btn-outline btn-sm" onclick="calificarVisita(\'' + campo + '\',\'No\',this)">No</button></span></div>';
+    '<span><button class="btn btn-primary btn-sm" onclick="calificarVisita(\'' + campo + '\',\'Sí\',this)">👍 Sí</button> ' +
+    '<button class="btn btn-outline btn-sm" onclick="calificarVisita(\'' + campo + '\',\'No\',this)">👎 No</button></span></div>';
 }
 
 async function calificarVisita(campo, valor, boton) {

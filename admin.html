@@ -70,6 +70,14 @@ function pintarPanel(datos) {
     '<p style="font-size:13px">⏰ Próximas a vencer: <b style="color:#b8860b">' + datos.pendientes.comisionesProximasVencer + '</b> · 🚨 Ya vencidas: <b style="color:#e4572e">' + datos.pendientes.comisionesYaVencidas + '</b></p>' +
     '</div>' +
 
+    '<div class="card"><h3>📋 Ver detalles</h3>' +
+    '<p style="font-size:12px;color:var(--text-muted)">No se cargan al abrir el Panel (para que siga siendo rápido) — solo al presionar cada botón.</p>' +
+    '<button class="btn btn-outline" style="width:100%;margin-bottom:6px" onclick="verDetalle(\'verComentariosVisitas\')">💬 Comentarios recientes de visitas</button>' +
+    '<button class="btn btn-outline" style="width:100%;margin-bottom:6px" onclick="verDetalle(\'verAgentesPendientesVerificar\')">🔎 Agentes pendientes de verificar</button>' +
+    '<button class="btn btn-outline" style="width:100%;margin-bottom:6px" onclick="verDetalle(\'verSolicitudesAyuda\')">🆘 Solicitudes de ayuda recientes</button>' +
+    '<button class="btn btn-outline" style="width:100%" onclick="verDetalle(\'verAlertasFraude\')">🚨 Detalle de alertas de fraude</button>' +
+    '<div id="resultadoDetalle" style="margin-top:10px"></div></div>' +
+
     '<div class="card"><h3>⚡ Redistribuir compradores por zona</h3>' +
     '<p style="font-size:12px;color:var(--text-muted)">Pone a todos los compradores sin asignar de una zona a competir contra todos los agentes elegibles de esa misma zona.</p>' +
     '<input type="text" id="inputZonaRedistribuir" placeholder="Ej. Distrito Nacional" style="width:100%;margin-bottom:8px">' +
@@ -101,6 +109,43 @@ async function abrirYMarcarEnviado(idx) {
     if (elemento) elemento.remove();
   } catch (e) {
     if (elemento) elemento.style.opacity = '1';
+  }
+}
+
+async function verDetalle(accion) {
+  const cont = document.getElementById('resultadoDetalle');
+  cont.innerHTML = '<p style="font-size:13px">Cargando…</p>';
+  try {
+    const datos = await ejecutarAccion({ panelAdmin: CODIGO_ADMIN, accion: accion });
+    if (datos.error) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ ' + datos.mensaje + '</p>'; return; }
+
+    let filas = [];
+    if (accion === 'verComentariosVisitas') {
+      filas = (datos.comentarios || []).map(function (c) {
+        const opinion = c.leGusto === 'Sí' ? '👍 Le gustó' : '👎 No le gustó';
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px">' +
+          '<b>' + c.id + '</b> (' + c.tipo + ') · Agente: ' + c.agente + '<br>' + opinion + ' · ' + (c.fecha ? new Date(c.fecha).toLocaleDateString('es-DO') : '—') + '</div>';
+      });
+      if (!filas.length) filas = ['<p style="font-size:13px">Sin comentarios todavía.</p>'];
+    } else if (accion === 'verAgentesPendientesVerificar') {
+      filas = (datos.agentes || []).map(function (a) {
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + a.nombre + ' · ' + (a.telefono || 'sin teléfono') + '</div>';
+      });
+      if (!filas.length) filas = ['<p style="font-size:13px">✅ No hay agentes pendientes de verificar.</p>'];
+    } else if (accion === 'verSolicitudesAyuda') {
+      filas = (datos.solicitudes || []).map(function (s) {
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + s.id + '</b> — ' + s.nombre + '<br>' + s.tipo + ' · ' + (s.fecha ? new Date(s.fecha).toLocaleDateString('es-DO') : '—') + '</div>';
+      });
+      if (!filas.length) filas = ['<p style="font-size:13px">Sin solicitudes de ayuda recientes.</p>'];
+    } else if (accion === 'verAlertasFraude') {
+      filas = (datos.alertas || []).map(function (a) {
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + a.nombre + ' · <span style="color:#e4572e">' + a.cantidad + ' visita(s) negada(s)</span></div>';
+      });
+      if (!filas.length) filas = ['<p style="font-size:13px">✅ Ningún agente con visitas negadas.</p>'];
+    }
+    cont.innerHTML = filas.join('');
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
   }
 }
 

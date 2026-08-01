@@ -11,7 +11,7 @@ const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
 const FORM_COMPRADOR_URL = 'https://forms.gle/qeuW776xZ5afUFj77';
-const FORM_AGENTE_URL = 'https://forms.gle/kAG8TZZpg9TFEwt59';
+const FORM_AGENTE_URL = 'https://forms.gle/7XfZ77xxHwE9E37j9';
 const FORM_EMBAJADOR_URL = 'https://forms.gle/X2ZVC47xpKxZh3KPA';
 const FORM_ALQUILER_URL = 'https://forms.gle/NWkaWpEQFSQMvPHTA';
 

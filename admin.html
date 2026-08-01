@@ -48,6 +48,9 @@ function pintarPanel(datos) {
     '<div class="card"><h3>📊 De las mejoras de hoy</h3>' +
     '<p style="font-size:13px">Satisfacción (¿les gustó la propiedad?): <b>' + (datos.kpis.satisfaccionPct !== null ? datos.kpis.satisfaccionPct + '%' : 'Aún sin datos') + '</b></p>' +
     '<p style="font-size:13px">Zona con más compradores activos: <b>' + datos.kpis.zonaMasActiva + '</b></p>' +
+    (datos.kpis.agentesConAlertasFraude > 0
+      ? '<p style="font-size:13px;color:#e4572e">🚨 ' + datos.kpis.agentesConAlertasFraude + ' agente(s) con visitas negadas por clientes (' + datos.kpis.totalVisitasNegadas + ' en total) — revisar en la hoja Agentes.</p>'
+      : '<p style="font-size:13px;color:#0f7a6b">✅ Ningún agente con visitas negadas por clientes.</p>') +
     '</div>' +
 
     '<div class="card"><h3>🎖️ Embajadores</h3>' +

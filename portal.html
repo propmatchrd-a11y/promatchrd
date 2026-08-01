@@ -75,6 +75,7 @@
       '</div>' +
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisita() : '') +
+      construirHistorialVisitas(datos.historialVisitas) +
 
       '<div class="card"><h3>🆘 ¿Necesitas algo?</h3>' +
       '<p style="font-size:13px">Un clic y avisamos a tu agente — sin necesidad de llamar.</p>' +
@@ -119,11 +120,26 @@ async function actualizarDocumento(campo, marcado) {
   await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'actualizarDocumento', campo: campo, valor: marcado ? 'Sí' : 'No' });
 }
 
+function construirHistorialVisitas(historial) {
+  if (!historial || !historial.length) return '';
+  const filas = historial.map(function (v) {
+    const fecha = v.fecha ? new Date(v.fecha).toLocaleDateString('es-DO') : '—';
+    const opinion = v.miOpinion === 'Sí' ? '👍 Te gustó' : v.miOpinion === 'No' ? '👎 No te gustó' : 'Sin opinión registrada';
+    return '<div style="border-bottom:1px solid var(--line);padding:8px 0;font-size:13px">' +
+      '<b>Visita ' + v.numero + '</b> — ' + fecha + '<br>' +
+      'Agente: ' + (v.agenteNombre || '—') + (v.resultado ? ' · ' + v.resultado : '') + '<br>' +
+      opinion +
+      '</div>';
+  }).join('');
+  return '<div class="card"><h3>📋 Tu historial de visitas</h3>' + filas + '</div>';
+}
+
 function construirMiniEncuestaVisita() {
   window.RESPUESTAS_ENCUESTA_VISITA = {};
   return '<div class="card" id="cardEncuestaVisita"><h3>⭐ ¿Cómo fue tu última visita?</h3>' +
     '<p style="font-size:13px;color:var(--text-muted)">Selecciona tus respuestas y presiona enviar — tu agente podrá verlas.</p>' +
     '<div id="preguntasVisita">' +
+    construirPreguntaVisita('Comprador_Confirmo_Visita', '¿Tu agente realmente te visitó la propiedad con esta información?') +
     construirPreguntaVisita('Comprador_Le_Gusto', '¿Te gustó la propiedad?') +
     construirPreguntaVisita('Agente_Puntual', '¿Tu agente llegó puntual?') +
     construirPreguntaVisita('Agente_Explico_Bien', '¿Explicó bien las opciones?') +

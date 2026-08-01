@@ -173,9 +173,31 @@ async function enviarEncuestaVisita() {
     for (const campo of campos) {
       await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'calificarVisita', campo: campo, valor: respuestas[campo] });
     }
-    document.getElementById('cardEncuestaVisita').innerHTML = '<h3>✅ ¡Gracias por tu opinión!</h3><p style="font-size:13px">Tu agente ya puede verla en su Panel.</p>';
+    // Si dijo que NO recomendaría a su agente, se le ofrece de inmediato
+    // la opción de reasignación — regla simple, no depende de IA.
+    if (respuestas['Recomendaria_Agente'] === 'No') {
+      document.getElementById('cardEncuestaVisita').innerHTML =
+        '<h3>Gracias por tu opinión</h3>' +
+        '<p style="font-size:13px">¿Quieres que te asignemos con otro agente?</p>' +
+        '<button class="btn btn-primary btn-sm" onclick="solicitarReasignacion()">Sí, asígnenme otro agente</button> ' +
+        '<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'cardEncuestaVisita\').innerHTML=\'<h3>✅ Listo</h3><p style=\\\'font-size:13px\\\'>Seguirás con tu agente actual.</p>\'">No, gracias</button>' +
+        '<p id="mensajeReasignacion" style="font-size:13px;margin-top:8px"></p>';
+    } else {
+      document.getElementById('cardEncuestaVisita').innerHTML = '<h3>✅ ¡Gracias por tu opinión!</h3><p style="font-size:13px">Tu agente ya puede verla en su Panel.</p>';
+    }
   } catch (e) {
     msj.textContent = '⚠️ Ocurrió un problema de conexión. Intenta de nuevo.';
+  }
+}
+
+async function solicitarReasignacion() {
+  const msj = document.getElementById('mensajeReasignacion');
+  msj.textContent = 'Buscando otro agente…';
+  try {
+    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'solicitarReasignacion' });
+    msj.textContent = datos.error ? '⚠️ ' + datos.mensaje : '✅ ' + datos.mensaje;
+  } catch (e) {
+    msj.textContent = '⚠️ Ocurrió un problema de conexión.';
   }
 }
 

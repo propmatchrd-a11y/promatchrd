@@ -3,20 +3,20 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/qeuW776xZ5afUFj77';
-const FORM_AGENTE_URL = 'https://forms.gle/7XfZ77xxHwE9E37j9';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/X2ZVC47xpKxZh3KPA';
-const FORM_ALQUILER_URL = 'https://forms.gle/NWkaWpEQFSQMvPHTA';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -198,4 +198,25 @@ function construirGraficoBarras(pasos) {
       '<div style="background:var(--sand-deep);border-radius:6px;overflow:hidden;height:16px">' +
       '<div style="background:' + (p.color || 'var(--teal)') + ';width:' + ancho + '%;height:100%;transition:width 0.4s ease"></div></div></div>';
   }).join('');
+}
+
+/**
+ * VULNERABILIDAD DE SEGURIDAD ENCONTRADA Y CORREGIDA: los nombres y textos
+ * que un comprador/agente/inquilino escribe en el formulario público (sin
+ * ninguna cuenta ni verificación) se mostraban directamente dentro del
+ * innerHTML de los Paneles — si alguien registraba su nombre con código
+ * malicioso (ej. una etiqueta <img> con un manejador de error), se
+ * ejecutaría en el navegador de quien vea esa tarjeta (agente, admin).
+ * Esta función escapa cualquier texto antes de insertarlo, convirtiendo
+ * caracteres especiales de HTML en su forma segura — usar SIEMPRE que se
+ * muestre un nombre, nota, o cualquier texto que haya escrito un usuario.
+ */
+function escaparHtml(texto) {
+  if (texto === null || texto === undefined) return '';
+  return String(texto)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }

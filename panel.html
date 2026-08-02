@@ -26,7 +26,7 @@
     const filas = datos.compradores.map(c =>
       '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
       '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-      '<b style="font-size:15px">' + c.nombre + '</b>' +
+      '<b style="font-size:15px">' + escaparHtml(c.nombre) + '</b>' +
       '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
       '</div>' +
       badgeFormaPago(c.formaPago) +
@@ -39,8 +39,8 @@
         ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">📞 Marcar contacto</button>'
         : '<span style="font-size:13px">✅ Contactado</span>') +
       (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
-      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">📝 Visita</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">✅ Cerrar</button>' +
       '</div></div>'
     ).join('');
 
@@ -78,7 +78,7 @@
           datos.compradoresCompitiendo.map(c =>
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-            '<b style="font-size:15px">' + c.nombre + '</b>' +
+            '<b style="font-size:15px">' + escaparHtml(c.nombre) + '</b>' +
             '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + c.clasificacion + '</span>' +
             '</div>' +
             badgeFormaPago(c.formaPago) +
@@ -86,7 +86,7 @@
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
             '<div style="display:flex;gap:6px">' +
             (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + c.nombre.replace(/'/g, "\\'") + '\')">📝 Ganar con visita</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">📝 Ganar con visita</button>' +
             '</div></div>'
           ).join('') +
           '</div>'
@@ -105,15 +105,15 @@
           datos.alquileresCompitiendo.map(a =>
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
-            '<b style="font-size:15px">' + a.nombre + '</b>' +
+            '<b style="font-size:15px">' + escaparHtml(a.nombre) + '</b>' +
             '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + a.clasificacion + '</span>' +
             '</div>' +
             '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (a.zona || '—') + '</div>' +
             '<div style="font-size:13px;margin-bottom:8px;color:#b8860b">💰 Comisión estimada: <b>' + formatoRD(a.comisionEstMin) + ' - ' + formatoRD(a.comisionEstMax) + '</b></div>' +
             '<div style="display:flex;gap:6px">' +
             (a.linkWhatsApp ? '<a href="' + a.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">📝 Ganar con visita</button> ' +
-            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Ganar con cierre</button>' +
+            '<button class="btn btn-primary btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + escaparHtml(a.nombre).replace(/'/g, "\'") + '\')">📝 Ganar con visita</button> ' +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + escaparHtml(a.nombre).replace(/'/g, "\'") + '\')">✅ Ganar con cierre</button>' +
             '</div></div>'
           ).join('') +
           '</div>'
@@ -124,7 +124,7 @@
         ? datos.alquileresActivos.map(a =>
             '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-            '<b style="font-size:15px">' + a.nombre + '</b>' +
+            '<b style="font-size:15px">' + escaparHtml(a.nombre) + '</b>' +
             '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + a.id + '</span>' +
             '</div>' +
             '<div style="font-size:13px;margin-bottom:4px">' + a.zona + ' · ' + a.presupuesto + ' · ' + a.clasificacion + '</div>' +
@@ -133,8 +133,8 @@
             renderHistorialVisitas(a.historialVisitas) +
             '<div style="display:flex;gap:6px;flex-wrap:wrap">' +
             (a.linkWhatsApp ? '<a href="' + a.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">📝 Visita</button>' +
-            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + a.nombre.replace(/'/g, "\\'") + '\')">✅ Cerrar</button>' +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visitaAlquiler\',\'' + a.id + '\',\'' + escaparHtml(a.nombre).replace(/'/g, "\'") + '\')">📝 Visita</button>' +
+            '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreAlquiler\',\'' + a.id + '\',\'' + escaparHtml(a.nombre).replace(/'/g, "\'") + '\')">✅ Cerrar</button>' +
             '</div></div>'
           ).join('')
         : '<p>No tienes alquileres asignados en este momento.</p>') +

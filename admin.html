@@ -129,17 +129,17 @@ async function verDetalle(accion) {
       if (!filas.length) filas = ['<p style="font-size:13px">Sin comentarios todavía.</p>'];
     } else if (accion === 'verAgentesPendientesVerificar') {
       filas = (datos.agentes || []).map(function (a) {
-        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + a.nombre + ' · ' + (a.telefono || 'sin teléfono') + '</div>';
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + escaparHtml(a.nombre) + ' · ' + (a.telefono || 'sin teléfono') + '</div>';
       });
       if (!filas.length) filas = ['<p style="font-size:13px">✅ No hay agentes pendientes de verificar.</p>'];
     } else if (accion === 'verSolicitudesAyuda') {
       filas = (datos.solicitudes || []).map(function (s) {
-        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + s.id + '</b> — ' + s.nombre + '<br>' + s.tipo + ' · ' + (s.fecha ? new Date(s.fecha).toLocaleDateString('es-DO') : '—') + '</div>';
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + s.id + '</b> — ' + escaparHtml(s.nombre) + '<br>' + s.tipo + ' · ' + (s.fecha ? new Date(s.fecha).toLocaleDateString('es-DO') : '—') + '</div>';
       });
       if (!filas.length) filas = ['<p style="font-size:13px">Sin solicitudes de ayuda recientes.</p>'];
     } else if (accion === 'verAlertasFraude') {
       filas = (datos.alertas || []).map(function (a) {
-        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + a.nombre + ' · <span style="color:#e4572e">' + a.cantidad + ' visita(s) negada(s)</span></div>';
+        return '<div style="border-bottom:1px solid var(--line);padding:6px 0;font-size:13px"><b>' + a.id + '</b> — ' + escaparHtml(a.nombre) + ' · <span style="color:#e4572e">' + a.cantidad + ' visita(s) negada(s)</span></div>';
       });
       if (!filas.length) filas = ['<p style="font-size:13px">✅ Ningún agente con visitas negadas.</p>'];
     }
@@ -192,7 +192,7 @@ async function ejecutarAccionAdmin(accion) {
       contenedor.innerHTML = '<div class="alert success">✅ ' + r.enviados + ' de ' + r.total + ' enviados automáticamente (API activa).</div>';
     } else {
       contenedor.innerHTML = '<div class="card"><h3>' + r.total + ' pendiente(s) — toca cada uno para enviar</h3>' +
-        r.links.map((l, idx) => '<p id="itemPendiente_' + idx + '"><button class="btn btn-sm" style="background:#25D366;color:white;border:none" onclick="abrirYMarcarEnviado(' + idx + ')">💬 ' + l.nombre + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</button></p>').join('') +
+        r.links.map((l, idx) => '<p id="itemPendiente_' + idx + '"><button class="btn btn-sm" style="background:#25D366;color:white;border:none" onclick="abrirYMarcarEnviado(' + idx + ')">💬 ' + escaparHtml(l.nombre) + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</button></p>').join('') +
         '</div>';
     }
     await cargarPanel();

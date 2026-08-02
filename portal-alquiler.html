@@ -26,7 +26,7 @@
     const iconos = { Diamante: '💎', Oro: '🥇', Plata: '🥈', Bronce: '🥉' };
 
     document.getElementById('contenido').innerHTML =
-      '<h1 style="text-align:center">Hola ' + datos.nombre + '</h1>' +
+      '<h1 style="text-align:center">Hola ' + escaparHtml(datos.nombre) + '</h1>' +
       '<p style="text-align:center;font-family:var(--font-mono);color:var(--text-muted)">Solicitud: ' + datos.idSolicitud + '</p>' +
 
       '<div class="card" style="text-align:center">' +

@@ -27,7 +27,7 @@
     const documentos = datos.documentos || {};
     document.getElementById('contenido').innerHTML =
       '<div style="text-align:center">' + construirBadgeClasificacion(datos.clasificacion) + '</div>' +
-      '<h1>Hola ' + datos.nombre + '</h1>' +
+      '<h1>Hola ' + escaparHtml(datos.nombre) + '</h1>' +
 
       '<div class="alert info"><b>Estado:</b> ' + datos.estadoExplicado + '</div>' +
 

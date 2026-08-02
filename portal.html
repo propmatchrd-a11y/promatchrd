@@ -76,11 +76,6 @@
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisita() : '') +
       construirHistorialVisitas(datos.historialVisitas) +
-      '<div class="card"><h3>🤖 Pregúntale al Concierge de IA</h3>' +
-      '<p style="font-size:13px;color:var(--text-muted)">Ej. "¿Con mi presupuesto qué puedo comprar?" o "¿Qué necesito para la preaprobación?"</p>' +
-      '<textarea id="inputPreguntaConcierge" rows="2" style="width:100%;margin-bottom:8px;font-family:inherit" placeholder="Escribe tu pregunta..."></textarea>' +
-      '<button class="btn btn-primary" style="width:100%" onclick="preguntarConcierge()">💬 Preguntar</button>' +
-      '<div id="respuestaConcierge" style="margin-top:10px"></div></div>' +
 
       '<div class="card"><h3>🆘 ¿Necesitas algo?</h3>' +
       '<p style="font-size:13px">Un clic y avisamos a tu agente — sin necesidad de llamar.</p>' +
@@ -165,22 +160,6 @@ function seleccionarRespuestaVisita(campo, valor) {
   window.RESPUESTAS_ENCUESTA_VISITA[campo] = valor;
   document.getElementById('btnSi_' + campo).className = valor === 'Sí' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
   document.getElementById('btnNo_' + campo).className = valor === 'No' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
-}
-
-async function preguntarConcierge() {
-  const pregunta = document.getElementById('inputPreguntaConcierge').value.trim();
-  const cont = document.getElementById('respuestaConcierge');
-  if (!pregunta) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Escribe una pregunta antes de enviar.</p>'; return; }
-  cont.innerHTML = '<p style="font-size:13px">Pensando…</p>';
-  try {
-    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'preguntarConcierge', pregunta: pregunta });
-    if (datos.error) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ ' + escaparHtml(datos.mensaje) + '</p>'; return; }
-    cont.innerHTML = '<div style="background:var(--sand-deep);padding:10px;border-radius:8px;font-size:13px">' + escaparHtml(datos.respuesta) + '</div>' +
-      '<p style="font-size:11px;color:var(--text-muted);margin-top:4px">Preguntas restantes hoy: ' + datos.preguntasRestantesHoy + '</p>';
-    document.getElementById('inputPreguntaConcierge').value = '';
-  } catch (e) {
-    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
-  }
 }
 
 async function enviarEncuestaVisita() {

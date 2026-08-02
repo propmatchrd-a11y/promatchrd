@@ -264,6 +264,8 @@ a { color: var(--teal-deep); }
 .btn-gold:hover { background: #96690a; }
 .btn-plum { background: #7a3b69; color: white; }
 .btn-plum:hover { background: #5f2d52; }
+.btn-slate { background: #3b5b7a; color: white; }
+.btn-slate:hover { background: #2d4760; }
 .btn-sm { font-size: 13px; padding: 8px 16px; }
 
 .stat-grid {

@@ -262,8 +262,8 @@ a { color: var(--teal-deep); }
 .btn-outline { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
 .btn-gold { background: #b8860b; color: white; }
 .btn-gold:hover { background: #96690a; }
-.btn-amber { background: #c1762e; color: white; }
-.btn-amber:hover { background: #9c5f24; }
+.btn-raspberry { background: #d1477a; color: white; }
+.btn-raspberry:hover { background: #ab3763; }
 .btn-slate { background: #3b5b7a; color: white; }
 .btn-slate:hover { background: #2d4760; }
 .btn-sm { font-size: 13px; padding: 8px 16px; }

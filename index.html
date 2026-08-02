@@ -102,18 +102,10 @@
     <a class="btn btn-coral" id="linkRegistroComprador" href="#">🏠 Quiero comprar</a>
     <a class="btn btn-primary" id="linkRegistroAlquiler" href="#">🔑 Busco alquiler</a>
     <a class="btn btn-primary" id="linkRegistroAgente" href="#">💼 Soy agente inmobiliario</a>
-    <a class="btn btn-outline" id="linkRegistroPropietario" href="#">🏡 Vendo/alquilo mi propiedad</a>
+    <a class="btn btn-plum" id="linkRegistroPropietario" href="#">🏡 Vendo/alquilo mi propiedad</a>
     <button class="btn btn-outline" onclick="document.getElementById('consultar').scrollIntoView({behavior:'smooth'})">🔍 Consultar mi solicitud</button>
   </div>
   <p class="sub-cta">Sin compromiso · Solo toma 3 minutos</p>
-
-  <h2 style="margin-top:32px">Así de simple funciona</h2>
-  <div class="pasos">
-    <div class="paso"><div class="n">1</div><p><b>Cuéntanos qué buscas.</b><br>Presupuesto, zona y tipo de propiedad.</p></div>
-    <div class="paso"><div class="n">2</div><p><b>Te asignamos un agente verificado</b><br>compatible con tu perfil.</p></div>
-    <div class="paso"><div class="n">3</div><p><b>Visitas propiedades</b><br>cada vez más afinadas a lo que buscas.</p></div>
-    <div class="paso"><div class="n">4</div><p><b>Cierras tu compra</b><br>con acompañamiento hasta el final.</p></div>
-  </div>
 
   <div class="card" style="margin-top:24px">
     <span class="eyebrow">Tecnología detrás de PropMatchRD</span>
@@ -160,21 +152,6 @@
     <a class="btn btn-gold" id="linkRegistroEmbajador" href="#">🎖️ Quiero ser Embajador →</a>
   </div>
 
-  <div class="card entry-card" style="margin-top:24px">
-    <h3>Tu recorrido, siempre visible</h3>
-    <p style="font-size:13px;margin-top:-4px">Así se ve el progreso real dentro de tu portal — toca cualquier paso para
-    ver qué significa. Elige tu perspectiva:</p>
-
-    <div class="rol-toggle">
-      <button class="rol-btn activo" id="rolComprador" onclick="cambiarRol('comprador')">🏠 Como comprador</button>
-      <button class="rol-btn" id="rolAgente" onclick="cambiarRol('agente')">💼 Como agente</button>
-    </div>
-
-    <div id="rutaInteractiva"></div>
-
-    <p style="margin:16px 0 0;font-size:13px">Si una propiedad no es la indicada, afinamos tu búsqueda al instante y seguimos avanzando — nunca vuelves a empezar de cero.</p>
-  </div>
-
   <h2 style="margin-top:32px">Preguntas frecuentes</h2>
   <div class="card">
     <div class="faq-item" onclick="this.classList.toggle('abierto')">
@@ -214,50 +191,6 @@
   document.getElementById('linkWhatsappSoporte').href =
     'https://wa.me/' + WHATSAPP_SOPORTE_NUMERO + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre PropMatchRD.');
 
-  // Ruta de Compra interactiva: cada paso se despliega al tocarlo, y el
-  // texto cambia según la perspectiva elegida (comprador o agente) — la
-  // misma ruta se ve distinta según quién la mira, y ambos entienden de
-  // inmediato qué gana con cada paso.
-  const PASOS_RUTA = [
-    { titulo: 'Evaluación', comprador: 'Completas tu perfil: presupuesto, zona y lo que buscas. Toma 3 minutos.', agente: 'El sistema evalúa el perfil antes de asignarlo — solo recibes compradores calificados.' },
-    { titulo: 'Comprador Verificado', comprador: 'Tu perfil queda verificado y listo para conectar con un agente.', agente: 'Ya sabes que este comprador tiene presupuesto e intención real de compra.' },
-    { titulo: 'Agente Asignado', comprador: 'Te asignamos el agente más compatible con lo que buscas.', agente: 'Recibes al comprador con toda su información — listo para contactar hoy mismo.' },
-    { titulo: 'Visita 1', comprador: 'Visitas tu primera opción junto a tu agente.', agente: 'Registras el resultado en menos de un minuto desde tu celular.' },
-    { titulo: 'Nueva búsqueda', comprador: 'Si algo no encajó, afinamos tu búsqueda al instante — sin empezar de cero.', agente: 'El sistema te sugiere automáticamente el siguiente paso a seguir.' },
-    { titulo: 'Visita 2+', comprador: 'Sigues viendo opciones cada vez más afinadas a lo que quieres.', agente: 'Cada visita mejora la compatibilidad de tus próximas sugerencias.' },
-    { titulo: 'Reserva', comprador: '¡Encontraste tu propiedad! Avanzas a reservarla.', agente: 'Registras la reserva y avanzas directo hacia el cierre.' },
-    { titulo: 'Compra', comprador: '¡Felicidades, la propiedad ya es tuya!', agente: 'Cierre confirmado — tu comisión queda protegida y documentada.' }
-  ];
-  let ROL_ACTUAL = 'comprador';
-
-  function construirRutaInteractiva() {
-    const cont = document.getElementById('rutaInteractiva');
-    cont.innerHTML = '';
-    PASOS_RUTA.forEach((paso, i) => {
-      const clase = i < 2 ? 'hecho' : i === 2 ? 'actual' : '';
-      const icono = i < 2 ? '✓' : i === 2 ? '●' : '○';
-      const div = document.createElement('div');
-      div.className = 'ruta-paso-int';
-      div.style.opacity = '0';
-      div.innerHTML =
-        '<div class="ruta-paso-int-cabecera" onclick="this.parentElement.classList.toggle(\'abierto\')">' +
-        '<div class="ruta-nodo ' + clase + '" style="background:' + (clase === 'hecho' ? 'var(--teal)' : clase === 'actual' ? 'var(--coral)' : 'var(--sand-deep)') + ';color:' + (clase ? 'white' : 'var(--text-muted)') + '">' + icono + '</div>' +
-        '<div class="ruta-paso-int-titulo">' + paso.titulo + '</div>' +
-        '<div class="ruta-paso-int-flecha">▾</div></div>' +
-        '<div class="ruta-paso-int-detalle">' + paso[ROL_ACTUAL] + '</div>';
-      cont.appendChild(div);
-      setTimeout(() => { div.style.opacity = '1'; }, i * 100);
-    });
-  }
-
-  function cambiarRol(rol) {
-    ROL_ACTUAL = rol;
-    document.getElementById('rolComprador').classList.toggle('activo', rol === 'comprador');
-    document.getElementById('rolAgente').classList.toggle('activo', rol === 'agente');
-    construirRutaInteractiva();
-  }
-
-  construirRutaInteractiva();
 </script>
 </body>
 </html>

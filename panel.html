@@ -31,7 +31,7 @@
       '</div>' +
       badgeFormaPago(c.formaPago) +
       '<div style="font-size:15px;font-weight:bold;color:var(--teal-deep);margin-bottom:4px">⭐ PropScore: ' + c.propScore + '/100</div>' +
-      '<div style="font-size:13px;margin-bottom:4px"><b>' + c.iicdScore + '/100</b> ' + c.iicdEtiqueta + ' · ' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
+      '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
       '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +
       '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
       renderHistorialVisitas(c.historialVisitas) +

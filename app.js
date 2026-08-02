@@ -14,6 +14,7 @@ const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
 const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
 const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
 const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
+const FORM_PROPIETARIO_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_PROPIETARIO';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
 const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
@@ -152,6 +153,16 @@ async function consultarSolicitud(inputId, mensajeId) {
     const comoEmbajador = await llamarApi({ embajador: codigo });
     if (!comoEmbajador.error) {
       window.location.href = 'panel-embajador.html?codigo=' + encodeURIComponent(codigo);
+      return;
+    }
+    const comoAlquiler = await llamarApi({ portalAlquiler: codigo });
+    if (!comoAlquiler.error) {
+      window.location.href = 'portal-alquiler.html?codigo=' + encodeURIComponent(codigo);
+      return;
+    }
+    const comoPropietario = await llamarApi({ portalPropietario: codigo });
+    if (!comoPropietario.error) {
+      window.location.href = 'portal-propietario.html?codigo=' + encodeURIComponent(codigo);
       return;
     }
     msj.textContent = '⚠️ No encontramos ninguna solicitud con ese código. Verifica el enlace que recibiste por correo.';

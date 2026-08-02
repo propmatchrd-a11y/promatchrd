@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tu Propiedad — PropMatchRD</title>
+<link rel="stylesheet" href="styles.css">
+<script src="fondo-premium.js" defer></script>
+</head>
+<body>
+<div class="wrap" id="contenido">
+  <div class="loading"><div class="spinner"></div>Cargando tu propiedad…</div>
+</div>
+
+<script src="app.js"></script>
+<script>
+(async function () {
+  const codigo = obtenerParametro('codigo') || obtenerParametro('portalPropietario');
+  if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
+
+  try {
+    const datos = await llamarApi({ portalPropietario: codigo });
+    if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
+
+    document.getElementById('contenido').innerHTML =
+      '<h1 style="text-align:center">Hola ' + escaparHtml(datos.nombre) + '</h1>' +
+      '<p style="text-align:center;font-family:var(--font-mono);color:var(--text-muted)">Propiedad: ' + datos.idPropiedad + '</p>' +
+
+      '<div class="card" style="text-align:center">' +
+      (datos.verificado ? '<p style="color:#0f7a6b;font-weight:bold">✅ PropMatch Verified Owner</p>' : '') +
+      '<h3>' + escaparHtml(datos.estadoExplicado) + '</h3>' +
+      (datos.agenteAsignado ? '<p>Tu agente: <b>' + escaparHtml(datos.agenteAsignado) + '</b></p>' : '') +
+      (datos.agenteLinkWhatsApp
+        ? '<p><a href="' + datos.agenteLinkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a></p>'
+        : (datos.modoVenta === 'Yo solo (sin agente)'
+            ? '<p style="font-size:13px;color:var(--text-muted)">Estás gestionando esta propiedad de forma independiente.</p>'
+            : '<p style="font-size:13px;color:var(--text-muted)">Estamos conectándote con el agente más adecuado — en breve verás aquí sus datos de contacto.</p>')) +
+      '</div>' +
+
+      '<div class="card"><h3>🏠 Detalles de tu propiedad</h3>' +
+      '<p style="font-size:14px"><b>' + datos.operacion + ':</b> ' + escaparHtml(datos.tipoInmueble) + '</p>' +
+      '<p style="font-size:14px">📍 ' + escaparHtml(datos.provincia) + ' - ' + escaparHtml(datos.municipio) + '</p>' +
+      '<p style="font-size:14px">💰 RD$' + Number(datos.precio).toLocaleString() + '</p>' +
+      '<p style="font-size:14px">🛏️ ' + escaparHtml(datos.habitaciones) + ' hab. · 🚿 ' + escaparHtml(datos.banos) + ' baños · 🚗 ' + escaparHtml(datos.parqueos) + ' parqueo(s)</p>' +
+      (datos.descripcion ? '<p style="font-size:13px;color:var(--text-muted)">' + escaparHtml(datos.descripcion) + '</p>' : '') +
+      '</div>';
+  } catch (err) {
+    mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
+  }
+})();
+</script>
+</body>
+</html>

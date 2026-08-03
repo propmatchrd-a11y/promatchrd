@@ -14,7 +14,7 @@ const FORM_COMPRADOR_URL = 'https://forms.gle/JpGh3EFjHHuakHHE6';
 const FORM_AGENTE_URL = 'https://forms.gle/MbHHAidi8AtP1FDC6';
 const FORM_EMBAJADOR_URL = 'https://forms.gle/94Ag33oH3BVkZzKt9';
 const FORM_ALQUILER_URL = 'https://forms.gle/iLQQBKCUVme6XMRr8';
-const FORM_PROPIETARIO_URL = 'https://forms.gle/zgEZGv29xEsqMmeN7';
+const FORM_PROPIETARIO_URL = 'https://forms.gle/2TdGSFqqaHLA3p3w7';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
 const WHATSAPP_SOPORTE_NUMERO = '18098012075';

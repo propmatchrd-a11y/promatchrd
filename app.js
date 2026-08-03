@@ -10,7 +10,7 @@ const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/YLVxQHds7AzAt6Zy7';
+const FORM_COMPRADOR_URL = 'https://forms.gle/Q6u5pXVS5vR14rrR8';
 const FORM_AGENTE_URL = 'https://forms.gle/LCXCUan6TDrehHJh9';
 const FORM_EMBAJADOR_URL = 'https://forms.gle/5oJ4U7dnmix43W1A6';
 const FORM_ALQUILER_URL = 'https://forms.gle/P1ZrJcdCD61rRPLh8';

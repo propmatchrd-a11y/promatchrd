@@ -39,6 +39,7 @@
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisitaAlquiler() : '') +
       construirHistorialVisitasAlquiler(datos.historialVisitas) +
+      construirConexionesDirectasPendientesAlquiler(datos.conexionesDirectasPendientes) +
 
       (datos.evaluacion
         ? '<div class="card"><h3>Tu evaluación</h3><p>' + datos.evaluacion + '</p></div>'
@@ -98,6 +99,29 @@ function seleccionarRespuestaVisita(campo, valor) {
   window.RESPUESTAS_ENCUESTA_VISITA[campo] = valor;
   document.getElementById('btnSi_' + campo).className = valor === 'Sí' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
   document.getElementById('btnNo_' + campo).className = valor === 'No' ? 'btn btn-primary btn-sm' : 'btn btn-outline btn-sm';
+}
+
+function construirConexionesDirectasPendientesAlquiler(lista) {
+  if (!lista || !lista.length) return '';
+  return '<div class="card"><h3>🏡 Un propietario quiere conectar contigo</h3>' +
+    lista.map(c =>
+      '<div style="border-bottom:1px solid var(--line);padding:10px 0">' +
+      '<p style="font-size:14px"><b>' + escaparHtml(c.tipoInmueble) + '</b> en ' + escaparHtml(c.provincia) + ' - ' + escaparHtml(c.municipio) + ' — RD$' + Number(c.precio).toLocaleString() + '</p>' +
+      '<p style="font-size:13px;color:var(--text-muted)">Si aceptas, el propietario recibirá tu contacto y tú recibirás el suyo.</p>' +
+      '<button class="btn btn-primary btn-sm" onclick="responderConexionDirectaAlquiler(\'' + c.idConexion + '\', \'Sí\')">✅ Sí, quiero conectar</button> ' +
+      '<button class="btn btn-outline btn-sm" onclick="responderConexionDirectaAlquiler(\'' + c.idConexion + '\', \'No\')">No, gracias</button>' +
+      '</div>'
+    ).join('') + '</div>';
+}
+
+async function responderConexionDirectaAlquiler(idConexion, respuesta) {
+  try {
+    const datos = await ejecutarAccion({ portalAlquiler: window.CODIGO_PORTAL_ALQUILER_ACTUAL, accion: 'responderConexionDirecta', idConexion: idConexion, valor: respuesta });
+    alert(datos.mensaje || (datos.error ? 'Ocurrió un problema.' : 'Listo.'));
+    location.reload();
+  } catch (e) {
+    alert('Ocurrió un problema de conexión.');
+  }
 }
 
 async function enviarEncuestaVisitaAlquiler() {

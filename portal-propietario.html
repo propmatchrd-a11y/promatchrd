@@ -16,6 +16,7 @@
 <script>
 (async function () {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalPropietario');
+  window.CODIGO_PORTAL_PROPIETARIO_ACTUAL = codigo;
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 
   try {
@@ -51,16 +52,70 @@
 
       (datos.compradoresCompatiblesTotal > 0
         ? '<div class="card"><h3>⚡ ' + datos.compradoresCompatiblesTotal + ' comprador(es)/inquilino(s) compatible(s)</h3>' +
-          '<p style="font-size:13px;color:var(--text-muted)">Por tu privacidad y la de ellos, no mostramos sus datos de contacto aquí — tu agente asignado se comunicará con los interesados directamente.</p>' +
+          '<p style="font-size:13px;color:var(--text-muted)">Por tu privacidad y la de ellos, no mostramos sus datos de contacto directamente aquí.</p>' +
           Object.entries(datos.compradoresCompatiblesPorClasificacion || {}).sort((a, b) => b[1] - a[1])
             .map(([clasif, cantidad]) => '<p style="font-size:14px">' + cantidad + ' × ' + escaparHtml(clasif) + '</p>').join('') +
+          (datos.modoVenta === 'Yo solo (sin agente)'
+            ? '<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="solicitarConexion()">🤝 Solicitar conexión directa (comisión ' + datos.pctComisionConexionDirecta + '% si se concreta)</button>' +
+              '<div id="respuestaConexion" style="margin-top:8px"></div>'
+            : '') +
+          '</div>'
+        : '') +
+
+      (datos.modoVenta === 'Yo solo (sin agente)' && datos.conexionesActivas && datos.conexionesActivas.length
+        ? '<div class="card"><h3>✅ Ya conectaste con ' + datos.conexionesActivas.length + ' comprador(es)</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted)">Cuando se concrete la venta, repórtala aquí para calcular la comisión.</p>' +
+          datos.conexionesActivas.map(c =>
+            '<div style="border-bottom:1px solid var(--line);padding:8px 0">' +
+            '<input type="number" id="monto_' + c.idConexion + '" placeholder="Monto final de venta (RD$)" style="width:100%;margin-bottom:6px">' +
+            '<button class="btn btn-primary btn-sm" onclick="reportarVenta(\'' + c.idConexion + '\')">✅ Reportar venta concretada</button>' +
+            '<div id="respuestaVenta_' + c.idConexion + '" style="margin-top:6px"></div>' +
+            '</div>'
+          ).join('') +
           '</div>'
         : '') +
       '';
+
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
 })();
+
+async function solicitarConexion() {
+  const cont = document.getElementById('respuestaConexion');
+  cont.innerHTML = '<p style="font-size:13px">Enviando…</p>';
+  try {
+    const datos = await ejecutarAccion({ portalPropietario: window.CODIGO_PORTAL_PROPIETARIO_ACTUAL, accion: 'solicitarConexionDirecta' });
+    cont.innerHTML = '<p style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</p>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
+  }
+}
+
+async function reportarVenta(idConexion) {
+  const monto = document.getElementById('monto_' + idConexion).value;
+  const cont = document.getElementById('respuestaVenta_' + idConexion);
+  if (!monto || Number(monto) <= 0) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ingresa un monto válido.</p>'; return; }
+  cont.innerHTML = '<p style="font-size:13px">Procesando…</p>';
+  try {
+    const datos = await ejecutarAccion({ portalPropietario: window.CODIGO_PORTAL_PROPIETARIO_ACTUAL, accion: 'reportarVentaConexionDirecta', idConexion: idConexion, montoVenta: monto });
+    if (datos.error) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ ' + escaparHtml(datos.mensaje) + '</p>'; return; }
+    cont.innerHTML = '<div style="background:var(--sand-deep);padding:10px;border-radius:8px;font-size:13px">' + escaparHtml(datos.mensaje) + '<br><br>' +
+      'Cuenta para pagar: <b>' + escaparHtml(datos.cuentaPlataforma || '') + '</b><br>' +
+      '<button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="reportarPago(\'' + idConexion + '\')">Ya transferí, reportar pago</button></div>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
+  }
+}
+
+async function reportarPago(idConexion) {
+  try {
+    const datos = await ejecutarAccion({ portalPropietario: window.CODIGO_PORTAL_PROPIETARIO_ACTUAL, accion: 'reportarPagoConexionDirecta', idConexion: idConexion });
+    alert(datos.mensaje || 'Gracias, verificaremos tu pago.');
+  } catch (e) {
+    alert('Ocurrió un problema de conexión.');
+  }
+}
 </script>
 </body>
 </html>

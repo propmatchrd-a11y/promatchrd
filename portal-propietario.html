@@ -43,7 +43,20 @@
       '<p style="font-size:14px">💰 RD$' + Number(datos.precio).toLocaleString() + '</p>' +
       '<p style="font-size:14px">🛏️ ' + escaparHtml(datos.habitaciones) + ' hab. · 🚿 ' + escaparHtml(datos.banos) + ' baños · 🚗 ' + escaparHtml(datos.parqueos) + ' parqueo(s)</p>' +
       (datos.descripcion ? '<p style="font-size:13px;color:var(--text-muted)">' + escaparHtml(datos.descripcion) + '</p>' : '') +
-      '</div>';
+      '</div>' +
+
+      '<div class="card"><h3>📊 Análisis de tu propiedad</h3>' +
+      '<p style="font-size:14px">' + escaparHtml(datos.analisisPropiedad) + '</p>' +
+      '</div>' +
+
+      (datos.compradoresCompatiblesTotal > 0
+        ? '<div class="card"><h3>⚡ ' + datos.compradoresCompatiblesTotal + ' comprador(es)/inquilino(s) compatible(s)</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted)">Por tu privacidad y la de ellos, no mostramos sus datos de contacto aquí — tu agente asignado se comunicará con los interesados directamente.</p>' +
+          Object.entries(datos.compradoresCompatiblesPorClasificacion || {}).sort((a, b) => b[1] - a[1])
+            .map(([clasif, cantidad]) => '<p style="font-size:14px">' + cantidad + ' × ' + escaparHtml(clasif) + '</p>').join('') +
+          '</div>'
+        : '') +
+      '';
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }

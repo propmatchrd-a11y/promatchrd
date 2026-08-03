@@ -3,7 +3,7 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/library/d/1NhDAJxoN9XmmiXhILeek19bs88HU1N3UZqJBFcBO5oHAL-Ot3VbN6LNW/77';
+const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —

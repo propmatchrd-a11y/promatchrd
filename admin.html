@@ -58,6 +58,28 @@ function pintarPanel(datos) {
     '<p style="font-size:13px">Comisión acumulada (histórico): <b>' + formatoRD(datos.embajadores.comisionAcumuladaTotal) + '</b></p>' +
     '</div>' +
 
+    (datos.confirmacionesCierrePendientes && datos.confirmacionesCierrePendientes.length
+      ? '<div class="card"><h3>👋 Esperando confirmación de cierre (' + datos.confirmacionesCierrePendientes.length + ')</h3>' +
+        '<p style="font-size:13px;color:var(--text-muted)">Se les preguntó directamente si llegaron a comprar — todavía no han respondido.</p>' +
+        datos.confirmacionesCierrePendientes.map(c =>
+          '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)">' +
+          '<span style="font-size:13px">' + escaparHtml(c.nombre) + ' <span style="color:var(--text-muted)">— preguntado el ' + c.fechaPregunta + '</span></span>' +
+          '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 Recordar</a>' +
+          '</div>'
+        ).join('') + '</div>'
+      : '') +
+
+    (datos.conexionesDirectasPendientes && datos.conexionesDirectasPendientes.length
+      ? '<div class="card"><h3>🤝 Conexiones Directas esperando respuesta (' + datos.conexionesDirectasPendientes.length + ')</h3>' +
+        '<p style="font-size:13px;color:var(--text-muted)">Comprador y propietario conectando sin agente — alguna de las 2 partes todavía no respondió.</p>' +
+        datos.conexionesDirectasPendientes.map(c =>
+          '<div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)">' +
+          '<span style="font-size:13px">' + escaparHtml(c.idPropiedad) + ' <span style="color:var(--text-muted)">— iniciada por ' + escaparHtml(c.iniciadaPor) + ' el ' + c.fecha + ' · esperando a ' + escaparHtml(c.esperandoA) + '</span></span>' +
+          (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 Recordar</a>' : '') +
+          '</div>'
+        ).join('') + '</div>'
+      : '') +
+
     '<div class="card"><h3>🔑 Alquiler</h3>' +
     '<p style="font-size:13px">Solicitudes hoy: <b>' + datos.alquiler.solicitudesHoy + '</b> · Activas: <b>' + datos.alquiler.activas + '</b></p>' +
     '<p style="font-size:13px">Cierres: <b>' + datos.alquiler.cierres + '</b> · Comisión generada: <b>' + formatoRD(datos.alquiler.comisionGenerada) + '</b></p>' +

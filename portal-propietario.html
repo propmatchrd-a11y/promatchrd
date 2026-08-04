@@ -102,6 +102,8 @@ async function reportarVenta(idConexion) {
     if (datos.error) { cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ ' + escaparHtml(datos.mensaje) + '</p>'; return; }
     cont.innerHTML = '<div style="background:var(--sand-deep);padding:10px;border-radius:8px;font-size:13px">' + escaparHtml(datos.mensaje) + '<br><br>' +
       'Cuenta para pagar: <b>' + escaparHtml(datos.cuentaPlataforma || '') + '</b><br>' +
+      '<span style="color:#c0392b">⚠️ Escribe esta referencia en el concepto de tu transferencia: <b>' + escaparHtml(datos.referenciaPago || '') + '</b></span>' +
+      (datos.urlQrPago ? '<br><img src="' + escaparHtml(datos.urlQrPago) + '" alt="Código QR de pago" style="max-width:160px;margin-top:8px">' : '') + '<br>' +
       '<button class="btn btn-primary btn-sm" style="margin-top:8px" onclick="reportarPago(\'' + idConexion + '\')">Ya transferí, reportar pago</button></div>';
   } catch (e) {
     cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';

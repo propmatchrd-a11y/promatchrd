@@ -44,6 +44,20 @@
           '<p style="font-size:14px;color:var(--ink-soft);margin:0">' + escaparHtml(datos.resumenCompatibilidad.resumen) + '</p></div>'
         : '') +
 
+      (datos.confirmarCierrePendiente
+        ? '<div class="card" style="text-align:center"><h3>👋 ¿Llegaste a comprar tu propiedad?</h3>' +
+          '<p style="font-size:14px;color:var(--text-muted)">Toma 10 segundos y nos ayuda muchísimo a mejorar.</p>' +
+          '<button class="btn btn-primary" onclick="confirmarCierre(\'Sí\')">✅ Sí, ya cerré</button> ' +
+          '<button class="btn btn-outline" onclick="confirmarCierre(\'No\')">Todavía no</button>' +
+          '<div id="respuestaCierre" style="margin-top:8px"></div></div>'
+        : '') +
+
+      (datos.propiedadesCompatibles && datos.propiedadesCompatibles.length
+        ? '<div class="card"><h3>🏡 Propiedades compatibles (propietarios directos, sin agente)</h3>' +
+          datos.propiedadesCompatibles.map(p => construirTarjetaPropiedadCompatible(p)).join('') +
+          '</div>'
+        : '') +
+
       '<div class="card"><p style="font-size:15px;color:var(--ink);margin:0">' + datos.analisisPersonalizado + '</p></div>' +
 
       '<div class="card" style="text-align:center">' +
@@ -183,6 +197,60 @@ function construirConexionesDirectasPendientes(lista) {
       '<button class="btn btn-outline btn-sm" onclick="responderConexionDirecta(\'' + c.idConexion + '\', \'No\')">No, gracias</button>' +
       '</div>'
     ).join('') + '</div>';
+}
+
+function construirTarjetaPropiedadCompatible(p) {
+  const estado = p.conexion ? p.conexion.estado : null;
+  let accionHtml;
+  if (!estado) {
+    accionHtml = '<button class="btn btn-primary btn-sm" onclick="solicitarConexionComprador(\'' + p.id + '\')">🤝 Solicitar conexión</button>';
+  } else if (estado === 'Pendiente_Respuesta_Propietario') {
+    accionHtml = '<span style="font-size:13px;color:var(--text-muted)">⏳ Esperando respuesta del propietario…</span>';
+  } else if (estado === 'Rechazada_Por_Propietario') {
+    accionHtml = '<span style="font-size:13px;color:var(--text-muted)">El propietario no aceptó conectar esta vez.</span>';
+  } else if (estado === 'Conectados') {
+    accionHtml = '<span style="font-size:13px;color:#0f7a6b">✅ Conectados — revisa tu correo para el contacto.</span> ' +
+      '<button class="btn btn-outline btn-sm" onclick="registrarVisitaComprador(\'' + p.conexion.idConexion + '\')">📍 Marcar que la visité</button>';
+  } else {
+    accionHtml = '';
+  }
+  return '<div style="border-bottom:1px solid var(--line);padding:10px 0">' +
+    '<p style="font-size:14px;margin:0"><b>' + escaparHtml(p.tipo) + '</b> en ' + escaparHtml(p.provincia) + ' - ' + escaparHtml(p.municipio) + '</p>' +
+    '<p style="font-size:14px;margin:2px 0;color:#b8860b"><b>RD$' + Number(p.precio).toLocaleString('es-DO') + '</b> · ' + (p.habitaciones || '—') + ' hab · ' + (p.banos || '—') + ' baños</p>' +
+    (p.descripcion ? '<p style="font-size:13px;color:var(--text-muted);margin:2px 0">' + escaparHtml(p.descripcion) + '</p>' : '') +
+    '<div id="conex_' + p.id + '" style="margin-top:6px">' + accionHtml + '</div>' +
+    '</div>';
+}
+
+async function solicitarConexionComprador(idPropiedad) {
+  const cont = document.getElementById('conex_' + idPropiedad);
+  cont.innerHTML = '<span style="font-size:13px">Enviando…</span>';
+  try {
+    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'solicitarConexionComprador', idPropiedad: idPropiedad });
+    cont.innerHTML = '<span style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</span>';
+  } catch (e) {
+    cont.innerHTML = '<span style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</span>';
+  }
+}
+
+async function registrarVisitaComprador(idConexion) {
+  try {
+    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'registrarVisitaConexionDirecta', idConexion: idConexion });
+    alert(datos.mensaje || 'Registrado.');
+  } catch (e) {
+    alert('Ocurrió un problema de conexión.');
+  }
+}
+
+async function confirmarCierre(respuesta) {
+  const cont = document.getElementById('respuestaCierre');
+  cont.innerHTML = '<p style="font-size:13px">Enviando…</p>';
+  try {
+    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'confirmarCierreComprador', valor: respuesta });
+    cont.innerHTML = '<p style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</p>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
+  }
 }
 
 async function responderConexionDirecta(idConexion, respuesta) {

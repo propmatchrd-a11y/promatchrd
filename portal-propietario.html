@@ -62,6 +62,19 @@
           '</div>'
         : '') +
 
+      (datos.modoVenta === 'Yo solo (sin agente)' && datos.solicitudesDeCompradorPendientes && datos.solicitudesDeCompradorPendientes.length
+        ? '<div class="card"><h3>🔔 ' + datos.solicitudesDeCompradorPendientes.length + ' comprador(es) quieren conectar contigo</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted)">No verás su contacto hasta que aceptes.</p>' +
+          datos.solicitudesDeCompradorPendientes.map(s =>
+            '<div style="border-bottom:1px solid var(--line);padding:8px 0">' +
+            '<p style="font-size:13px;margin:0">Solicitud del ' + s.fecha + '</p>' +
+            '<button class="btn btn-primary btn-sm" onclick="responderSolicitudComprador(\'' + s.idConexion + '\', \'Sí\')">✅ Aceptar</button> ' +
+            '<button class="btn btn-outline btn-sm" onclick="responderSolicitudComprador(\'' + s.idConexion + '\', \'No\')">Rechazar</button>' +
+            '<div id="respSolicitud_' + s.idConexion + '" style="margin-top:4px"></div>' +
+            '</div>'
+          ).join('') + '</div>'
+        : '') +
+
       (datos.modoVenta === 'Yo solo (sin agente)' && datos.conexionesActivas && datos.conexionesActivas.length
         ? '<div class="card"><h3>✅ Ya conectaste con ' + datos.conexionesActivas.length + ' comprador(es)</h3>' +
           '<p style="font-size:13px;color:var(--text-muted)">Cuando se concrete la venta, repórtala aquí para calcular la comisión.</p>' +
@@ -80,6 +93,17 @@
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
 })();
+
+async function responderSolicitudComprador(idConexion, respuesta) {
+  const cont = document.getElementById('respSolicitud_' + idConexion);
+  cont.innerHTML = '<span style="font-size:13px">Enviando…</span>';
+  try {
+    const datos = await ejecutarAccion({ portalPropietario: window.CODIGO_PORTAL_PROPIETARIO_ACTUAL, accion: 'responderConexionDirectaPropietario', idConexion: idConexion, valor: respuesta });
+    cont.innerHTML = '<span style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</span>';
+  } catch (e) {
+    cont.innerHTML = '<span style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</span>';
+  }
+}
 
 async function solicitarConexion() {
   const cont = document.getElementById('respuestaConexion');

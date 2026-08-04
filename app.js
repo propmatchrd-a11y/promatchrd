@@ -3,21 +3,21 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/dsUDcSNfWxei9V2A6';
-const FORM_AGENTE_URL = 'https://forms.gle/V5g5GVckQ59Ee5FZA';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/7iKEtmni9V43wEt27';
-const FORM_ALQUILER_URL = 'https://forms.gle/1qzYd3TGY4NKpKba7';
-const FORM_PROPIETARIO_URL = 'https://forms.gle/8avXdeyCuof2LAfUA';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
+const FORM_PROPIETARIO_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_PROPIETARIO';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -230,4 +230,37 @@ function escaparHtml(texto) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+/**
+ * Gráfico simple (SVG, sin librerías externas) que muestra el presupuesto
+ * de un comprador frente al rango real de precios del mercado en su zona
+ * y tipo de inmueble — de un vistazo, sin tener que leer un párrafo de
+ * texto para entender si el presupuesto es realista.
+ */
+function construirGraficoPresupuesto(g) {
+  if (!g || (!g.mercadoMin && !g.mercadoMax)) {
+    return '<p style="font-size:13px;color:var(--text-muted)">Sin referencia de mercado cargada todavía para esta zona/tipo de inmueble.</p>';
+  }
+  const anchoTotal = 320, alto = 64;
+  // El rango visible incluye tanto el mercado como el presupuesto, con
+  // un 15% de margen a cada lado para que nada quede pegado al borde.
+  const valores = [g.mercadoMin, g.mercadoMax, g.presupuestoMax].filter(v => v > 0);
+  const min = Math.min(...valores) * 0.85;
+  const max = Math.max(...valores) * 1.15;
+  const escala = v => ((v - min) / (max - min)) * anchoTotal;
+
+  const barraX1 = escala(g.mercadoMin), barraX2 = escala(g.mercadoMax);
+  const marcadorX = escala(g.presupuestoMax);
+  const dentroDelRango = g.presupuestoMax >= g.mercadoMin && g.presupuestoMax <= g.mercadoMax * 1.05;
+  const colorMarcador = dentroDelRango ? '#0f7a6b' : (g.presupuestoMax < g.mercadoMin ? '#e4572e' : '#2e6b8a');
+
+  return '<svg viewBox="0 0 ' + anchoTotal + ' ' + alto + '" style="width:100%;max-width:360px;height:auto" role="img" aria-label="Presupuesto comparado con el mercado">' +
+    '<line x1="0" y1="30" x2="' + anchoTotal + '" y2="30" stroke="#e4dcc8" stroke-width="6" stroke-linecap="round"/>' +
+    '<line x1="' + barraX1 + '" y1="30" x2="' + barraX2 + '" y2="30" stroke="#c9bfa0" stroke-width="6" stroke-linecap="round"/>' +
+    '<circle cx="' + marcadorX + '" cy="30" r="7" fill="' + colorMarcador + '" stroke="white" stroke-width="2"/>' +
+    '<text x="' + barraX1 + '" y="12" font-size="10" fill="#8a8272" text-anchor="middle">RD$' + Math.round(g.mercadoMin / 1000) + 'k</text>' +
+    '<text x="' + barraX2 + '" y="12" font-size="10" fill="#8a8272" text-anchor="middle">RD$' + Math.round(g.mercadoMax / 1000) + 'k</text>' +
+    '<text x="' + marcadorX + '" y="50" font-size="11" font-weight="600" fill="' + colorMarcador + '" text-anchor="middle">Presupuesto: RD$' + Math.round(g.presupuestoMax / 1000) + 'k</text>' +
+    '</svg>';
 }

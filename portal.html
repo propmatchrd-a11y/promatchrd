@@ -64,6 +64,9 @@
         : '<div class="alert success">Tu perfil está completo — tu agente te contactará pronto.</div>') +
 
       (datos.alertaPresupuesto ? '<div class="alert">' + datos.alertaPresupuesto + '</div>' : '') +
+      (datos.graficoPresupuesto && (datos.graficoPresupuesto.mercadoMin || datos.graficoPresupuesto.mercadoMax)
+        ? '<div class="card"><h3>💰 Tu presupuesto vs. el mercado</h3>' + construirGraficoPresupuesto(datos.graficoPresupuesto) + '</div>'
+        : '') +
 
       (datos.certificadoUrl ? '<p style="text-align:center"><a class="btn btn-primary" href="' + datos.certificadoUrl + '">📄 Ver mi Certificado</a></p>' : '') +
 

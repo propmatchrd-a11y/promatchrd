@@ -30,6 +30,7 @@
       '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
       '</div>' +
       badgeFormaPago(c.formaPago) +
+      (c.resumenCompatibilidad ? '<div style="background:var(--sand);padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:13px"><b>' + c.resumenCompatibilidad.emoji + ' Compatibilidad ' + c.resumenCompatibilidad.nivel + '</b><br>' + escaparHtml(c.resumenCompatibilidad.resumen) + '</div>' : '') +
       '<div style="font-size:15px;font-weight:bold;color:var(--teal-deep);margin-bottom:4px">⭐ PropScore: ' + c.propScore + '/100</div>' +
       '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
       '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +

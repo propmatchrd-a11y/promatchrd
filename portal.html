@@ -38,6 +38,12 @@
           '</div>'
         : '<div class="alert info" style="text-align:center">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</div>') +
 
+      (datos.resumenCompatibilidad
+        ? '<div class="card" style="text-align:center;background:var(--sand)"><div style="font-size:28px">' + datos.resumenCompatibilidad.emoji + '</div>' +
+          '<div style="font-size:17px;font-weight:bold;margin:4px 0">Compatibilidad ' + datos.resumenCompatibilidad.nivel + '</div>' +
+          '<p style="font-size:14px;color:var(--ink-soft);margin:0">' + escaparHtml(datos.resumenCompatibilidad.resumen) + '</p></div>'
+        : '') +
+
       '<div class="card"><p style="font-size:15px;color:var(--ink);margin:0">' + datos.analisisPersonalizado + '</p></div>' +
 
       '<div class="card" style="text-align:center">' +

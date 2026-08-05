@@ -32,10 +32,7 @@
       '<div class="alert info"><b>Estado:</b> ' + datos.estadoExplicado + '</div>' +
 
       (datos.agenteLinkWhatsApp
-        ? '<div class="card" style="text-align:center">' +
-          '<p style="font-size:13px;margin-bottom:8px">Tu agente: <b>' + datos.agenteNombre + '</b></p>' +
-          '<a href="' + datos.agenteLinkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a>' +
-          '</div>'
+        ? construirTarjetaAgente(datos.agentePerfil, datos.agenteLinkWhatsApp)
         : '<div class="alert info" style="text-align:center">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</div>') +
 
       (datos.resumenCompatibilidad
@@ -143,6 +140,39 @@ function construirFilaDocumento(idSufijo, campo, etiqueta, marcado) {
 
 async function actualizarDocumento(campo, marcado) {
   await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'actualizarDocumento', campo: campo, valor: marcado ? 'Sí' : 'No' });
+}
+
+/**
+ * Tarjeta desplegable del agente asignado — compacta por defecto (nombre
+ * + WhatsApp, lo que la mayoría solo necesita), con un "Ver más" que
+ * expande su perfil completo (empresa, especialidad, experiencia,
+ * cierres, calificación) para generar más confianza sin abrumar a quien
+ * solo quiere escribirle rápido.
+ */
+function construirTarjetaAgente(perfil, linkWhatsApp) {
+  const nombre = perfil ? perfil.nombre : 'Tu agente';
+  const idDetalle = 'detalleAgente';
+  const estrellas = perfil && perfil.rating ? '⭐'.repeat(Math.round(perfil.rating)) : '';
+
+  const detalle = perfil ? (
+    '<div style="text-align:left;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">' +
+    (perfil.empresa ? '<p style="font-size:13px;margin:2px 0">🏢 ' + escaparHtml(perfil.empresa) + '</p>' : '') +
+    (perfil.especialidad ? '<p style="font-size:13px;margin:2px 0">🎯 Especialidad: ' + escaparHtml(perfil.especialidad) + '</p>' : '') +
+    (perfil.anosExperiencia ? '<p style="font-size:13px;margin:2px 0">📅 ' + escaparHtml(perfil.anosExperiencia) + ' de experiencia</p>' : '') +
+    (perfil.cierresConfirmados ? '<p style="font-size:13px;margin:2px 0">🏡 ' + perfil.cierresConfirmados + ' propiedades cerradas con éxito</p>' : '') +
+    (perfil.satisfaccionPct ? '<p style="font-size:13px;margin:2px 0">😊 ' + perfil.satisfaccionPct + '% de satisfacción de clientes</p>' : '') +
+    '</div>'
+  ) : '';
+
+  return '<div class="card" style="text-align:center">' +
+    '<p style="font-size:14px;margin-bottom:2px">Tu agente: <b>' + escaparHtml(nombre) + '</b>' +
+    (perfil && perfil.verificado ? ' <span style="color:#0f7a6b" title="Verificado">✓</span>' : '') + '</p>' +
+    (estrellas ? '<p style="margin:2px 0 8px 0">' + estrellas + '</p>' : '') +
+    (perfil && perfil.distintivo ? '<p style="font-size:12px;color:#b8860b;margin:0 0 8px 0">🏅 ' + escaparHtml(perfil.distintivo) + '</p>' : '') +
+    '<a href="' + linkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a>' +
+    (perfil ? '<p style="font-size:12px;color:var(--teal-deep);cursor:pointer;margin-top:8px" onclick="document.getElementById(\'' + idDetalle + '\').style.display = document.getElementById(\'' + idDetalle + '\').style.display === \'none\' ? \'block\' : \'none\'">Ver perfil completo ▾</p>' : '') +
+    '<div id="' + idDetalle + '" style="display:none">' + detalle + '</div>' +
+    '</div>';
 }
 
 function construirLineaDeTiempo(etapaRutaCompra, totalVisitas) {

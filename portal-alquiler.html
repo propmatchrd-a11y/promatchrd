@@ -31,11 +31,11 @@
 
       '<div class="card" style="text-align:center">' +
       '<h3>' + datos.estadoExplicado + '</h3>' +
-      (datos.agenteAsignado ? '<p>Tu agente: <b>' + datos.agenteAsignado + '</b></p>' : '') +
-      (datos.agenteLinkWhatsApp
-        ? '<p><a href="' + datos.agenteLinkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a></p>'
-        : '<p style="font-size:13px;color:var(--text-muted)">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</p>') +
       '</div>' +
+
+      (datos.agenteLinkWhatsApp
+        ? construirTarjetaAgente(datos.agentePerfil, datos.agenteLinkWhatsApp)
+        : '<div class="alert info" style="text-align:center">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</div>') +
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisitaAlquiler() : '') +
       construirHistorialVisitasAlquiler(datos.historialVisitas) +
@@ -58,6 +58,32 @@
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
 })();
+
+function construirTarjetaAgente(perfil, linkWhatsApp) {
+  const nombre = perfil ? perfil.nombre : 'Tu agente';
+  const idDetalle = 'detalleAgente';
+  const estrellas = perfil && perfil.rating ? '⭐'.repeat(Math.round(perfil.rating)) : '';
+
+  const detalle = perfil ? (
+    '<div style="text-align:left;margin-top:10px;padding-top:10px;border-top:1px solid var(--line)">' +
+    (perfil.empresa ? '<p style="font-size:13px;margin:2px 0">🏢 ' + escaparHtml(perfil.empresa) + '</p>' : '') +
+    (perfil.especialidad ? '<p style="font-size:13px;margin:2px 0">🎯 Especialidad: ' + escaparHtml(perfil.especialidad) + '</p>' : '') +
+    (perfil.anosExperiencia ? '<p style="font-size:13px;margin:2px 0">📅 ' + escaparHtml(perfil.anosExperiencia) + ' de experiencia</p>' : '') +
+    (perfil.cierresConfirmados ? '<p style="font-size:13px;margin:2px 0">🏡 ' + perfil.cierresConfirmados + ' propiedades cerradas con éxito</p>' : '') +
+    (perfil.satisfaccionPct ? '<p style="font-size:13px;margin:2px 0">😊 ' + perfil.satisfaccionPct + '% de satisfacción de clientes</p>' : '') +
+    '</div>'
+  ) : '';
+
+  return '<div class="card" style="text-align:center">' +
+    '<p style="font-size:14px;margin-bottom:2px">Tu agente: <b>' + escaparHtml(nombre) + '</b>' +
+    (perfil && perfil.verificado ? ' <span style="color:#0f7a6b" title="Verificado">✓</span>' : '') + '</p>' +
+    (estrellas ? '<p style="margin:2px 0 8px 0">' + estrellas + '</p>' : '') +
+    (perfil && perfil.distintivo ? '<p style="font-size:12px;color:#b8860b;margin:0 0 8px 0">🏅 ' + escaparHtml(perfil.distintivo) + '</p>' : '') +
+    '<a href="' + linkWhatsApp + '" target="_blank" class="btn" style="background:#25D366;color:white;text-decoration:none;display:inline-block">💬 Contactar a mi agente</a>' +
+    (perfil ? '<p style="font-size:12px;color:var(--teal-deep);cursor:pointer;margin-top:8px" onclick="document.getElementById(\'' + idDetalle + '\').style.display = document.getElementById(\'' + idDetalle + '\').style.display === \'none\' ? \'block\' : \'none\'">Ver perfil completo ▾</p>' : '') +
+    '<div id="' + idDetalle + '" style="display:none">' + detalle + '</div>' +
+    '</div>';
+}
 
 function construirHistorialVisitasAlquiler(historial) {
   if (!historial || !historial.length) return '';

@@ -3,6 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0b5c50">
+<link rel="apple-touch-icon" href="icono-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PropMatchRD">
 <title>Tu panel — PropMatchRD</title>
 <link rel="stylesheet" href="styles.css">
 <script src="fondo-premium.js" defer></script>
@@ -56,6 +62,17 @@
       '<h1 style="text-align:center">Hola ' + datos.nombre + '</h1>' +
       (datos.tipoRegistro === 'Empresa'
         ? '<p style="text-align:center;font-size:13px;color:var(--text-muted)">🏢 Empresa inmobiliaria' + (datos.nombreRepresentante ? ' · Representante: ' + datos.nombreRepresentante : '') + '</p>'
+        : '') +
+      (datos.ranking
+        ? '<p style="text-align:center;font-size:13px;color:var(--teal-deep)">🏆 Puesto <b>#' + datos.ranking.posicion + '</b> de ' + datos.ranking.totalAgentes + ' agentes</p>'
+        : '') +
+
+      (datos.proximaMejorAccion
+        ? '<div class="card" style="background:#e8f0fe;border:1px solid #1a73e8;text-align:center">' +
+          '<p style="font-size:12px;color:#1a73e8;font-weight:bold;margin:0 0 4px 0;letter-spacing:0.5px">🎯 TU PRÓXIMA MEJOR ACCIÓN</p>' +
+          '<p style="font-size:15px;margin:0 0 4px 0">Contacta a <b>' + escaparHtml(datos.proximaMejorAccion.nombre) + '</b></p>' +
+          '<p style="font-size:13px;color:var(--text-muted);margin:0">' + escaparHtml(datos.proximaMejorAccion.razon) + '</p>' +
+          '</div>'
         : '') +
 
       '<div class="stat-grid">' +

@@ -1,0 +1,13 @@
+{
+  "name": "PropMatchRD",
+  "short_name": "PropMatchRD",
+  "description": "Encuentra tu próxima propiedad con el respaldo de un agente inmobiliario verificado en República Dominicana.",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#faf6ed",
+  "theme_color": "#0b5c50",
+  "icons": [
+    { "src": "icono-180.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "icono-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

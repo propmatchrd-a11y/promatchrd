@@ -22,6 +22,7 @@
     const datos = await llamarApi({ portal: codigo });
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
     guardarCodigoRecordado('comprador', codigo); // automatización: la próxima vez, index.html ya lo recuerda
+    window.ID_CIERRE_PENDIENTE = datos.montoCierrePendiente ? datos.montoCierrePendiente.idCierre : null;
 
     const g = datos.gastos || {};
     const documentos = datos.documentos || {};
@@ -39,6 +40,15 @@
         ? '<div class="card" style="text-align:center;background:var(--sand)"><div style="font-size:28px">' + datos.resumenCompatibilidad.emoji + '</div>' +
           '<div style="font-size:17px;font-weight:bold;margin:4px 0">Compatibilidad ' + datos.resumenCompatibilidad.nivel + '</div>' +
           '<p style="font-size:14px;color:var(--ink-soft);margin:0">' + escaparHtml(datos.resumenCompatibilidad.resumen) + '</p></div>'
+        : '') +
+
+      (datos.montoCierrePendiente
+        ? '<div class="card" style="text-align:center;background:#fff3cd"><h3>💰 Tu agente reportó un cierre</h3>' +
+          '<p style="font-size:15px;margin:6px 0">Monto reportado: <b>RD$' + Number(datos.montoCierrePendiente.montoVenta).toLocaleString('es-DO') + '</b></p>' +
+          '<p style="font-size:13px;color:var(--text-muted)">¿Es correcto este monto?</p>' +
+          '<button class="btn btn-primary" onclick="confirmarMonto(\'Sí\')">✅ Sí, es correcto</button> ' +
+          '<button class="btn btn-outline" onclick="confirmarMonto(\'No\')">❌ No es correcto</button>' +
+          '<div id="respuestaMonto" style="margin-top:8px"></div></div>'
         : '') +
 
       (datos.confirmarCierrePendiente
@@ -298,6 +308,17 @@ async function registrarVisitaComprador(idConexion) {
     alert(datos.mensaje || 'Registrado.');
   } catch (e) {
     alert('Ocurrió un problema de conexión.');
+  }
+}
+
+async function confirmarMonto(respuesta) {
+  const cont = document.getElementById('respuestaMonto');
+  cont.innerHTML = '<p style="font-size:13px">Enviando…</p>';
+  try {
+    const datos = await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'confirmarMontoCierre', idCierre: window.ID_CIERRE_PENDIENTE, valor: respuesta });
+    cont.innerHTML = '<p style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</p>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
   }
 }
 

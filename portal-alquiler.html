@@ -22,6 +22,7 @@
   try {
     const datos = await llamarApi({ portalAlquiler: codigo });
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
+    window.ID_CIERRE_PENDIENTE_ALQUILER = datos.montoCierrePendiente ? datos.montoCierrePendiente.idCierre : null;
 
     const iconos = { Diamante: '💎', Oro: '🥇', Plata: '🥈', Bronce: '🥉' };
 
@@ -32,6 +33,15 @@
       '<div class="card" style="text-align:center">' +
       '<h3>' + datos.estadoExplicado + '</h3>' +
       '</div>' +
+
+      (datos.montoCierrePendiente
+        ? '<div class="card" style="text-align:center;background:#fff3cd"><h3>💰 Tu agente reportó un cierre</h3>' +
+          '<p style="font-size:15px;margin:6px 0">Monto mensual reportado: <b>RD$' + Number(datos.montoCierrePendiente.montoVenta).toLocaleString('es-DO') + '</b></p>' +
+          '<p style="font-size:13px;color:var(--text-muted)">¿Es correcto este monto?</p>' +
+          '<button class="btn btn-primary" onclick="confirmarMontoAlquiler(\'Sí\')">✅ Sí, es correcto</button> ' +
+          '<button class="btn btn-outline" onclick="confirmarMontoAlquiler(\'No\')">❌ No es correcto</button>' +
+          '<div id="respuestaMontoAlquiler" style="margin-top:8px"></div></div>'
+        : '') +
 
       (datos.agenteLinkWhatsApp
         ? construirTarjetaAgente(datos.agentePerfil, datos.agenteLinkWhatsApp)
@@ -147,6 +157,17 @@ async function responderConexionDirectaAlquiler(idConexion, respuesta) {
     location.reload();
   } catch (e) {
     alert('Ocurrió un problema de conexión.');
+  }
+}
+
+async function confirmarMontoAlquiler(respuesta) {
+  const cont = document.getElementById('respuestaMontoAlquiler');
+  cont.innerHTML = '<p style="font-size:13px">Enviando…</p>';
+  try {
+    const datos = await ejecutarAccion({ portalAlquiler: window.CODIGO_PORTAL_ALQUILER_ACTUAL, accion: 'confirmarMontoCierre', idCierre: window.ID_CIERRE_PENDIENTE_ALQUILER, valor: respuesta });
+    cont.innerHTML = '<p style="font-size:13px;color:' + (datos.error ? '#e4572e' : '#0f7a6b') + '">' + escaparHtml(datos.mensaje) + '</p>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e">⚠️ Ocurrió un problema de conexión.</p>';
   }
 }
 

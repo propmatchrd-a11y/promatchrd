@@ -40,6 +40,7 @@
   }
 
   async function cargarPanel(idContacto) {
+    if (mostrarMantenimientoSiAplica('contenido')) return;
     const params = { panel: CODIGO_PANEL };
     if (idContacto) params.contacto = idContacto;
     const datos = await llamarApi(params);

@@ -3,18 +3,18 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/NWJknBLN14tar3id7';
-const FORM_AGENTE_URL = 'https://forms.gle/iJCzbkPJbTQk3cb99';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/43dxukVDEMqx3NYP7';
-const FORM_ALQUILER_URL = 'https://forms.gle/JucWhbmVyAugvx8z5';
-const FORM_PROPIETARIO_URL = 'https://forms.gle/ENdykFkmw9W16CUH6';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
+const FORM_PROPIETARIO_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_PROPIETARIO';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
 const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
@@ -289,4 +289,33 @@ function construirEsqueletoCarga(numTarjetas) {
   return '<div class="stat-grid" style="margin-bottom:16px">' + statsEsqueleto + '</div>' +
     '<div class="skeleton-shimmer skeleton-line" style="width:60%;height:22px;margin:0 auto 16px"></div>' +
     tarjetasEsqueleto;
+}
+
+/**
+ * ============================================================================
+ *  MODO MANTENIMIENTO — un solo interruptor centralizado para TODOS los
+ *  Portales/Paneles (no solo la página principal). Cámbialo a "true"
+ *  antes de aplicar cambios grandes, sube este archivo, y cualquier
+ *  Portal/Panel que lo use mostrará el mensaje de mantenimiento en vez
+ *  de su contenido normal — no depende del backend, funciona incluso si
+ *  Apps Script está roto en ese momento.
+ * ============================================================================
+ */
+const MODO_MANTENIMIENTO = false;
+
+/**
+ * Llamar al inicio de cada Portal/Panel — si el modo mantenimiento está
+ * activo, reemplaza el contenido por el mensaje y devuelve true (para
+ * que la página sepa detenerse ahí, sin intentar cargar datos del
+ * backend).
+ */
+function mostrarMantenimientoSiAplica(idContenedor) {
+  if (!MODO_MANTENIMIENTO) return false;
+  document.getElementById(idContenedor).innerHTML =
+    '<div style="text-align:center;padding-top:60px">' +
+    '<span style="font-size:56px">🛠️</span>' +
+    '<h1 style="margin-top:16px">Estamos mejorando PropMatchRD</h1>' +
+    '<p style="font-size:16px;color:var(--text-muted);max-width:420px;margin:0 auto">Volvemos en breve. Gracias por tu paciencia.</p>' +
+    '</div>';
+  return true;
 }

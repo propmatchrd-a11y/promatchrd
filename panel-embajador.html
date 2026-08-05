@@ -20,6 +20,7 @@
 <script>
   document.getElementById('contenido').innerHTML = construirEsqueletoCarga(3);
 async function cargarPanelEmbajador() {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 

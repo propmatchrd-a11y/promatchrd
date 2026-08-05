@@ -20,6 +20,7 @@
 <script>
   document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
 async function cargarPortalPropietario() {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalPropietario');
   window.CODIGO_PORTAL_PROPIETARIO_ACTUAL = codigo;
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }

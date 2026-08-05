@@ -90,7 +90,20 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<script src="app.js"></script>
+<script>
+  // ============================================================
+  // MODO MANTENIMIENTO — se controla desde app.js (un solo lugar
+  // para todo el sitio, no hay que cambiarlo en cada página).
+  // ============================================================
+</script>
+<div class="wrap" id="mensajeMantenimiento" style="text-align:center;padding-top:80px;display:none">
+  <span style="font-size:56px">🛠️</span>
+  <h1 style="margin-top:16px">Estamos mejorando PropMatchRD</h1>
+  <p style="font-size:16px;color:var(--text-muted);max-width:420px;margin:0 auto">
+  Volvemos en breve. Gracias por tu paciencia.</p>
+</div>
+<div class="wrap" id="sitioNormal">
 
   <span class="eyebrow">PropMatchRD</span>
   <h1>La forma más inteligente<br>de encontrar tu próxima propiedad.</h1>
@@ -207,7 +220,6 @@
 
 <a class="whatsapp-float" id="linkWhatsappSoporte" href="#" target="_blank" title="Escríbenos por WhatsApp">💬</a>
 
-<script src="app.js"></script>
 <script>
   document.getElementById('linkRegistroComprador').href = FORM_COMPRADOR_URL;
   document.getElementById('linkRegistroAlquiler').href = FORM_ALQUILER_URL;
@@ -218,6 +230,10 @@
   document.getElementById('linkWhatsappSoporte').href =
     'https://wa.me/' + WHATSAPP_SOPORTE_NUMERO + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre PropMatchRD.');
 
+  if (MODO_MANTENIMIENTO) {
+    document.getElementById('sitioNormal').style.display = 'none';
+    document.getElementById('mensajeMantenimiento').style.display = 'block';
+  }
 </script>
 </body>
 </html>

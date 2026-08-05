@@ -20,6 +20,7 @@
 <script>
   document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
 async function cargarPortalAlquiler() {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalAlquiler');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
   window.CODIGO_PORTAL_ALQUILER_ACTUAL = codigo;

@@ -20,6 +20,7 @@
 <script>
   document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
 async function cargarPortalComprador() {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('portal');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 

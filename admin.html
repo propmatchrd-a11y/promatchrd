@@ -29,6 +29,7 @@ let CODIGO_ADMIN = '';
 })();
 
 async function cargarPanel() {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   try {
     const datos = await llamarApi({ panelAdmin: CODIGO_ADMIN });
     if (datos.error) { mostrarError('contenido', 'Acceso denegado.'); return; }

@@ -20,6 +20,7 @@
 <script src="app.js"></script>
 <script>
 (async function () {
+  if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('ref');
   if (!codigo) { mostrarError('contenido', 'Falta el código de referido en el enlace.'); return; }
 

@@ -93,6 +93,12 @@ async function cargarPortalPropietario() {
           ).join('') +
           '</div>'
         : '') +
+      (datos.urlFormularioEmbajador
+        ? '<div class="card" style="text-align:center;background:#fff8e6"><h3>🎖️ ¿Conoces a alguien buscando propiedad?</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted)">Refiere compradores o inquilinos y gana una comisión por cada uno que cierre — sin ningún costo para ellos.</p>' +
+          '<a href="' + datos.urlFormularioEmbajador + '" target="_blank" class="btn btn-outline" style="display:inline-block;text-decoration:none">Hazte Embajador →</a>' +
+          '</div>'
+        : '') +
       '';
 
   } catch (err) {

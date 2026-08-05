@@ -290,6 +290,73 @@ a { color: var(--teal-deep); }
 }
 .stat .label { font-size: 11px; color: var(--text-muted); }
 
+/**
+ * Barra fija (sticky) con lo más importante siempre visible mientras se
+ * hace scroll — evita perder de vista los números clave o el botón de
+ * actualizar cuando se navega por una lista larga (compradores,
+ * comisiones, etc.), sobre todo útil en celular.
+ */
+.barra-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(250, 246, 237, 0.92);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 14px;
+  margin: 0 -20px 16px -20px;
+}
+.barra-sticky .stats-mini { display: flex; gap: 14px; font-family: var(--font-mono); font-size: 13px; }
+.barra-sticky .stats-mini b { color: var(--teal-deep); }
+.barra-sticky button {
+  background: var(--teal); color: white; border: none; border-radius: 100px;
+  padding: 6px 12px; font-size: 12px; cursor: pointer; white-space: nowrap;
+}
+.barra-sticky button:active { transform: scale(0.96); }
+
+/**
+ * Navegación inferior fija — solo en pantallas angostas (celular), donde
+ * es mucho más natural para el pulgar que hacer scroll largo hasta
+ * encontrar una sección. En escritorio no se muestra (el scroll normal
+ * ya es cómodo con pantallas grandes).
+ */
+.nav-inferior {
+  display: none;
+}
+@media (max-width: 640px) {
+  .nav-inferior {
+    display: flex;
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(250, 246, 237, 0.97);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-top: 1px solid var(--line);
+    z-index: 100;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  }
+  .nav-inferior button {
+    flex: 1;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 2px;
+    font-size: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+  .nav-inferior button .icono { font-size: 20px; }
+  .wrap { padding-bottom: 96px; } /* espacio extra para no tapar el último contenido con la barra fija */
+}
+
 /* --- Ruta de Compra: el elemento visual firma del sistema --- */
 .ruta {
   display: flex;
@@ -423,6 +490,27 @@ td.num { font-family: var(--font-mono); text-align: right; }
   animation: girar 0.8s linear infinite;
 }
 @keyframes girar { to { transform: rotate(360deg); } }
+
+/**
+ * Esqueleto de carga (shimmer) — en vez de un spinner genérico, muestra
+ * la FORMA aproximada de dónde va a aparecer el contenido (tarjetas de
+ * estadísticas + tarjetas de lista). Se percibe como más rápido e
+ * intencional que un círculo girando, sobre todo en conexiones lentas.
+ */
+.skeleton-shimmer {
+  background: linear-gradient(90deg, var(--sand) 25%, var(--sand-deep) 37%, var(--sand) 63%);
+  background-size: 400% 100%;
+  animation: skeleton-brillo 1.4s ease infinite;
+  border-radius: 8px;
+}
+@keyframes skeleton-brillo {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+.skeleton-stat { height: 56px; border-radius: 12px; }
+.skeleton-card { height: 90px; border-radius: 10px; margin-bottom: 10px; }
+.skeleton-line { height: 14px; border-radius: 4px; margin-bottom: 8px; }
+
 .footer-note {
   text-align: center;
   color: var(--text-muted);

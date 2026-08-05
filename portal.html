@@ -8,13 +8,12 @@
 <script src="fondo-premium.js" defer></script>
 </head>
 <body>
-<div class="wrap" id="contenido">
-  <div class="loading"><div class="spinner"></div>Espera un momento, estamos cargando tu análisis…</div>
-</div>
+<div class="wrap" id="contenido"></div>
 
 <script src="app.js"></script>
 <script>
-(async function () {
+  document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
+async function cargarPortalComprador() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portal');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 
@@ -28,6 +27,7 @@
     const documentos = datos.documentos || {};
     document.getElementById('contenido').innerHTML =
       '<div style="text-align:center">' + construirBadgeClasificacion(datos.clasificacion) + '</div>' +
+      '<div style="display:flex;justify-content:flex-end"><button id="btnActualizarPortal" onclick="actualizarPortalManual()" style="background:var(--teal);color:white;border:none;border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer">🔄 Actualizar</button></div>' +
       '<h1>Hola ' + escaparHtml(datos.nombre) + '</h1>' +
 
       '<div class="alert info"><b>Estado:</b> ' + datos.estadoExplicado + '</div>' +
@@ -139,7 +139,15 @@
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
-})();
+}
+
+async function actualizarPortalManual() {
+  const btn = document.getElementById('btnActualizarPortal');
+  if (btn) { btn.textContent = '⏳ Actualizando…'; btn.disabled = true; }
+  await cargarPortalComprador();
+}
+
+cargarPortalComprador();
 
 function construirFilaDocumento(idSufijo, campo, etiqueta, marcado) {
   return '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)">' +

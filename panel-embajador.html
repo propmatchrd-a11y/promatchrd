@@ -8,13 +8,12 @@
 <script src="fondo-premium.js" defer></script>
 </head>
 <body>
-<div class="wrap" id="contenido">
-  <div class="loading"><div class="spinner"></div>Cargando tu panel de embajador…</div>
-</div>
+<div class="wrap" id="contenido"></div>
 
 <script src="app.js"></script>
 <script>
-(async function () {
+  document.getElementById('contenido').innerHTML = construirEsqueletoCarga(3);
+async function cargarPanelEmbajador() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 
@@ -25,7 +24,15 @@
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
-})();
+}
+
+async function actualizarPanelEmbajadorManual() {
+  const btn = document.getElementById('btnActualizarPanelEmbajador');
+  if (btn) { btn.textContent = '⏳ Actualizando…'; btn.disabled = true; }
+  await cargarPanelEmbajador();
+}
+
+cargarPanelEmbajador();
 
 function pintarPanel(datos) {
   const pasosHtml = datos.pasos.map((p) => {
@@ -35,6 +42,7 @@ function pintarPanel(datos) {
   }).join('');
 
   document.getElementById('contenido').innerHTML =
+    '<div style="display:flex;justify-content:flex-end"><button id="btnActualizarPanelEmbajador" onclick="actualizarPanelEmbajadorManual()" style="background:var(--teal);color:white;border:none;border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer">🔄 Actualizar</button></div>' +
     '<div style="text-align:center"><span class="badge gold" style="background:#b8860b">Nivel ' + datos.nivel + '</span></div>' +
     '<h1 style="text-align:center">Hola ' + escaparHtml(datos.nombre) + '</h1>' +
     '<p style="text-align:center;font-family:var(--font-mono);color:var(--text-muted)">Tu código: ' + datos.codigoReferido + '</p>' +

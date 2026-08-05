@@ -3,21 +3,21 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/anjB4cxJBy97FJyh6';
-const FORM_AGENTE_URL = 'https://forms.gle/UaT9jXVokxBNBRkU8';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/9NdpZ4HhaEqN8c1w9';
-const FORM_ALQUILER_URL = 'https://forms.gle/xrSnubFzj5uymPj48';
-const FORM_PROPIETARIO_URL = 'https://forms.gle/RHMvEuYXr9DGmkKx6';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
+const FORM_PROPIETARIO_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_PROPIETARIO';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -242,25 +242,51 @@ function construirGraficoPresupuesto(g) {
   if (!g || (!g.mercadoMin && !g.mercadoMax)) {
     return '<p style="font-size:13px;color:var(--text-muted)">Sin referencia de mercado cargada todavía para esta zona/tipo de inmueble.</p>';
   }
-  const anchoTotal = 320, alto = 64;
+  const anchoTotal = 340, alto = 100;
+  const formato = v => 'RD$' + Math.round(v).toLocaleString('es-DO');
+
   // El rango visible incluye tanto el mercado como el presupuesto, con
   // un 15% de margen a cada lado para que nada quede pegado al borde.
   const valores = [g.mercadoMin, g.mercadoMax, g.presupuestoMax].filter(v => v > 0);
   const min = Math.min(...valores) * 0.85;
   const max = Math.max(...valores) * 1.15;
-  const escala = v => ((v - min) / (max - min)) * anchoTotal;
+  const escala = v => 12 + ((v - min) / (max - min)) * (anchoTotal - 24);
 
   const barraX1 = escala(g.mercadoMin), barraX2 = escala(g.mercadoMax);
-  const marcadorX = escala(g.presupuestoMax);
+  const marcadorX = Math.max(24, Math.min(anchoTotal - 24, escala(g.presupuestoMax)));
   const dentroDelRango = g.presupuestoMax >= g.mercadoMin && g.presupuestoMax <= g.mercadoMax * 1.05;
   const colorMarcador = dentroDelRango ? '#0f7a6b' : (g.presupuestoMax < g.mercadoMin ? '#e4572e' : '#2e6b8a');
 
-  return '<svg viewBox="0 0 ' + anchoTotal + ' ' + alto + '" style="width:100%;max-width:360px;height:auto" role="img" aria-label="Presupuesto comparado con el mercado">' +
-    '<line x1="0" y1="30" x2="' + anchoTotal + '" y2="30" stroke="#e4dcc8" stroke-width="6" stroke-linecap="round"/>' +
-    '<line x1="' + barraX1 + '" y1="30" x2="' + barraX2 + '" y2="30" stroke="#c9bfa0" stroke-width="6" stroke-linecap="round"/>' +
-    '<circle cx="' + marcadorX + '" cy="30" r="7" fill="' + colorMarcador + '" stroke="white" stroke-width="2"/>' +
-    '<text x="' + barraX1 + '" y="12" font-size="10" fill="#8a8272" text-anchor="middle">RD$' + Math.round(g.mercadoMin / 1000) + 'k</text>' +
-    '<text x="' + barraX2 + '" y="12" font-size="10" fill="#8a8272" text-anchor="middle">RD$' + Math.round(g.mercadoMax / 1000) + 'k</text>' +
-    '<text x="' + marcadorX + '" y="50" font-size="11" font-weight="600" fill="' + colorMarcador + '" text-anchor="middle">Presupuesto: RD$' + Math.round(g.presupuestoMax / 1000) + 'k</text>' +
+  return '<svg viewBox="0 0 ' + anchoTotal + ' ' + alto + '" style="width:100%;max-width:400px;height:auto" role="img" aria-label="Presupuesto comparado con el mercado">' +
+    // Etiqueta superior de la barra de mercado
+    '<text x="' + ((barraX1 + barraX2) / 2) + '" y="14" font-size="10" fill="#8a8272" text-anchor="middle">Rango de precios en tu zona</text>' +
+    // Riel de fondo + barra de mercado
+    '<line x1="12" y1="34" x2="' + (anchoTotal - 12) + '" y2="34" stroke="#e4dcc8" stroke-width="8" stroke-linecap="round"/>' +
+    '<line x1="' + barraX1 + '" y1="34" x2="' + barraX2 + '" y2="34" stroke="#c9bfa0" stroke-width="8" stroke-linecap="round"/>' +
+    // Montos del rango de mercado, debajo de la barra
+    '<text x="' + barraX1 + '" y="52" font-size="11" font-weight="600" fill="#6b6552" text-anchor="middle">' + formato(g.mercadoMin) + '</text>' +
+    '<text x="' + barraX2 + '" y="52" font-size="11" font-weight="600" fill="#6b6552" text-anchor="middle">' + formato(g.mercadoMax) + '</text>' +
+    // Marcador del presupuesto
+    '<circle cx="' + marcadorX + '" cy="34" r="8" fill="' + colorMarcador + '" stroke="white" stroke-width="2.5"/>' +
+    '<line x1="' + marcadorX + '" y1="42" x2="' + marcadorX + '" y2="70" stroke="' + colorMarcador + '" stroke-width="1.5" stroke-dasharray="2,2"/>' +
+    '<text x="' + marcadorX + '" y="84" font-size="12" font-weight="700" fill="' + colorMarcador + '" text-anchor="middle">Tu presupuesto</text>' +
+    '<text x="' + marcadorX + '" y="98" font-size="13" font-weight="700" fill="' + colorMarcador + '" text-anchor="middle">' + formato(g.presupuestoMax) + '</text>' +
     '</svg>';
+}
+
+/**
+ * Esqueleto de carga (shimmer) reutilizable en todos los paneles/portales —
+ * reemplaza el spinner genérico por la forma aproximada del contenido que
+ * está por llegar (estadísticas + tarjetas de lista), se percibe más
+ * rápido e intencional que un círculo girando.
+ */
+function construirEsqueletoCarga(numTarjetas) {
+  numTarjetas = numTarjetas || 3;
+  const statsEsqueleto = ['', '', '', ''].map(() => '<div class="skeleton-shimmer skeleton-stat"></div>').join('');
+  const tarjetasEsqueleto = Array.from({ length: numTarjetas }).map(() =>
+    '<div class="skeleton-shimmer skeleton-card"></div>'
+  ).join('');
+  return '<div class="stat-grid" style="margin-bottom:16px">' + statsEsqueleto + '</div>' +
+    '<div class="skeleton-shimmer skeleton-line" style="width:60%;height:22px;margin:0 auto 16px"></div>' +
+    tarjetasEsqueleto;
 }

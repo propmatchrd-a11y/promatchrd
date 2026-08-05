@@ -8,13 +8,12 @@
 <script src="fondo-premium.js" defer></script>
 </head>
 <body>
-<div class="wrap" id="contenido">
-  <div class="loading"><div class="spinner"></div>Cargando tu propiedad…</div>
-</div>
+<div class="wrap" id="contenido"></div>
 
 <script src="app.js"></script>
 <script>
-(async function () {
+  document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
+async function cargarPortalPropietario() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalPropietario');
   window.CODIGO_PORTAL_PROPIETARIO_ACTUAL = codigo;
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
@@ -24,6 +23,7 @@
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
 
     document.getElementById('contenido').innerHTML =
+      '<div style="display:flex;justify-content:flex-end"><button id="btnActualizarPortalPropietario" onclick="actualizarPortalPropietarioManual()" style="background:var(--teal);color:white;border:none;border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer">🔄 Actualizar</button></div>' +
       '<h1 style="text-align:center">Hola ' + escaparHtml(datos.nombre) + '</h1>' +
       '<p style="text-align:center;font-family:var(--font-mono);color:var(--text-muted)">Propiedad: ' + datos.idPropiedad + '</p>' +
 
@@ -92,7 +92,15 @@
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
-})();
+}
+
+async function actualizarPortalPropietarioManual() {
+  const btn = document.getElementById('btnActualizarPortalPropietario');
+  if (btn) { btn.textContent = '⏳ Actualizando…'; btn.disabled = true; }
+  await cargarPortalPropietario();
+}
+
+cargarPortalPropietario();
 
 async function responderSolicitudComprador(idConexion, respuesta) {
   const cont = document.getElementById('respSolicitud_' + idConexion);

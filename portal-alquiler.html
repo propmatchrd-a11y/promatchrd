@@ -8,13 +8,12 @@
 <script src="fondo-premium.js" defer></script>
 </head>
 <body>
-<div class="wrap" id="contenido">
-  <div class="loading"><div class="spinner"></div>Cargando tu solicitud…</div>
-</div>
+<div class="wrap" id="contenido"></div>
 
 <script src="app.js"></script>
 <script>
-(async function () {
+  document.getElementById('contenido').innerHTML = construirEsqueletoCarga(2);
+async function cargarPortalAlquiler() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalAlquiler');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
   window.CODIGO_PORTAL_ALQUILER_ACTUAL = codigo;
@@ -27,6 +26,7 @@
     const iconos = { Diamante: '💎', Oro: '🥇', Plata: '🥈', Bronce: '🥉' };
 
     document.getElementById('contenido').innerHTML =
+      '<div style="display:flex;justify-content:flex-end"><button id="btnActualizarPortalAlquiler" onclick="actualizarPortalAlquilerManual()" style="background:var(--teal);color:white;border:none;border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer">🔄 Actualizar</button></div>' +
       '<h1 style="text-align:center">Hola ' + escaparHtml(datos.nombre) + '</h1>' +
       '<p style="text-align:center;font-family:var(--font-mono);color:var(--text-muted)">Solicitud: ' + datos.idSolicitud + '</p>' +
 
@@ -67,7 +67,15 @@
   } catch (err) {
     mostrarError('contenido', 'Ocurrió un problema de conexión. Intenta de nuevo en unos minutos.');
   }
-})();
+}
+
+async function actualizarPortalAlquilerManual() {
+  const btn = document.getElementById('btnActualizarPortalAlquiler');
+  if (btn) { btn.textContent = '⏳ Actualizando…'; btn.disabled = true; }
+  await cargarPortalAlquiler();
+}
+
+cargarPortalAlquiler();
 
 function construirTarjetaAgente(perfil, linkWhatsApp) {
   const nombre = perfil ? perfil.nombre : 'Tu agente';

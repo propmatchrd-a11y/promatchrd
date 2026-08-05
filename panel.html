@@ -8,13 +8,30 @@
 <script src="fondo-premium.js" defer></script>
 </head>
 <body>
-<div class="wrap" id="contenido">
-  <div class="loading"><div class="spinner"></div>Espera un momento, estamos cargando tu panel…</div>
+<div class="wrap" id="contenido"></div>
+
+<div class="nav-inferior">
+  <button onclick="irASeccion('ancla-compradores')"><span class="icono">🏠</span>Compradores</button>
+  <button onclick="irASeccion('ancla-alquileres')"><span class="icono">🔑</span>Alquileres</button>
+  <button onclick="irASeccion('ancla-comisiones')"><span class="icono">💰</span>Comisiones</button>
+  <button onclick="irASeccion('ancla-cuenta')"><span class="icono">⚙️</span>Mi cuenta</button>
 </div>
 
 <script src="app.js"></script>
 <script>
+  document.getElementById('contenido').innerHTML = construirEsqueletoCarga(4);
   let CODIGO_PANEL = '';
+
+  function irASeccion(idAncla) {
+    const el = document.getElementById(idAncla);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  async function actualizarPanelManual() {
+    const btn = document.getElementById('btnActualizarPanel');
+    if (btn) { btn.textContent = '⏳ Actualizando…'; btn.disabled = true; }
+    await cargarPanel();
+  }
 
   async function cargarPanel(idContacto) {
     const params = { panel: CODIGO_PANEL };
@@ -23,35 +40,17 @@
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
     guardarCodigoRecordado('agente', CODIGO_PANEL); // automatización: la próxima vez, index.html ya lo recuerda
 
-    const filas = datos.compradores.map(c =>
-      '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
-      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
-      '<b style="font-size:15px">' + escaparHtml(c.nombre) + '</b>' +
-      '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
-      '</div>' +
-      badgeFormaPago(c.formaPago) +
-      (c.resumenCompatibilidad ? '<div style="background:var(--sand);padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:13px"><b>' + c.resumenCompatibilidad.emoji + ' Compatibilidad ' + c.resumenCompatibilidad.nivel + '</b><br>' + escaparHtml(c.resumenCompatibilidad.resumen) + '</div>' : '') +
-      '<div style="font-size:15px;font-weight:bold;color:var(--teal-deep);margin-bottom:4px">⭐ PropScore: ' + c.propScore + '/100</div>' +
-      '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
-      '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +
-      '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
-      construirLineaDeTiempo(c) +
-      construirGraficoPresupuesto(c.graficoPresupuesto) +
-      renderHistorialVisitas(c.historialVisitas) +
-      '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
-      (c.contactoPendiente
-        ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">📞 Marcar contacto</button>'
-        : '<span style="font-size:13px">✅ Contactado</span>') +
-      (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
-      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">📝 Visita</button>' +
-      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">✅ Cerrar</button>' +
-      '</div></div>'
-    ).join('');
+    window.TODOS_LOS_COMPRADORES = datos.compradores;
+    const filas = datos.compradores.map(construirTarjetaComprador).join('');
 
     const disponible = datos.disponibilidad !== 'No';
     const atiendeAlquileres = datos.atiendeAlquileres === 'Sí';
 
     document.getElementById('contenido').innerHTML =
+      '<div class="barra-sticky">' +
+      '<div class="stats-mini"><span>🏠 <b>' + datos.kpis.compradoresActivos + '</b></span><span>🔑 <b>' + (datos.kpis.alquileresActivos || 0) + '</b></span><span>✅ <b>' + datos.kpis.cierresConfirmados + '</b></span></div>' +
+      '<button onclick="actualizarPanelManual()" id="btnActualizarPanel">🔄 Actualizar</button>' +
+      '</div>' +
       (datos.mensajeContacto ? datos.mensajeContacto : '') +
       '<div style="text-align:center"><span class="badge">' + datos.nivel + '</span></div>' +
       '<h1 style="text-align:center">Hola ' + datos.nombre + '</h1>' +
@@ -98,8 +97,17 @@
           '</div>'
         : '') +
 
-      '<div class="card"><h3>Tus compradores activos</h3>' +
-      (datos.compradores.length ? filas : '<p>No tienes compradores activos en este momento.</p>') +
+      '<div id="ancla-compradores"></div>' +
+      '<div class="card"><h3>Tus compradores activos (' + datos.compradores.length + ')</h3>' +
+      (datos.compradores.length
+        ? '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">' +
+          '<input id="buscarComprador" type="text" placeholder="🔍 Buscar por nombre o zona…" oninput="filtrarCompradores()" style="flex:1;min-width:160px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);font-size:14px">' +
+          '<select id="filtroEtapa" onchange="filtrarCompradores()" style="padding:8px 10px;border-radius:8px;border:1px solid var(--line);font-size:14px">' +
+          '<option value="">Todas las etapas</option>' +
+          [...new Set(datos.compradores.map(c => c.etapaRutaCompra))].filter(Boolean).map(e => '<option value="' + e + '">' + e + '</option>').join('') +
+          '</select></div>'
+        : '') +
+      '<div id="listaCompradores">' + (datos.compradores.length ? filas : '<p>No tienes compradores activos en este momento.</p>') + '</div>' +
       '</div>' +
 
       '<div class="card" id="cardAccionRapida" style="display:none;border:2px solid #1a73e8"></div>' +
@@ -125,6 +133,7 @@
           '</div>'
         : '') +
 
+      '<div id="ancla-alquileres"></div>' +
       '<div class="card"><h3>🔑 Tus alquileres asignados</h3>' +
       (datos.alquileresActivos && datos.alquileresActivos.length
         ? datos.alquileresActivos.map(a =>
@@ -146,6 +155,7 @@
         : '<p>No tienes alquileres asignados en este momento.</p>') +
       '</div>' +
 
+      '<div id="ancla-comisiones"></div>' +
       (datos.misComisiones && datos.misComisiones.length
         ? '<div class="card"><h3>💰 Tus comisiones</h3>' +
           (datos.cuentaBancariaPlataforma
@@ -208,6 +218,7 @@
                 : '<button class="btn btn-primary" onclick="reportarPagoPremiumAgente()">⭐ Enviar solicitud de membresía</button><span id="premiumMsj" style="font-size:13px;margin-left:8px"></span>')) +
           '</div>') +
 
+      '<div id="ancla-cuenta"></div>' +
       '<div class="card"><h3>⚙️ Mi disponibilidad</h3>' +
       '<p style="font-size:13px">Desactívala si no puedes recibir compradores nuevos ahora (vacaciones, sobrecarga, etc.) — se reactiva cuando quieras, sin depender del admin.</p>' +
       '<button class="btn ' + (disponible ? 'btn-primary' : 'btn-outline') + '" onclick="cambiarDisponibilidad(\'Sí\')">✅ Disponible</button> ' +
@@ -267,6 +278,49 @@
   }
 
   let contadorHistorial = 0;
+  function construirTarjetaComprador(c) {
+    return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+      '<b style="font-size:15px">' + escaparHtml(c.nombre) + '</b>' +
+      '<span style="font-size:13px;color:var(--text-muted);font-family:var(--font-mono)">' + c.id + '</span>' +
+      '</div>' +
+      badgeFormaPago(c.formaPago) +
+      (c.resumenCompatibilidad ? '<div style="background:var(--sand);padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:13px"><b>' + c.resumenCompatibilidad.emoji + ' Compatibilidad ' + c.resumenCompatibilidad.nivel + '</b><br>' + escaparHtml(c.resumenCompatibilidad.resumen) + '</div>' : '') +
+      '<div style="font-size:15px;font-weight:bold;color:var(--teal-deep);margin-bottom:4px">⭐ PropScore: ' + c.propScore + '/100</div>' +
+      '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
+      '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +
+      '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
+      construirLineaDeTiempo(c) +
+      construirGraficoPresupuesto(c.graficoPresupuesto) +
+      renderHistorialVisitas(c.historialVisitas) +
+      '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
+      (c.contactoPendiente
+        ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">📞 Marcar contacto</button>'
+        : '<span style="font-size:13px">✅ Contactado</span>') +
+      (c.linkWhatsApp ? '<a href="' + c.linkWhatsApp + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a>' : '') +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'visita\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">📝 Visita</button>' +
+      '<button class="btn btn-outline btn-sm" onclick="abrirAccionRapida(\'cierreVenta\',\'' + c.id + '\',\'' + escaparHtml(c.nombre).replace(/'/g, "\'") + '\')">✅ Cerrar</button>' +
+      '</div></div>';
+  }
+
+  /**
+   * Buscador + filtro de compradores — útil sobre todo para agentes con
+   * cartera grande, donde antes había que hacer scroll manual por todos.
+   * Filtra por nombre/zona (texto libre) y por etapa del proceso.
+   */
+  function filtrarCompradores() {
+    const texto = (document.getElementById('buscarComprador').value || '').toLowerCase();
+    const etapaFiltro = document.getElementById('filtroEtapa').value;
+    const lista = (window.TODOS_LOS_COMPRADORES || []).filter(c => {
+      const coincideTexto = !texto || (c.nombre || '').toLowerCase().includes(texto) || (c.zona || '').toLowerCase().includes(texto);
+      const coincideEtapa = !etapaFiltro || c.etapaRutaCompra === etapaFiltro;
+      return coincideTexto && coincideEtapa;
+    });
+    document.getElementById('listaCompradores').innerHTML = lista.length
+      ? lista.map(construirTarjetaComprador).join('')
+      : '<p style="text-align:center;color:var(--text-muted);font-size:14px">Ningún comprador coincide con tu búsqueda.</p>';
+  }
+
   function renderHistorialVisitas(historial) {
     if (!historial || !historial.length) return '';
     const badge = (valor, siTexto, noTexto) => {

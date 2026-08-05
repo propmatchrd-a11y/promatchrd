@@ -98,6 +98,7 @@
       '</div>' +
 
       (datos.calificacionVisitaPendiente ? construirMiniEncuestaVisita() : '') +
+      construirLineaDeTiempo(datos.etapaRutaCompra, (datos.historialVisitas || []).length) +
       construirHistorialVisitas(datos.historialVisitas) +
       construirConexionesDirectasPendientes(datos.conexionesDirectasPendientes) +
 
@@ -142,6 +143,34 @@ function construirFilaDocumento(idSufijo, campo, etiqueta, marcado) {
 
 async function actualizarDocumento(campo, marcado) {
   await ejecutarAccion({ portal: window.CODIGO_PORTAL_ACTUAL, accion: 'actualizarDocumento', campo: campo, valor: marcado ? 'Sí' : 'No' });
+}
+
+function construirLineaDeTiempo(etapaRutaCompra, totalVisitas) {
+  const etapasVisibles = ['Registrado', 'Asignado', 'Visitando', 'Reservado', 'Cerrado'];
+  const mapaEtapas = {
+    'Evaluación': 0, 'Comprador Verificado': 0,
+    'Agente Asignado': 1,
+    'Visita 1': 2, 'Nueva búsqueda': 2, 'Visita 2+': 2,
+    'Reserva': 3,
+    'Compra': 4
+  };
+  const etapaActualIdx = mapaEtapas[etapaRutaCompra] !== undefined ? mapaEtapas[etapaRutaCompra] : 0;
+
+  const pasos = etapasVisibles.map(function (etapa, i) {
+    const completado = i < etapaActualIdx;
+    const actual = i === etapaActualIdx;
+    const color = completado ? '#0f7a6b' : (actual ? '#1a73e8' : '#d8d2c2');
+    const icono = completado ? '✓' : (i + 1);
+    return '<div style="display:flex;flex-direction:column;align-items:center;flex:1">' +
+      '<div style="width:28px;height:28px;border-radius:50%;background:' + color + ';color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:bold">' + icono + '</div>' +
+      '<span style="font-size:11px;margin-top:4px;text-align:center;color:' + (actual ? '#1a73e8' : '#8a8272') + ';font-weight:' + (actual ? 'bold' : 'normal') + '">' + etapa + '</span>' +
+      '</div>';
+  }).join('<div style="flex:0.4;height:2px;background:#d8d2c2;margin-top:14px"></div>');
+
+  return '<div class="card"><h3>🗺️ Tu progreso</h3>' +
+    '<div style="display:flex;align-items:flex-start;margin-top:8px">' + pasos + '</div>' +
+    (totalVisitas ? '<p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">' + totalVisitas + ' visita(s) realizada(s)</p>' : '') +
+    '</div>';
 }
 
 function construirHistorialVisitas(historial) {

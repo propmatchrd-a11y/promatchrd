@@ -35,6 +35,7 @@
       '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
       '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +
       '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
+      construirLineaDeTiempo(c) +
       construirGraficoPresupuesto(c.graficoPresupuesto) +
       renderHistorialVisitas(c.historialVisitas) +
       '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
@@ -268,16 +269,67 @@
   let contadorHistorial = 0;
   function renderHistorialVisitas(historial) {
     if (!historial || !historial.length) return '';
-    const idUnico = 'hist_' + (contadorHistorial++);
+    const badge = (valor, siTexto, noTexto) => {
+      if (valor === 'Sí') return '<span style="color:#0f7a6b;font-size:12px">✅ ' + siTexto + '</span>';
+      if (valor === 'No') return '<span style="color:#e4572e;font-size:12px">❌ ' + noTexto + '</span>';
+      return '<span style="color:#999;font-size:12px">⏳ Sin responder</span>';
+    };
     const filas = historial.map(v =>
-      '<div style="font-size:13px;padding:4px 0;border-bottom:1px solid var(--line)">' +
+      '<div style="font-size:13px;padding:8px 0;border-bottom:1px solid var(--line)">' +
       '<b>Visita ' + v.numero + '</b> — ' + (v.fecha ? new Date(v.fecha).toLocaleDateString('es-DO') : '—') + ' · ' + v.resultado +
-      (v.leGusto ? (v.leGusto === 'Sí' ? ' · <span style="color:#0f7a6b">👍 Le gustó</span>' : ' · <span style="color:#e4572e">👎 No le gustó</span>') : ' · <span style="color:#999">Sin opinión aún</span>') +
-      '</div>'
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-top:4px">' +
+      badge(v.leGusto, 'Le gustó', 'No le gustó') +
+      badge(v.confirmoVisita, 'Confirmó la visita', 'No confirmó visita') +
+      badge(v.agentePuntual, 'Llegaste puntual', 'No llegaste puntual') +
+      badge(v.agenteExplicoBien, 'Explicaste bien', 'No explicaste bien') +
+      badge(v.recomendaria, 'Te recomendaría', 'No te recomendaría') +
+      '</div></div>'
     ).join('');
-    return '<div style="margin-bottom:8px">' +
-      '<span style="font-size:13px;color:#1a73e8;cursor:pointer" onclick="document.getElementById(\'' + idUnico + '\').style.display = document.getElementById(\'' + idUnico + '\').style.display === \'none\' ? \'block\' : \'none\'">📋 Ver histórico (' + historial.length + ')</span>' +
-      '<div id="' + idUnico + '" style="display:none;margin-top:4px">' + filas + '</div>' +
+    // Visible de entrada (ya no oculto) — es justamente la opinión que el
+    // comprador dejó, lo más útil para que el agente ajuste su enfoque.
+    return '<div class="card" style="margin-top:8px;padding:12px">' +
+      '<h4 style="margin:0 0 6px 0;font-size:14px">⭐ Opinión de sus visitas (' + historial.length + ')</h4>' +
+      filas +
+      '</div>';
+  }
+
+  /**
+   * Línea de tiempo simple del proceso completo del comprador — desde su
+   * registro hasta su etapa actual, con sus visitas marcadas en el
+   * camino. Pensada para que cualquier persona, sin entrenamiento,
+   * entienda de un vistazo en qué punto va este comprador.
+   */
+  function construirLineaDeTiempo(c) {
+    const etapasVisibles = ['Registrado', 'Asignado', 'Visitando', 'Reservado', 'Cerrado'];
+    // Mapeo de los valores REALES que guarda el sistema (calcularEtapaRutaCompra_)
+    // a las 5 etapas simplificadas que se muestran — varios valores internos
+    // (ej. "Visita 1", "Nueva búsqueda", "Visita 2+") se agrupan en "Visitando"
+    // para que la línea de tiempo sea clara para cualquier persona, sin
+    // necesitar conocer el detalle interno del sistema.
+    const mapaEtapas = {
+      'Evaluación': 0, 'Comprador Verificado': 0,
+      'Agente Asignado': 1,
+      'Visita 1': 2, 'Nueva búsqueda': 2, 'Visita 2+': 2,
+      'Reserva': 3,
+      'Compra': 4
+    };
+    const etapaActualIdx = mapaEtapas[c.etapaRutaCompra] !== undefined ? mapaEtapas[c.etapaRutaCompra] : 0;
+    const totalVisitas = (c.historialVisitas || []).length;
+
+    const pasos = etapasVisibles.map((etapa, i) => {
+      const completado = i < etapaActualIdx;
+      const actual = i === etapaActualIdx;
+      const color = completado ? '#0f7a6b' : (actual ? '#1a73e8' : '#d8d2c2');
+      const icono = completado ? '✓' : (i + 1);
+      return '<div style="display:flex;flex-direction:column;align-items:center;flex:1">' +
+        '<div style="width:26px;height:26px;border-radius:50%;background:' + color + ';color:white;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">' + icono + '</div>' +
+        '<span style="font-size:10px;margin-top:4px;text-align:center;color:' + (actual ? '#1a73e8' : '#8a8272') + ';font-weight:' + (actual ? 'bold' : 'normal') + '">' + etapa + '</span>' +
+        '</div>';
+    }).join('<div style="flex:0.4;height:2px;background:#d8d2c2;margin-top:13px"></div>');
+
+    return '<div style="margin:10px 0 4px 0">' +
+      '<div style="display:flex;align-items:flex-start">' + pasos + '</div>' +
+      (totalVisitas ? '<p style="font-size:11px;color:var(--text-muted);text-align:center;margin-top:6px">' + totalVisitas + ' visita(s) registrada(s)</p>' : '') +
       '</div>';
   }
 

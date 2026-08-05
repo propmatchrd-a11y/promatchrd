@@ -14,16 +14,22 @@
   .legal-wrap h3 { font-size: 16px; margin: 20px 0 8px; }
   .legal-wrap p, .legal-wrap li { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
   .legal-wrap ul { padding-left: 20px; }
-  .legal-nav { display: flex; gap: 16px; margin-bottom: 24px; font-size: 14px; }
+  .legal-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-bottom: 24px; font-size: 14px; }
   .legal-nav a { color: var(--teal); text-decoration: none; }
   .legal-box { background: var(--sand); border-radius: var(--radius); padding: 18px 20px; margin: 16px 0; }
   .legal-box p { margin: 0; }
+  .legal-card { margin-top: 16px; padding: 32px; }
+  @media (max-width: 480px) {
+    .legal-nav { gap: 6px 12px; font-size: 13px; }
+    .legal-wrap { padding: 24px 12px 40px; }
+    .legal-card { padding: 20px 16px; }
+  }
 </style>
 </head>
 <body>
 <div class="legal-wrap">
   <a href="index.html" style="font-family:var(--font-mono);font-size:13px;color:var(--teal-deep);text-decoration:none">← Volver a PropMatchRD</a>
-  <div class="card" style="margin-top:16px;padding:32px">
+  <div class="card legal-card">
   <h1>Términos y Condiciones · Política de Privacidad</h1>
   <p class="legal-updated">Última actualización: agosto 2026</p>
 
@@ -73,7 +79,7 @@
   <p>Conservamos tu información mientras tu cuenta/solicitud esté activa y por un período razonable después para fines de historial y cumplimiento de comisiones pendientes. Puedes solicitar la eliminación de tus datos en cualquier momento (ver sección de derechos abajo).</p>
 
   <h3>Seguridad</h3>
-  <p>Tu información se almacena en la infraestructura de Google (Google Sheets/Apps Script), con acceso restringido únicamente al equipo administrador de PropMatchRD. Los portales de seguimiento usan códigos de acceso privados y aleatorios, no adivinables.</p>
+  <p>Tu información se almacena en infraestructura con acceso restringido únicamente al equipo administrador de PropMatchRD. Los portales de seguimiento usan códigos de acceso privados y aleatorios, no adivinables.</p>
 
   <h3>Cookies</h3>
   <p>Este sitio no utiliza cookies de rastreo ni almacenamiento local para fines de publicidad o análisis de terceros.</p>

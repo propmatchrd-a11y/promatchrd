@@ -24,6 +24,7 @@ async function cargarPortalAlquiler() {
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalAlquiler');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
   window.CODIGO_PORTAL_ALQUILER_ACTUAL = codigo;
+  guardarCodigoRecordado('alquiler', codigo); // automatización: la próxima vez, index.html ya lo recuerda
 
   try {
     const datos = await llamarApi({ portalAlquiler: codigo });

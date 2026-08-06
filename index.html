@@ -230,6 +230,16 @@
   document.getElementById('linkWhatsappSoporte').href =
     'https://wa.me/' + WHATSAPP_SOPORTE_NUMERO + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre PropMatchRD.');
 
+  // Pre-llena el campo de consulta con el último código usado en este
+  // navegador (si hay más de uno guardado, se prioriza el más común
+  // primero) — así quien ya se registró no tiene que ir a buscar su
+  // correo de nuevo cada vez que quiera revisar su estado.
+  const codigoRecordado = obtenerCodigoRecordado('comprador') || obtenerCodigoRecordado('alquiler') ||
+    obtenerCodigoRecordado('propietario') || obtenerCodigoRecordado('agente') || obtenerCodigoRecordado('embajador');
+  if (codigoRecordado) {
+    document.getElementById('codigoConsulta').value = codigoRecordado;
+  }
+
   if (MODO_MANTENIMIENTO) {
     document.getElementById('sitioNormal').style.display = 'none';
     document.getElementById('mensajeMantenimiento').style.display = 'block';

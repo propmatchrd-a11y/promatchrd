@@ -23,6 +23,7 @@ async function cargarPortalPropietario() {
   if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('portalPropietario');
   window.CODIGO_PORTAL_PROPIETARIO_ACTUAL = codigo;
+  guardarCodigoRecordado('propietario', codigo); // automatización: la próxima vez, index.html ya lo recuerda
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
 
   try {

@@ -23,6 +23,7 @@ async function cargarPanelEmbajador() {
   if (mostrarMantenimientoSiAplica('contenido')) return;
   const codigo = obtenerParametro('codigo') || obtenerParametro('embajador');
   if (!codigo) { mostrarError('contenido', 'Falta tu código de acceso en el enlace.'); return; }
+  guardarCodigoRecordado('embajador', codigo); // automatización: la próxima vez, index.html ya lo recuerda
 
   try {
     const datos = await llamarApi({ embajador: codigo });

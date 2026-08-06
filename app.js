@@ -17,7 +17,7 @@ const FORM_ALQUILER_URL = 'https://forms.gle/QLk48SfR6y6QMyBt9';
 const FORM_PROPIETARIO_URL = 'https://forms.gle/i5e22vsDJKckHEUQ8';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '8098012075';
+const WHATSAPP_SOPORTE_NUMERO = '18098012075';
 
 
 function obtenerParametro(nombre) {

@@ -3,21 +3,21 @@
  * Web App desplegada (termina en /exec) — está en Configuración →
  * URL_PORTAL_RESULTADOS dentro de tu Google Sheet.
  */
-const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG2pcjAx5q-PyGddtZAWlvBACwlSHnADOaRw7ER6FwJ0BD6/exec';
+const API_BASE = 'PEGA_AQUI_TU_URL_DE_APPS_SCRIPT_TERMINA_EN_/exec';
 
 /**
  * Links de los formularios de REGISTRO (no de acceso a portal existente) —
  * para quien llega por primera vez y todavía no tiene un código. Cópialos
  * desde el menú "🔗 Ver links de formularios" en tu Google Sheet.
  */
-const FORM_COMPRADOR_URL = 'https://forms.gle/bagAyydthtjWVkjn6';
-const FORM_AGENTE_URL = 'https://forms.gle/j5wTD1Vx5WUKnv3g7';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/zrzTjNKQRSKi7sMS6';
-const FORM_ALQUILER_URL = 'https://forms.gle/QLk48SfR6y6QMyBt9';
-const FORM_PROPIETARIO_URL = 'https://forms.gle/i5e22vsDJKckHEUQ8';
+const FORM_COMPRADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_COMPRADOR';
+const FORM_AGENTE_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_AGENTE';
+const FORM_EMBAJADOR_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_EMBAJADOR';
+const FORM_ALQUILER_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_ALQUILER';
+const FORM_PROPIETARIO_URL = 'PEGA_AQUI_EL_LINK_DEL_FORMULARIO_DE_PROPIETARIO';
 
 /** Número de WhatsApp de soporte (formato: 18095551234, con código de país) */
-const WHATSAPP_SOPORTE_NUMERO = '18098012075';
+const WHATSAPP_SOPORTE_NUMERO = 'PEGA_AQUI_TU_NUMERO_CON_CODIGO_DE_PAIS';
 
 
 function obtenerParametro(nombre) {
@@ -318,4 +318,40 @@ function mostrarMantenimientoSiAplica(idContenedor) {
     '<p style="font-size:16px;color:var(--text-muted);max-width:420px;margin:0 auto">Volvemos en breve. Gracias por tu paciencia.</p>' +
     '</div>';
   return true;
+}
+
+/**
+ * Sección plegable reutilizable — colapsada por defecto, con un "Ver
+ * más ▾" que la expande. Se usa para contenido secundario (gráficos,
+ * historiales detallados) que no hace falta ver de entrada, para que
+ * las tarjetas no se sientan tan densas cuando se apilan varios
+ * bloques uno tras otro.
+ */
+function construirSeccionPlegable(idUnico, textoBoton, contenidoHtml) {
+  return '<p style="font-size:13px;color:var(--teal-deep);cursor:pointer;margin:6px 0;user-select:none" onclick="toggleSeccionPlegable(\'' + idUnico + '\')">' +
+    '<span id="' + idUnico + '_texto">' + escaparHtml(textoBoton) + '</span> ' +
+    '<span id="' + idUnico + '_flecha" style="display:inline-block;transition:transform 0.15s">▾</span>' +
+    '</p>' +
+    '<div id="' + idUnico + '" style="display:none">' + contenidoHtml + '</div>';
+}
+
+function toggleSeccionPlegable(idUnico) {
+  const contenido = document.getElementById(idUnico);
+  const flecha = document.getElementById(idUnico + '_flecha');
+  const abierto = contenido.style.display !== 'none';
+  contenido.style.display = abierto ? 'none' : 'block';
+  if (flecha) flecha.style.transform = abierto ? 'rotate(0deg)' : 'rotate(180deg)';
+}
+
+/**
+ * Lenguaje de color unificado para "Compatibilidad" — antes el fondo de
+ * la tarjeta era siempre el mismo color neutro sin importar si era Alta,
+ * Media o Baja, a pesar de que el emoji sí cambiaba (🟢🟡🔴). Ahora el
+ * fondo también refleja el nivel, para que se pueda "leer" de un
+ * vistazo sin tener que leer el texto — mismo sistema en Panel y Portal.
+ */
+function colorFondoPorNivelCompatibilidad(nivel) {
+  if (nivel === 'Alta') return '#e6f4f1';   // tinte del teal — positivo
+  if (nivel === 'Media') return '#fdf3e0';  // tinte de ámbar — atención
+  return '#fbe9e5';                          // tinte de coral — alerta
 }

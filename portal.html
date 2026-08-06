@@ -44,7 +44,7 @@ async function cargarPortalComprador() {
         : '<div class="alert info" style="text-align:center">Estamos conectándote con el agente más adecuado para ti — en breve verás aquí sus datos de contacto.</div>') +
 
       (datos.resumenCompatibilidad
-        ? '<div class="card" style="text-align:center;background:var(--sand)"><div style="font-size:28px">' + datos.resumenCompatibilidad.emoji + '</div>' +
+        ? '<div class="card" style="text-align:center;background:' + colorFondoPorNivelCompatibilidad(datos.resumenCompatibilidad.nivel) + '"><div style="font-size:28px">' + datos.resumenCompatibilidad.emoji + '</div>' +
           '<div style="font-size:17px;font-weight:bold;margin:4px 0">Compatibilidad ' + datos.resumenCompatibilidad.nivel + '</div>' +
           '<p style="font-size:14px;color:var(--ink-soft);margin:0">' + escaparHtml(datos.resumenCompatibilidad.resumen) + '</p></div>'
         : '') +
@@ -300,7 +300,8 @@ function construirTarjetaPropiedadCompatible(p) {
   } else if (estado === 'Rechazada_Por_Propietario') {
     accionHtml = '<span style="font-size:13px;color:var(--text-muted)">El propietario no aceptó conectar esta vez.</span>';
   } else if (estado === 'Conectados') {
-    accionHtml = '<span style="font-size:13px;color:#0f7a6b">✅ Conectados — revisa tu correo para el contacto.</span> ' +
+    accionHtml = '<span style="font-size:13px;color:#0f7a6b">✅ Conectados</span> ' +
+      (p.linkWhatsAppPropietario ? '<a href="' + p.linkWhatsAppPropietario + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 WhatsApp</a> ' : '') +
       '<button class="btn btn-outline btn-sm" onclick="registrarVisitaComprador(\'' + p.conexion.idConexion + '\')">📍 Marcar que la visité</button>';
   } else {
     accionHtml = '';

@@ -87,8 +87,6 @@ async function cargarPortalPropietario() {
           '<p style="font-size:13px;color:var(--text-muted)">Cuando se concrete la venta, repórtala aquí para calcular la comisión.</p>' +
           datos.conexionesActivas.map(c =>
             '<div style="border-bottom:1px solid var(--line);padding:8px 0">' +
-            (c.linkWhatsAppComprador ? '<a href="' + c.linkWhatsAppComprador + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none;margin-bottom:6px;display:inline-block">💬 Contactar por WhatsApp</a><br>' : '') +
-            '<p style="font-size:12px;color:var(--text-muted);margin:2px 0">' + (c.visitaRegistrada ? '📍 Ya visitó la propiedad' : '⏳ Todavía no ha registrado una visita') + '</p>' +
             '<input type="number" id="monto_' + c.idConexion + '" placeholder="Monto final de venta (RD$)" style="width:100%;margin-bottom:6px">' +
             '<button class="btn btn-primary btn-sm" onclick="reportarVenta(\'' + c.idConexion + '\')">✅ Reportar venta concretada</button>' +
             '<div id="respuestaVenta_' + c.idConexion + '" style="margin-top:6px"></div>' +

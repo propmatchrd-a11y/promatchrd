@@ -319,39 +319,3 @@ function mostrarMantenimientoSiAplica(idContenedor) {
     '</div>';
   return true;
 }
-
-/**
- * Sección plegable reutilizable — colapsada por defecto, con un "Ver
- * más ▾" que la expande. Se usa para contenido secundario (gráficos,
- * historiales detallados) que no hace falta ver de entrada, para que
- * las tarjetas no se sientan tan densas cuando se apilan varios
- * bloques uno tras otro.
- */
-function construirSeccionPlegable(idUnico, textoBoton, contenidoHtml) {
-  return '<p style="font-size:13px;color:var(--teal-deep);cursor:pointer;margin:6px 0;user-select:none" onclick="toggleSeccionPlegable(\'' + idUnico + '\')">' +
-    '<span id="' + idUnico + '_texto">' + escaparHtml(textoBoton) + '</span> ' +
-    '<span id="' + idUnico + '_flecha" style="display:inline-block;transition:transform 0.15s">▾</span>' +
-    '</p>' +
-    '<div id="' + idUnico + '" style="display:none">' + contenidoHtml + '</div>';
-}
-
-function toggleSeccionPlegable(idUnico) {
-  const contenido = document.getElementById(idUnico);
-  const flecha = document.getElementById(idUnico + '_flecha');
-  const abierto = contenido.style.display !== 'none';
-  contenido.style.display = abierto ? 'none' : 'block';
-  if (flecha) flecha.style.transform = abierto ? 'rotate(0deg)' : 'rotate(180deg)';
-}
-
-/**
- * Lenguaje de color unificado para "Compatibilidad" — antes el fondo de
- * la tarjeta era siempre el mismo color neutro sin importar si era Alta,
- * Media o Baja, a pesar de que el emoji sí cambiaba (🟢🟡🔴). Ahora el
- * fondo también refleja el nivel, para que se pueda "leer" de un
- * vistazo sin tener que leer el texto — mismo sistema en Panel y Portal.
- */
-function colorFondoPorNivelCompatibilidad(nivel) {
-  if (nivel === 'Alta') return '#e6f4f1';   // tinte del teal — positivo
-  if (nivel === 'Media') return '#fdf3e0';  // tinte de ámbar — atención
-  return '#fbe9e5';                          // tinte de coral — alerta
-}

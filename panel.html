@@ -304,14 +304,14 @@
       '</div>' +
       badgeFormaPago(c.formaPago) +
       (c.viveEnElExterior ? '<div style="background:#e8f0fe;color:#1a73e8;padding:4px 8px;border-radius:6px;font-size:12px;margin-bottom:6px;display:inline-block">🌎 Vive en el exterior — considera videollamada</div>' : '') +
-      (c.resumenCompatibilidad ? '<div style="background:' + colorFondoPorNivelCompatibilidad(c.resumenCompatibilidad.nivel) + ';padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:13px"><b>' + c.resumenCompatibilidad.emoji + ' Compatibilidad ' + c.resumenCompatibilidad.nivel + '</b><br>' + escaparHtml(c.resumenCompatibilidad.resumen) + '</div>' : '') +
+      (c.resumenCompatibilidad ? '<div style="background:var(--sand);padding:8px 10px;border-radius:8px;margin-bottom:6px;font-size:13px"><b>' + c.resumenCompatibilidad.emoji + ' Compatibilidad ' + c.resumenCompatibilidad.nivel + '</b><br>' + escaparHtml(c.resumenCompatibilidad.resumen) + '</div>' : '') +
       '<div style="font-size:15px;font-weight:bold;color:var(--teal-deep);margin-bottom:4px">⭐ PropScore: ' + c.propScore + '/100</div>' +
       '<div style="font-size:13px;margin-bottom:4px">' + c.etapaRutaCompra + ' · ' + c.ipcEtiqueta + '</div>' +
       '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">📍 ' + (c.zona || '—') + '</div>' +
       '<div style="font-size:13px;margin-bottom:6px;color:#b8860b">💰 Comisión estimada si cierras: <b>' + formatoRD(c.comisionEstMin) + ' - ' + formatoRD(c.comisionEstMax) + '</b></div>' +
       construirLineaDeTiempo(c) +
-      construirSeccionPlegable('detalle_' + c.id, '📊 Ver presupuesto e historial de visitas',
-        construirGraficoPresupuesto(c.graficoPresupuesto) + renderHistorialVisitas(c.historialVisitas)) +
+      construirGraficoPresupuesto(c.graficoPresupuesto) +
+      renderHistorialVisitas(c.historialVisitas) +
       '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center">' +
       (c.contactoPendiente
         ? '<button class="btn btn-primary btn-sm" onclick="cargarPanel(\'' + c.id + '\')">📞 Marcar contacto</button>'

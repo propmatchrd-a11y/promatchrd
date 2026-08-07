@@ -67,6 +67,11 @@
       (datos.ranking
         ? '<p style="text-align:center;font-size:13px;color:var(--teal-deep)">🏆 Puesto <b>#' + datos.ranking.posicion + '</b> de ' + datos.ranking.totalAgentes + ' agentes</p>'
         : '') +
+      (datos.comisionPersonalizada && (datos.comisionPersonalizada.venta || datos.comisionPersonalizada.alquiler)
+        ? '<p style="text-align:center;font-size:12px;color:#b8860b">💼 Tienes una comisión negociada especial' +
+          (datos.comisionPersonalizada.venta ? ' — Venta: ' + datos.comisionPersonalizada.venta + '%' : '') +
+          (datos.comisionPersonalizada.alquiler ? ' — Alquiler: ' + datos.comisionPersonalizada.alquiler + '%' : '') + '</p>'
+        : '') +
 
       (datos.proximaMejorAccion
         ? '<div class="card" style="background:#e8f0fe;border:1px solid #1a73e8;text-align:center">' +

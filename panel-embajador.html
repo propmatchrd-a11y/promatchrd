@@ -173,7 +173,8 @@ function calcularComisionEstimada() {
     document.getElementById('resultadoCalculadora').textContent = 'Ingresa un monto válido.';
     return;
   }
-  const pool = monto * (c.pctBasePool / 100);
+  const gananciaAgente = monto * (c.pctComisionAgente / 100);
+  const pool = gananciaAgente * (c.pctPlataformaMotor1 / 100);
   const ganancia = pool * (c.pctEmbajadorEfectivo / 100);
   document.getElementById('resultadoCalculadora').innerHTML =
     'Con una venta de ' + formatoRD(monto) + ', ganarías aproximadamente <span style="color:#b8860b">' + formatoRD(Math.round(ganancia)) + '</span>.';

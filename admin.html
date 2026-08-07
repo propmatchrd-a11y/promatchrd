@@ -213,19 +213,26 @@ async function ejecutarAccionAdmin(accion) {
       return;
     }
 
-    // enviarAcuerdosPendientes / enviarPanelesPendientes
+    // enviarAcuerdosPendientes / enviarPanelesPendientes / obtenerAsignacionesPendientesWhatsApp
     const r = datos.resultado;
     window.LINKS_PENDIENTES_ACTUALES = r.links || [];
     if (r.total === 0) {
       contenedor.innerHTML = '<div class="alert success">✅ No había ningún pendiente.</div>';
+      await cargarPanel(); // aquí sí conviene refrescar los números del panel
     } else if (r.enviados > 0) {
       contenedor.innerHTML = '<div class="alert success">✅ ' + r.enviados + ' de ' + r.total + ' enviados automáticamente (API activa).</div>';
+      await cargarPanel();
     } else {
+      // Bug corregido: antes se llamaba cargarPanel() justo después de
+      // mostrar esta lista, lo que recargaba TODO el panel desde cero y
+      // borraba la lista recién mostrada — por eso "aparecía y
+      // desaparecía". Ahora la lista se queda visible hasta que cada
+      // botón se toque individualmente (abrirYMarcarEnviado ya se encarga
+      // de quitar solo el elemento tocado, no todo el panel).
       contenedor.innerHTML = '<div class="card"><h3>' + r.total + ' pendiente(s) — toca cada uno para enviar</h3>' +
         r.links.map((l, idx) => '<p id="itemPendiente_' + idx + '"><button class="btn btn-sm" style="background:#25D366;color:white;border:none" onclick="abrirYMarcarEnviado(' + idx + ')">💬 ' + escaparHtml(l.nombre) + (l.etiqueta ? ' (' + l.etiqueta + ')' : '') + '</button></p>').join('') +
         '</div>';
     }
-    await cargarPanel();
   } catch (e) {
     contenedor.innerHTML = '<div class="alert">⚠️ Ocurrió un problema de conexión.</div>';
   }

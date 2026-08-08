@@ -126,6 +126,23 @@
   </div>
   <p class="sub-cta">Sin compromiso · Solo toma 3 minutos</p>
 
+  <div class="card" style="margin-top:24px;background:#fff8e6">
+    <span class="eyebrow">Herramienta gratuita — sin registrarte</span>
+    <h3>💰 ¿Qué zonas puedes comprar con tu presupuesto?</h3>
+    <p style="font-size:14px;color:var(--text-muted)">Con datos reales de mercado — no una estimación genérica.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:12px 0">
+      <input type="text" id="calcPresupuesto" placeholder="Tu presupuesto (ej. 5,000,000)" style="flex:1;min-width:180px;padding:10px 12px;border-radius:8px;border:1px solid var(--line);font-size:14px">
+      <select id="calcTipoInmueble" style="padding:10px 12px;border-radius:8px;border:1px solid var(--line);font-size:14px">
+        <option value="Apartamento">Apartamento</option>
+        <option value="Casa">Casa</option>
+        <option value="Villa">Villa</option>
+        <option value="Local comercial">Local comercial</option>
+      </select>
+      <button class="btn btn-primary btn-sm" onclick="calcularZonasPresupuesto()">Calcular</button>
+    </div>
+    <div id="resultadoCalculadoraPresupuesto"></div>
+  </div>
+
   <div class="card" style="margin-top:24px">
     <span class="eyebrow">Tecnología detrás de PropMatchRD</span>
     <h3>🤖 Trabajamos con IA para que no pierdas tiempo</h3>
@@ -221,6 +238,39 @@
 <a class="whatsapp-float" id="linkWhatsappSoporte" href="#" target="_blank" title="Escríbenos por WhatsApp">💬</a>
 
 <script>
+async function calcularZonasPresupuesto() {
+  const cont = document.getElementById('resultadoCalculadoraPresupuesto');
+  const presupuesto = document.getElementById('calcPresupuesto').value;
+  const tipoInmueble = document.getElementById('calcTipoInmueble').value;
+  cont.innerHTML = '<p style="font-size:13px;margin-top:8px">Calculando…</p>';
+  try {
+    const datos = await llamarApi({ accion: 'calcularZonasPorPresupuesto', presupuesto: presupuesto, tipoInmueble: tipoInmueble });
+    if (datos.error) {
+      cont.innerHTML = '<p style="font-size:13px;color:#e4572e;margin-top:8px">' + escaparHtml(datos.mensaje) + '</p>';
+      return;
+    }
+    const listaRecomendadas = datos.zonasRecomendadas.map(z =>
+      '<li>' + escaparHtml(z.provincia) + ' <span style="color:var(--text-muted)">(RD$' + z.min.toLocaleString() + ' – RD$' + z.max.toLocaleString() + ')</span></li>'
+    ).join('');
+    const listaDificultad = datos.zonasConDificultad.map(z =>
+      '<li>' + escaparHtml(z.provincia) + ' <span style="color:var(--text-muted)">(desde RD$' + z.min.toLocaleString() + ')</span></li>'
+    ).join('');
+    cont.innerHTML =
+      '<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">' +
+      '<p style="font-size:14px">Con <b>RD$' + datos.presupuesto.toLocaleString() + '</b> para ' + datos.tipoInmueble.toLowerCase() + ':</p>' +
+      (listaRecomendadas
+        ? '<p style="font-size:13px;font-weight:bold;color:#0f7a6b;margin:8px 0 4px">✅ Zonas donde tu presupuesto es competitivo:</p><ul style="font-size:13px;margin:0 0 8px 18px">' + listaRecomendadas + '</ul>'
+        : '<p style="font-size:13px;color:var(--text-muted)">No encontramos zonas con referencia de precio para este presupuesto todavía.</p>') +
+      (listaDificultad
+        ? '<p style="font-size:13px;font-weight:bold;color:#c0392b;margin:8px 0 4px">⚠️ Zonas donde tu presupuesto tendría más dificultad:</p><ul style="font-size:13px;margin:0 0 12px 18px">' + listaDificultad + '</ul>'
+        : '') +
+      '<a href="#" onclick="document.getElementById(\'linkRegistroComprador\').click();return false;" class="btn btn-coral btn-sm">Quiero recibir propiedades que realmente pueda comprar →</a>' +
+      '</div>';
+  } catch (e) {
+    cont.innerHTML = '<p style="font-size:13px;color:#e4572e;margin-top:8px">⚠️ Ocurrió un problema de conexión.</p>';
+  }
+}
+
   document.getElementById('linkRegistroComprador').href = FORM_COMPRADOR_URL;
   document.getElementById('linkRegistroAlquiler').href = FORM_ALQUILER_URL;
   document.getElementById('linkRegistroAgente').href = FORM_AGENTE_URL;

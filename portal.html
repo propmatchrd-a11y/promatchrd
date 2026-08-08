@@ -29,6 +29,7 @@ async function cargarPortalComprador() {
     if (datos.error) { mostrarError('contenido', datos.mensaje); return; }
     guardarCodigoRecordado('comprador', codigo); // automatización: la próxima vez, index.html ya lo recuerda
     window.ID_CIERRE_PENDIENTE = datos.montoCierrePendiente ? datos.montoCierrePendiente.idCierre : null;
+    window.MI_LINK_REFERIDO_ACTUAL = datos.miLinkReferido || '';
 
     const g = datos.gastos || {};
     const documentos = datos.documentos || {};
@@ -140,10 +141,13 @@ async function cargarPortalComprador() {
       '<button class="btn btn-outline btn-sm" onclick="guardarCampo(\'actualizarEmail\',\'inputEmail\')">💾 Guardar</button></div>' +
       '<p id="mensajeGuardado" style="font-size:13px;margin-top:8px"></p></div>' +
 
-      (datos.urlFormularioEmbajador
-        ? '<div class="card" style="text-align:center;background:#fff8e6"><h3>🎖️ ¿Conoces a alguien buscando propiedad?</h3>' +
-          '<p style="font-size:13px;color:var(--text-muted)">Refiere compradores o inquilinos y gana una comisión por cada uno que cierre — sin ningún costo para ellos.</p>' +
-          '<a href="' + datos.urlFormularioEmbajador + '" target="_blank" class="btn btn-outline" style="display:inline-block;text-decoration:none">Hazte Embajador →</a>' +
+      (datos.miLinkReferido
+        ? '<div class="card" style="text-align:center"><h3>🎖️ Trae a alguien que esté buscando</h3>' +
+          '<p style="font-size:13px;color:var(--text-muted)">¿Conoces a alguien que también esté buscando comprar o alquilar? Comparte tu enlace PropMatch y ayúdalo a descubrir qué opciones puede conseguir — y gana una comisión si cierra, sin ningún costo para él.</p>' +
+          '<div style="background:var(--sand);padding:8px 12px;border-radius:8px;font-family:var(--font-mono);font-size:12px;word-break:break-all;margin:8px 0">' + datos.miLinkReferido + '</div>' +
+          '<button class="btn btn-primary btn-sm" onclick="copiarMiLinkReferido()">📋 Copiar mi enlace</button> ' +
+          '<a href="https://wa.me/?text=' + encodeURIComponent('Encontré esto buscando propiedad en RD, te puede servir: ' + datos.miLinkReferido) + '" target="_blank" class="btn btn-sm" style="background:#25D366;color:white;text-decoration:none">💬 Compartir por WhatsApp</a>' +
+          '<p id="mensajeCopiarLink" style="font-size:12px;margin-top:6px"></p>' +
           '</div>'
         : '') +
 
@@ -331,6 +335,18 @@ async function registrarVisitaComprador(idConexion) {
     alert(datos.mensaje || 'Registrado.');
   } catch (e) {
     alert('Ocurrió un problema de conexión.');
+  }
+}
+
+async function copiarMiLinkReferido() {
+  const el = document.getElementById('mensajeCopiarLink');
+  try {
+    await navigator.clipboard.writeText(window.MI_LINK_REFERIDO_ACTUAL);
+    el.textContent = '✅ ¡Copiado! Ya puedes pegarlo donde quieras.';
+    el.style.color = '#0f7a6b';
+  } catch (e) {
+    el.textContent = '⚠️ No se pudo copiar automáticamente — selecciona el texto de arriba manualmente.';
+    el.style.color = '#e4572e';
   }
 }
 

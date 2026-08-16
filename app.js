@@ -12,7 +12,7 @@ const API_BASE = 'https://script.google.com/macros/s/AKfycbzw0lAh-i0MvbSMJLvsBsG
  */
 const FORM_COMPRADOR_URL = 'https://forms.gle/Ekv3n3hTe5rp3oF36';
 const FORM_AGENTE_URL = 'https://forms.gle/AL5zRTUWFPhY1haZ8';
-const FORM_EMBAJADOR_URL = 'https://forms.gle/DEgQYRZnbzrK2Z4y7';
+const FORM_EMBAJADOR_URL = 'https://forms.gle/iZCh1BuonXvcMjW59';
 const FORM_ALQUILER_URL = 'https://forms.gle/XqmJ5fi1ePbReHdT6';
 const FORM_PROPIETARIO_URL = 'https://forms.gle/A4LBpHchrC5qWTt66';
 

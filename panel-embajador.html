@@ -81,7 +81,7 @@ function pintarPanel(datos) {
     (datos.referidos && datos.referidos.length
       ? '<div class="card"><h3>Tus referidos</h3>' +
         '<p style="font-size:13px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
-        datos.referidos.map(r => {
+        datos.referidos.map((r, i) => {
           let comisionTexto = '<span style="color:#999">Aún sin estimar</span>';
           if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ ' + formatoRD(r.comisionExacta) + ' — Pagada</b>'; }
           else if (r.comisionExacta !== null) {
@@ -89,13 +89,16 @@ function pintarPanel(datos) {
           } else if (r.comisionMin !== null) {
             comisionTexto = '<b style="color:#b8860b">' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + ' (estimado)</b>';
           }
+          const idReferido = 'referido_' + i;
           return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center">' +
             '<b style="font-size:15px">' + escaparHtml(r.nombre) + '</b>' +
             '<span style="font-size:13px;background:var(--sand-deep);padding:2px 10px;border-radius:100px">' + r.tipo + '</span>' +
             '</div>' +
-            '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">' + r.estado + ' · ' + new Date(r.fecha).toLocaleDateString('es-DO') + '</div>' +
-            '<div style="font-size:13px">' + comisionTexto + '</div>' +
+            '<div style="font-size:13px;color:var(--text-muted);margin:4px 0 2px">' + r.estado + '</div>' +
+            construirSeccionPlegable(idReferido, 'Ver detalle',
+              '<div style="font-size:13px;color:var(--text-muted);margin-bottom:4px">Registrado: ' + new Date(r.fecha).toLocaleDateString('es-DO') + '</div>' +
+              '<div style="font-size:13px">' + comisionTexto + '</div>') +
             '</div>';
         }).join('') +
         '</div>'

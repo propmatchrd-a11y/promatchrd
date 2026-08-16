@@ -83,11 +83,11 @@ function pintarPanel(datos) {
         '<p style="font-size:13px;color:var(--text-muted)">Por privacidad, no mostramos teléfono, correo ni presupuesto de tus referidos.</p>' +
         datos.referidos.map((r, i) => {
           let comisionTexto = '<span style="color:#999">Aún sin estimar</span>';
-          if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ ' + formatoRD(r.comisionExacta) + ' — Pagada</b>'; }
+          if (r.comisionPagada) { comisionTexto = '<b style="color:#0f7a6b">✅ Comisión: ' + formatoRD(r.comisionExacta) + ' — Pagada</b>'; }
           else if (r.comisionExacta !== null) {
-            comisionTexto = '<b style="color:#1a73e8">' + formatoRD(r.comisionExacta) + ' — Aprobada, pendiente de pago</b>';
+            comisionTexto = '<b style="color:#1a73e8">Comisión: ' + formatoRD(r.comisionExacta) + ' — Aprobada, pendiente de pago</b>';
           } else if (r.comisionMin !== null) {
-            comisionTexto = '<b style="color:#b8860b">' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + ' (estimado)</b>';
+            comisionTexto = '<b style="color:#b8860b">Comisión estimada: ' + formatoRD(r.comisionMin) + ' - ' + formatoRD(r.comisionMax) + '</b>';
           }
           const idReferido = 'referido_' + i;
           return '<div style="border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px">' +
